@@ -1,5 +1,6 @@
 import { formatValor } from "@/lib/format";
-import type { MetricaVista, RevisionMedicion, TipoMetrica } from "@/lib/domain";
+import type { TipoMetrica } from "@/lib/domain";
+import type { MetricaProyecto, RevisionMedicion } from "../types";
 
 /** «≥ 90 %» / «≤ 0 defectos». */
 export function objetivoTexto(tipo: TipoMetrica, valor: string): string {
@@ -8,7 +9,7 @@ export function objetivoTexto(tipo: TipoMetrica, valor: string): string {
 }
 
 /** Líneas de objetivo; M-01 muestra general y críticas. */
-export function objetivoLineas(m: Pick<MetricaVista, "tipo" | "objetivo" | "objetivoCritico">) {
+export function objetivoLineas(m: Pick<MetricaProyecto, "tipo" | "objetivo" | "objetivoCritico">) {
   if (m.tipo.codigo === "M-01" && m.objetivoCritico !== null) {
     return [
       { etiqueta: "general", texto: objetivoTexto(m.tipo, m.objetivo) },
@@ -19,12 +20,12 @@ export function objetivoLineas(m: Pick<MetricaVista, "tipo" | "objetivo" | "obje
 }
 
 /** Sin medición ≠ 0; con captura pero denominador 0 → «No disponible». */
-export function valorActualTexto(m: MetricaVista): string {
-  if (!m.medicionVigente) return "Sin medición";
+export function valorActualTexto(m: Pick<MetricaProyecto, "medidaEn" | "valorActual" | "tipo">): string {
+  if (!m.medidaEn) return "Sin medición";
   return m.valorActual === null ? "No disponible" : formatValor(m.valorActual, m.tipo.unidad);
 }
 
-export function valorRevisionTexto(r: RevisionMedicion, unidad: TipoMetrica["unidad"]): string {
+export function valorRevisionTexto(r: Pick<RevisionMedicion, "valor">, unidad: TipoMetrica["unidad"]): string {
   return r.valor === null ? "No evaluable" : formatValor(r.valor, unidad);
 }
 

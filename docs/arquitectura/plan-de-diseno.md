@@ -1,6 +1,6 @@
 # Plan para cerrar el diseño técnico y preparar el repositorio
 
-**Estado:** stack y monolito modular **APROBADOS** (`stack-aprobado.md`). El diseño detallado, base de datos y bootstrap **PENDIENTES**.
+**Estado:** stack y monolito modular **APROBADOS** (`stack-aprobado.md`). Diseño C4 y modelo de datos documentados tras aprobación de 2026-10-18: [diseño arquitectural](diseno-arquitectural.md) y [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md). ADR-002 cierra contratos, límites, catálogos y ajustes al esquema. SQL/código ejecutable, estructura física y bootstrap **PENDIENTES**. La aprobación actual autoriza documentación, no implementación.
 
 ## Entregables antes de implementación paralela
 
@@ -14,12 +14,12 @@
 
 ## Secuencia de aprobación
 
-- **Diseño:** Codex presenta ER, esquema de permisos, diagramas y contratos; Fer/Emi revisan antes de crear las migraciones y la estructura definitiva.
-- **Implementación base:** una vez aprobados, Codex crea el esqueleto ejecutable con migraciones versionadas y controles mínimos.
+- **Diseño:** propuesta revisada y aprobada por el usuario; siete documentos generados con diagramas, datos, controles y contratos conceptuales. Cierre ADR-002 consolidado en contratos v1 y detalle técnico; salud sigue pendiente y el resto queda para implementación/configuración.
+- **Implementación base:** requiere una tarea posterior autorizada; presentar el plan de bootstrap antes de instalar dependencias aprobadas y revisar SQL/contratos antes de crear la estructura definitiva.
 - **Paralelo:** iniciar tareas por módulo cuando la base de autenticación, migraciones y contratos esté validada.
 
 ## No bloquear sin motivo
 
-La fórmula de salud sigue pendiente, pero pueden definirse indicadores, consultas, estructura visual y reporte sin asignar una calificación inventada. Catálogos provisionales pueden poblarse con semillas modificables; no tratarlos como valores finales.
+La fórmula de salud sigue pendiente, pero pueden definirse indicadores, consultas, estructura visual y reporte sin asignar una calificación inventada. Los catálogos v1 ya están aprobados; crear posteriormente semillas versionadas conforme a sus códigos, etapas y definiciones, sin inventar valores ni cálculos de salud.
 
 Referencias: `stack-aprobado.md`, `../requisitos/trazabilidad.md`, `../decisiones/pendientes.md` y CU afectados.

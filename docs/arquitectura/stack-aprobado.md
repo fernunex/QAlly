@@ -32,12 +32,14 @@
 - No requerir Redis, colas de trabajo, WebSockets, monorepo multiaplicación ni Docker obligatorio para esta primera versión.
 - GitHub Issues puede utilizarse para defectos; **no** se ha aprobado una integración automatizada GitHub–QAlly.
 
-## Aspectos técnicos aún por diseñar, no supuestos
+## Estado del diseño y aspectos pendientes
+
+El diseño inicial C4, ER, diccionario y controles está documentado en [diseño arquitectural](diseno-arquitectural.md) tras [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md), sin cambiar este stack. Los puntos siguientes se refieren al detalle o implementación aún pendiente.
 
 - Versiones exactas de Node.js, Next.js y dependencias; comando de arranque hasta verificar el repositorio.
-- Esquema ER físico, columnas, índices, migraciones iniciales, seeds, funciones transaccionales y políticas RLS.
-- Configuración final del ciclo de sesión de Next.js con Supabase Auth; políticas de Storage, tamaño de PDF, validación de enlaces, archivos huérfanos y errores de subida.
+- Migraciones/semillas ejecutables, funciones transaccionales y políticas RLS SQL. ER, límites, tipos, precisión e interfaces ya están aprobados por ADR-002; falta realizarlos y probarlos.
+- Configuración final del ciclo de sesión de Next.js con Supabase Auth; implementación de políticas Storage y protocolo de archivos aprobado (PDF 3 MiB, enlaces HTTP/HTTPS, reserva/limpieza), pendiente de pruebas.
 - Variables de entorno, cuentas/planes y configuración de despliegue; definición precisa de checks de CI y estrategia de pruebas.
-- Contratos entre módulos y estructura concreta de `src/`.
+- Implementación de [contratos v1](contratos-v1.md) aprobados y estructura concreta de `src/`; responsabilidades en C3 y archivos/credenciales en seguridad e integridad.
 
-**No confundir:** stack aprobado ≠ código ya implementado; propuesta de esquema ≠ requisito aprobado. Registrar decisiones técnicas posteriores en `docs/decisiones/registro.md`.
+**No confundir:** stack/diseño aprobados ≠ código ya implementado; catálogos v1 aprobados por usuario ≠ ratificación académica independiente. Registrar decisiones técnicas posteriores en `docs/decisiones/registro.md`.

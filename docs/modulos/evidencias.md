@@ -14,7 +14,7 @@ Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisi�
 Estados/permiso de actividades (CU-03); almacenamiento de PDFs y protección de evidencias.
 
 ## Pendientes relevantes
-Límite de tamaño PDF, validación de enlaces y criterios concretos de evidencia.
+Implementar límites y protocolo aprobados: PDF 3 MiB, enlaces HTTP/HTTPS, reserva/compensación y limpieza diaria. [Seguridad](../datos/seguridad-integridad.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-04.md` enlazado.
@@ -24,4 +24,4 @@ Límite de tamaño PDF, validación de enlaces y criterios concretos de evidenci
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-PDF en Supabase Storage privado y metadata en PostgreSQL; diseñar manejo de fallos de subida/registro sin archivos o registros inconsistentes.
+PDF en Supabase Storage privado y metadata en PostgreSQL; implementar la reserva de archivo físico, confirmación atómica y limpieza aprobadas, sin presentar preparación como entrega enviada.

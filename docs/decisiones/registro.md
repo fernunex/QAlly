@@ -18,14 +18,21 @@
 | DEC-14 | **ACORDADO** | Cuatro atributos: Seguridad, Rendimiento, Portabilidad, Integridad. | RNF-01 a 10. |
 | DEC-15 | **ACORDADO** | Portabilidad solo Chrome y Firefox de escritorio; descartar Edge/RNF redundante. | RNF-07 final. |
 | DEC-16 | **ACORDADO** | DER se sustituye en catálogo base por conteo de defectos de severidad alta/crítica abiertos. | Métrica M-04 y carga manual. |
-| DEC-17 | **PRELIMINAR** | Lista de 10 actividades y 4 métricas del equipo. | Requiere validación del equipo/profesora. |
+| DEC-17 | **APROBADO PARA V1 (2026-10-18)** | Catálogos de diez actividades y cuatro métricas, etapas, capturas, objetivos iniciales, evidencia y criterios QA concretados por ADR-002. | Ratificación académica independiente no presumida. |
 | DEC-18 | **PENDIENTE** | Algoritmo y escala de salud, ponderaciones y ausencias. | Implementar interfaz/indicadores sin inventar puntaje. |
-| DEC-19 | **ACORDADO EN PRINCIPIO** | Proyecto cerrado se conserva consultable, orientado a solo lectura. | Afinar reglas de edición tras cierre. |
-| DEC-20 | **PENDIENTE** | Significado de un proyecto por periodo y campos obligatorios. | CU-01. |
+| DEC-19 | **APROBADO (2026-10-18)** | Cierre en solo lectura de negocio; conserva consultas, evidencias y reportes según rol. | Cerrado por ADR-001; sin reapertura ordinaria. |
+| DEC-20 | **RESUELTO (2026-10-18)** | Campos por ADR-001; ADR-002 define periodo informativo de hasta 40 caracteres y múltiples proyectos permitidos, sin unicidad. | CU-01 y diccionario. |
 | DEC-21 | **APROBADO (2026-10-18)** | Stack Full Stack TypeScript: Next.js App Router + React; Tailwind CSS + shadcn/ui; PostgreSQL, Auth, Storage y Supabase JS de Supabase; Zod; React PDF; Vitest/Playwright; ESLint/Prettier/GitHub Actions; Vercel + Supabase; npm. | Ver `../arquitectura/stack-aprobado.md`. |
 | DEC-22 | **APROBADO (2026-10-18)** | Monolito modular en repositorio único; sin ORM Prisma o backend separado como solución inicial. | Diseño arquitectónico y repositorio. |
-| DEC-23 | **PENDIENTE** | Diseño ER, RLS, Storage, transacciones, versiones de dependencias y contratos de módulos. | Arquitectura y datos; no contradice la aprobación del stack. |
+| DEC-23 | **DISEÑO APROBADO / IMPLEMENTACIÓN PENDIENTE (2026-10-18)** | C4, modelo ER, atributos, permisos y controles transaccionales documentados por ADR-001. ADR-002 cierra límites, interfaces y controles concretos; SQL/código ejecutable y versiones pendientes de bootstrap. | Arquitectura y datos; no autoriza bootstrap ni migraciones ejecutables. |
 
 Estos identificadores `DEC-xx` son **solo para consulta en esta memoria** y **no** forman parte de la numeración formal de RF/RNF/CU.
 
 **Instrucción de mantenimiento:** este registro es una fotografía de acuerdos previos, no una aprobación automática de propuestas. Para nuevas decisiones usar entradas `ADR-...` o fecha + decisión + alternativas + motivo + documentos afectados. No confundir los ID DEC-xx con identificadores del SRS.
+
+## Decisiones posteriores
+
+| ADR | Fecha | Estado | Decisión y alcance |
+|---|---|---|---|
+| [ADR-001 — Diseño técnico inicial](ADR-001-diseno-tecnico-v1.md) | 2026-10-18 | **APROBADO** | Documentación C1–C3 y datos; rol global + proyecto, entregas inmutables, mediciones con revisiones, campos generales y cierre de solo lectura. Catálogos/salud siguen abiertos. Sin implementación. |
+| [ADR-002 — Cierre de diseño v1](ADR-002-cierre-diseno-v1.md) | 2026-10-18 | **APROBADO** | Catálogos, periodo, PDF/limpieza, contratos y ajustes de esquema: archivo físico, idempotencia/versión de proyecto y objetivo crítico. Salud sigue pendiente. Sin implementación. |

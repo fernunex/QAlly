@@ -11,6 +11,7 @@
 | Proponer estructura de código | `docs/arquitectura/estructura-repo-propuesta.md`, plan de diseño |
 | Consultar BD, permisos y evidencias | `docs/datos/invariantes-de-modelado.md` → `modelo-entidad-relacion.md`, `diccionario-datos.md`, `seguridad-integridad.md` en la misma carpeta; CU-01 a CU-04 según impacto |
 | Probar CU-01 implementado | [Implementación local y pruebas](modulos/cu01-implementacion.md) |
+| Probar CU-03 implementado | [Implementación local y pruebas](modulos/cu03-implementacion.md) |
 | Implementar proyectos | `docs/modulos/proyectos.md` → CU-01 |
 | Implementar métricas | `docs/modulos/metricas.md` → CU-02 |
 | Implementar actividades SQA | `docs/modulos/actividades.md` → CU-03 |

@@ -70,3 +70,18 @@ Se conservan RF, RNF y reglas aprobadas. [Realización, ejecución y límites](.
 | RNF-07 (parte CU-01) | UI reutilizada con datos reales. | Escenarios CU-01 aprobados en Chrome Stable/Firefox; no cubre todavía los otros cinco CU. |
 
 RNF-04/05: pendientes mediciones de aceptación en entorno desplegado; las duraciones de las suites locales no sustituyen sus umbrales. CU-02 a CU-06 y el algoritmo de salud mantienen el estado indicado en sus fuentes.
+
+## CU-03 implementado — 2026-10-19
+
+Se conservan RF, RNF y reglas aprobadas; el contrato de listarActividades se amplía con filtros aprobados por el usuario. [Realización, ejecución y límites](../modulos/cu03-implementacion.md).
+
+| Subflujo / requisito | Implementación | Evidencia automatizada |
+|---|---|---|
+| RF-33; RNF-01/02/03 | Acciones con sesión verificada, rol QA, participación y proyecto abierto; RPC y RLS reautorizan. | E2E llamadas directas como Miembro/QA ajeno/sin sesión y proyecto cerrado; integración BD existente. |
+| SF-01; RF-16; RNF-08/09 | Alta desde catálogo vigente con descripción, Pendiente sin responsable; tipo repetible. | E2E validación, dos instancias del mismo tipo y persistencia; unitarias de entradas. |
+| SF-02; RF-15; RNF-03/04 | Tablero paginado por estado con totales y filtros en servidor; detalle con intentos enviados, evidencias y revisiones; descarga PDF autorizada. | E2E paginación/filtros, detalle y descarga con cabeceras privadas (404 ajeno, 401 sin sesión). |
+| SF-03; RF-17; RNF-08/09 | Asignación de Miembro del proyecto con versión esperada; estado sin cambio. | E2E asignación persistente y conflicto entre pestañas sin sobrescritura. |
+| SF-04/05; RF-18/19; RNF-08/09 | revisar_entrega con decisión fija por acción; observaciones obligatorias al devolver; FE-03 identificado. | E2E aprobar/devolver, revisión registrada con QA, decisión repetida rechazada; unitarias de observaciones. |
+| RNF-07 (parte CU-03) | UI existente conectada a datos reales. | Escenarios CU-03 en Chrome y Firefox de Playwright. |
+
+RNF-04/05: pendientes mediciones de aceptación en entorno desplegado. La entrega por el responsable (CU-04) se prepara por RPC en las pruebas y aún no se conecta a la UI.

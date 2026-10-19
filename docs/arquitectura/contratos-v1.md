@@ -2,7 +2,7 @@
 
 **Estado: APROBADO, 2026-10-18**, por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md). Especificación documental sin código ni SQL ejecutable. Usa el [detalle de datos](../datos/detalle-tecnico-v1.md). Salud permanece Sin evaluar.
 
-**Implementación posterior:** CU-01 y su precondición de sesión ya se conectan a las funciones de servidor y RPC existentes, conforme a estos contratos. [Guía y validación](../modulos/cu01-implementacion.md). Esto no implica que las operaciones de CU-02 a CU-06 estén implementadas en la aplicación.
+**Implementación posterior:** CU-01 y su precondición de sesión ya se conectan a las funciones de servidor y RPC existentes, conforme a estos contratos. [Guía y validación](../modulos/cu01-implementacion.md). CU-03 conecta también sus operaciones de QA y la descarga de PDF ([guía](../modulos/cu03-implementacion.md)). Esto no implica que las operaciones de CU-02, CU-04, CU-05 y CU-06 estén implementadas en la aplicación.
 
 ## 1. Convenciones del contrato
 
@@ -90,7 +90,7 @@ Toda escritura de actividad exige `versionEsperada`; aumenta `actividad.version`
 
 | Función interna → RPC | Entrada adicional a ID/versión cuando aplica | Salida / autorización |
 |---|---|---|
-| listarActividades → lectura protegida | proyectoId, PaginaEntrada, estado opcional, soloMias boolean | Pagina de Actividad; soloMias usa identidad verificada. |
+| listarActividades → lectura protegida | proyectoId, PaginaEntrada, estado opcional, soloMias boolean, etapa opcional, responsable opcional (UUID de Miembro o `sin`) | Pagina de Actividad con total del filtro; soloMias usa identidad verificada. Filtros aplicados en servidor bajo RLS. |
 | consultarActividad → lectura protegida | actividadId | Actividad y detalle permitido; participantes del proyecto. |
 | agregarActividad → agregar_actividad | proyectoId, tipoId, descripcion | Actividad Pendiente sin responsable; QA abierto. Ante respuesta ambigua recargar lista; no reintentar automáticamente un alta nueva sin identidad. |
 | asignarResponsable → asignar_responsable | actividadId, responsableId, versionEsperada | Actividad Pendiente con responsable Miembro del mismo proyecto. QA abierto. |
@@ -102,6 +102,8 @@ Toda escritura de actividad exige `versionEsperada`; aumenta `actividad.version`
 | enviarEntrega → enviar_entrega | entregaId, versionEsperada | Actividad En revisión y entrega congelada; responsable, resultado y evidencia válidos en commit. |
 | aprobarEntrega → revisar_entrega | entregaId, decision fija Aprobar, observaciones opcionales, versionEsperada | Revisión y Actividad Aprobada; QA autorizado abierto. |
 | devolverEntrega → revisar_entrega | entregaId, decision fija Devolver, observaciones obligatorias, versionEsperada | Revisión y Actividad En progreso; QA autorizado abierto. |
+
+**Ampliación APROBADA, 2026-10-19:** el usuario aprobó añadir a listarActividades los filtros opcionales `etapa` y `responsable` (incluido `sin` responsable) para el tablero de CU-03, que pagina por estado con el dataset de 1000 actividades. Es aditiva, sin migración ni cambio de RLS; filtros desconocidos se rechazan. [Implementación CU-03](../modulos/cu03-implementacion.md).
 
 Las transiciones repetidas con versión obsoleta devuelven CONFLICTO y obligan a recargar, sin duplicar envíos o revisiones. Quitar y agregar evidencia son operaciones distintas de preparación; si se necesita conservar una evidencia anterior hasta confirmar reemplazo, se agrega primero la nueva y se quita la anterior después. No se pierde un PDF ya revisado.
 

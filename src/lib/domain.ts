@@ -1,7 +1,7 @@
 /**
  * Tipos de dominio del lado de la interfaz.
  * Reflejan los DTO de lectura de docs/arquitectura/contratos-v1.md (§2 y §6).
- * Mientras no exista la capa Supabase, se alimentan desde src/lib/mock.
+ * Proyectos se adaptan desde Supabase; los tipos de módulos posteriores conservan sus ejemplos en src/lib/mock.
  */
 
 export type Rol = "QA" | "Miembro";

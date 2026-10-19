@@ -1,25 +1,52 @@
 import { PageContainer } from "@/components/shell/page-header";
-import { AvisoSoloLectura, EstadoNoDisponible } from "@/components/states/ui-states";
-import { SaludProyecto } from "@/features/health/components/salud-proyecto";
-import { obtenerContextoProyecto } from "@/lib/project-context";
-import { consultarResumen } from "@/lib/mock/queries";
+import {
+  AvisoSoloLectura,
+  EstadoNoDisponible,
+} from "@/components/states/ui-states";
+import {
+  DatosProyecto,
+  ActividadesConfiguradas,
+  MetricasConfiguradas,
+} from "@/features/projects/components/consulta-proyecto";
+import {
+  listarActividadesIniciales,
+  listarMetricasIniciales,
+  consultarProyecto,
+} from "@/features/projects/server/queries";
+import { obtenerUsuarioActual } from "@/lib/session";
 
-// CU-05: salud del proyecto, visible para todos los participantes.
-export default async function Page({ params }: PageProps<"/proyectos/[proyectoId]">) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ proyectoId: string }>;
+  searchParams: Promise<{ cursor?: string }>;
+}) {
+  await obtenerUsuarioActual();
   const { proyectoId } = await params;
-  const { proyecto, cerrado } = await obtenerContextoProyecto(proyectoId);
-  if (!proyecto) {
+  const proyecto = await consultarProyecto(proyectoId);
+  if (!proyecto)
     return (
       <PageContainer>
         <EstadoNoDisponible />
       </PageContainer>
     );
-  }
-  const resumen = consultarResumen(proyecto);
+  const { cursor } = await searchParams;
+  const [actividades, metricas] = await Promise.all([
+    listarActividadesIniciales(proyectoId, { cursor }),
+    listarMetricasIniciales(proyectoId),
+  ]);
   return (
     <PageContainer className="space-y-6">
-      {cerrado ? <AvisoSoloLectura /> : null}
-      <SaludProyecto resumen={resumen} />
+      {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
+      <DatosProyecto proyecto={proyecto} />
+      <ActividadesConfiguradas
+        pagina={actividades}
+        proyecto={proyecto}
+        base={`/proyectos/${proyectoId}`}
+        cursor={cursor}
+      />
+      <MetricasConfiguradas metricas={metricas} />
     </PageContainer>
   );
 }

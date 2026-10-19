@@ -4,10 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { nombreEtapa, TIPOS_METRICA } from "@/lib/catalogs";
+import { nombreEtapa } from "@/lib/catalogs";
 import type { TipoMetrica } from "@/lib/domain";
+import { useCatalogosProyecto } from "../catalogos-context";
 import { cn } from "@/lib/utils";
-import { idCampoMetrica, validarMetricas, type ConfigMetrica, type EstadoAsistente } from "./estado";
+import {
+  idCampoMetrica,
+  validarMetricas,
+  type ConfigMetrica,
+  type EstadoAsistente,
+} from "./estado";
 
 function CampoObjetivo({
   id,
@@ -43,7 +49,9 @@ function CampoObjetivo({
           onChange={(e) => onChange(e.target.value)}
           className="w-24 tabular-nums"
         />
-        <span className="text-sm whitespace-nowrap text-muted-foreground">{unidad}</span>
+        <span className="text-sm whitespace-nowrap text-muted-foreground">
+          {unidad}
+        </span>
       </div>
       <FieldError id={idError}>{error}</FieldError>
     </Field>
@@ -74,13 +82,31 @@ function FilaMetrica({
           onCheckedChange={(v) => onChange({ ...cfg, activa: v === true })}
         />
         <div className="min-w-0 flex-1">
-          <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", !cfg.activa && "opacity-60")}>
-            <label htmlFor={idCheck} className="cursor-pointer text-sm font-semibold">
-              <span className="font-mono text-xs whitespace-nowrap">{tipo.codigo}</span> · {tipo.nombre}
+          <div
+            className={cn(
+              "flex flex-wrap items-center gap-x-2 gap-y-1",
+              !cfg.activa && "opacity-60",
+            )}
+          >
+            <label
+              htmlFor={idCheck}
+              className="cursor-pointer text-sm font-semibold"
+            >
+              <span className="font-mono text-xs whitespace-nowrap">
+                {tipo.codigo}
+              </span>{" "}
+              · {tipo.nombre}
             </label>
-            <Badge variant="outline">Etapa: {nombreEtapa(tipo.etapaCodigo)}</Badge>
+            <Badge variant="outline">
+              Etapa: {nombreEtapa(tipo.etapaCodigo)}
+            </Badge>
           </div>
-          <p className={cn("mt-1 text-sm text-muted-foreground", !cfg.activa && "opacity-60")}>
+          <p
+            className={cn(
+              "mt-1 text-sm text-muted-foreground",
+              !cfg.activa && "opacity-60",
+            )}
+          >
             Valor = {tipo.formula}
             {!cfg.activa
               ? ` · objetivo inicial ${tipo.comparador} ${tipo.objetivoInicial} ${tipo.unidad === "%" ? "%" : tipo.unidad}`
@@ -90,7 +116,11 @@ function FilaMetrica({
             <div className="mt-3 flex flex-wrap items-start gap-x-8 gap-y-3">
               <CampoObjetivo
                 id={idObj}
-                etiqueta={tipo.objetivoCriticoInicial !== null ? "Objetivo general" : "Objetivo"}
+                etiqueta={
+                  tipo.objetivoCriticoInicial !== null
+                    ? "Objetivo general"
+                    : "Objetivo"
+                }
                 comparador={tipo.comparador}
                 unidad={tipo.unidad}
                 valor={cfg.objetivo}
@@ -123,12 +153,14 @@ export function PasoMetricas({
   estado: EstadoAsistente;
   onChange: (e: EstadoAsistente) => void;
 }) {
-  const errores = validarMetricas(estado.metricas);
+  const { metricas: TIPOS_METRICA } = useCatalogosProyecto();
+  const errores = validarMetricas(estado.metricas, TIPOS_METRICA);
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-muted-foreground">
-        Las cuatro métricas son de la etapa Desarrollo y se capturan manualmente. No se pueden crear métricas nuevas ni
-        editar fórmulas. Un tipo de métrica se usa una sola vez por proyecto.
+        Las cuatro métricas son de la etapa Desarrollo y se capturan
+        manualmente. No se pueden crear métricas nuevas ni editar fórmulas. Un
+        tipo de métrica se usa una sola vez por proyecto.
       </p>
       <ul className="divide-y overflow-hidden rounded-lg border bg-card">
         {TIPOS_METRICA.map((t) => (
@@ -137,7 +169,12 @@ export function PasoMetricas({
             tipo={t}
             cfg={estado.metricas[t.id]!}
             errores={errores}
-            onChange={(c) => onChange({ ...estado, metricas: { ...estado.metricas, [t.id]: c } })}
+            onChange={(c) =>
+              onChange({
+                ...estado,
+                metricas: { ...estado.metricas, [t.id]: c },
+              })
+            }
           />
         ))}
       </ul>

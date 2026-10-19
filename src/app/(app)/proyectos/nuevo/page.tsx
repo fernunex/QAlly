@@ -5,7 +5,11 @@ import { PageContainer } from "@/components/shell/page-header";
 import { EstadoVacio } from "@/components/states/ui-states";
 import { Button } from "@/components/ui/button";
 import { AsistenteNuevoProyecto } from "@/features/projects/components/nuevo-proyecto/asistente-nuevo-proyecto";
-import { miembrosElegibles } from "@/lib/mock/queries";
+import {
+  buscarMiembros,
+  listarCatalogos,
+} from "@/features/projects/server/queries";
+import { CatalogosProvider } from "@/features/projects/components/catalogos-context";
 import { obtenerUsuarioActual } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Nuevo proyecto" };
@@ -30,11 +34,17 @@ export default async function NuevoProyectoPage() {
     );
   }
 
-  const elegibles = miembrosElegibles().map((u) => ({ id: u.id, nombre: u.nombre, correo: u.correo }));
+  const [miembros, catalogos] = await Promise.all([
+    buscarMiembros(),
+    listarCatalogos(),
+  ]);
   return (
-    <AsistenteNuevoProyecto
-      creador={{ id: usuario.id, nombre: usuario.nombre, correo: usuario.correo }}
-      elegibles={elegibles}
-    />
+    <CatalogosProvider catalogos={catalogos}>
+      <AsistenteNuevoProyecto
+        creador={{ id: usuario.id, nombre: usuario.nombre }}
+        elegibles={miembros.items}
+        siguienteCursor={miembros.siguienteCursor}
+      />
+    </CatalogosProvider>
   );
 }

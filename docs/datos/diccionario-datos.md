@@ -1,6 +1,6 @@
 # Diccionario de datos de QAlly
 
-**Estado: diseño APROBADO, 2026-10-18.** Especificación documental, sin DDL ejecutable. Tipos, longitudes y precisión aprobados por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md); implementación SQL pendiente. [Detalle técnico](detalle-tecnico-v1.md) y [contratos](../arquitectura/contratos-v1.md) precisan constraints y operaciones. Véanse [modelo ER](modelo-entidad-relacion.md) y [seguridad e integridad](seguridad-integridad.md).
+**Estado: diseño APROBADO, 2026-10-18.** Especificación documental; DDL versionado en `supabase/migrations/`. Tipos, longitudes y precisión aprobados por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md); implementación SQL local validada en el [bootstrap](plan-bootstrap-supabase.md). [Detalle técnico](detalle-tecnico-v1.md) y [contratos](../arquitectura/contratos-v1.md) precisan constraints y operaciones. Véanse [modelo ER](modelo-entidad-relacion.md) y [seguridad e integridad](seguridad-integridad.md).
 
 ## Convenciones
 
@@ -217,4 +217,4 @@ Las revisiones son inmutables. El valor previo es el de la revisión N−1; el o
 
 Se derivan: proyecto abierto/cerrado, etapa de instancias, estado de preparación de entrega, última medición, última revisión, cumplimiento y resúmenes por etapa. No se persisten puntajes de salud ni versiones históricas del reporte.
 
-Diseño v1 cerrado por ADR-002: capturas/etapas de métricas, criterios QA, límite PDF, longitudes y precisión definidos. PENDIENTE de producto: algoritmo y clasificación de salud. DDL, funciones/políticas ejecutables y pruebas pertenecen a implementación posterior; no autorizan cambiar los acuerdos.
+Diseño v1 cerrado por ADR-002: capturas/etapas de métricas, criterios QA, límite PDF, longitudes y precisión definidos. PENDIENTE de producto: algoritmo y clasificación de salud. DDL, funciones/políticas y pruebas locales están en `supabase/` y `tests/database/`; ver resultados y alcance pendiente en la [guía](guia-supabase.md). Esta implementación no cambia los acuerdos.

@@ -40,19 +40,25 @@ Es un proyecto académico orientado principalmente a navegadores de escritorio (
 
 Arquitectura: **monolito modular en un solo repositorio**. La lista de tecnologías está aprobada; versiones concretas y configuración final se fijarán durante la inicialización.
 
-## Instalación y ejecución
+## Entorno de base de datos local
 
-**Estado actual:** repositorio en preparación. Todavía no se ha validado un proyecto ejecutable; por eso no se publican comandos de arranque ni variables de entorno supuestamente funcionales.
+Requisitos: Node.js 24 y Docker funcionando. Herramientas con versiones fijadas en package-lock.json; sin instalaciones globales.
 
-Una vez realizado el bootstrap, este apartado se completará con los pasos verificados para:
+```sh
+npm ci
+npm run db:start
+npm run db:seed
+npm run db:types
+npm run db:lint
+npm run db:test
+npm run typecheck
+```
 
-1. Instalar los requisitos previos y dependencias.
-2. Configurar el entorno desde `.env.example` y las credenciales propias de desarrollo.
-3. Preparar el esquema de PostgreSQL con migraciones y datos iniciales.
-4. Ejecutar QAlly localmente.
-5. Ejecutar lint, pruebas y compilación.
+Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. La aplicación Next.js todavía no está creada.
 
-No se deben incluir claves privadas ni credenciales reales en el repositorio.
+Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
+
+[Guía de Supabase](docs/datos/guia-supabase.md): conceptos, datos iniciales, seguridad, scripts, pruebas y conexión futura a Cloud. No versionar credenciales reales ni ejecutar seeds/reset de desarrollo contra un proyecto remoto.
 
 ## Documentación
 

@@ -1,6 +1,6 @@
 # Decisiones pendientes — corte 2026-10-18
 
-Stack, monolito modular y diseño v1 aprobados por [ADR-001](ADR-001-diseno-tecnico-v1.md) y [ADR-002](ADR-002-cierre-diseno-v1.md). La autorización actual comprende documentación; no ejecución de código, migraciones ni cambios externos.
+Stack, monolito modular y diseño v1 aprobados por [ADR-001](ADR-001-diseno-tecnico-v1.md) y [ADR-002](ADR-002-cierre-diseno-v1.md). ADR-001/002 aprobaron documentación. El usuario autorizó posteriormente ejecutar el [bootstrap local](../datos/plan-bootstrap-supabase.md); la conexión a Cloud se pospone expresamente hasta que disponga de proyecto. No se autoriza push ni despliegue.
 
 ## Pendiente de diseño del producto
 
@@ -24,9 +24,9 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 
 ## Trabajo posterior de implementación y validación
 
-- SQL ejecutable, funciones/políticas, script de limpieza, aplicación de contratos TypeScript y pruebas. Se siguen los acuerdos, sin reabrir reglas por suposición.
-- Versiones exactas Node/dependencias, configuración de sesión SSR, cuentas/planes/regiones, variables, CI y estructura física. Preparar plan de bootstrap antes de instalar.
-- Crear dataset y ejecutar pruebas de RLS, concurrencia, archivos, rendimiento y Chrome/Firefox. Registrar equipo, entorno, versiones, conexión y resultados; no afirmar RNF superados solo por diseño.
+- Adaptadores y contratos de aplicación Next.js. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD ya implementados; consultar resultados del bootstrap.
+- Sesión SSR, cuentas/planes/regiones remotos y estructura de la aplicación. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
+- Pruebas de rendimiento extremo a extremo y Chrome/Firefox cuando exista la aplicación. RLS, concurrencia y archivos tienen pruebas locales; dataset y resultados en el plan de bootstrap. No afirmar todos los RNF superados.
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
 
 Las propuestas se conservan como antecedentes históricos con enlaces a sus reemplazos; no son decisiones todavía pendientes. Para futuros cambios, registrar nueva aprobación y actualizar fuente canónica y trazabilidad CU–RF–RNF.

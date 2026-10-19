@@ -1,0 +1,33 @@
+{
+  "name": "qally",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "db:start": "node scripts/db.mjs start",
+    "db:stop": "node scripts/db.mjs stop",
+    "db:status": "node scripts/db.mjs status",
+    "db:env": "node scripts/db.mjs env",
+    "db:reset": "node scripts/db.mjs reset",
+    "db:types": "node scripts/db.mjs types",
+    "db:seed": "node scripts/seed-dev.mjs",
+    "db:seed:large": "node scripts/seed-dev.mjs --large",
+    "db:cleanup": "node scripts/cleanup-files.mjs",
+    "db:test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "db:lint": "node scripts/db.mjs lint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "supabase": "2.121.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  },
+  "packageManager": "npm@12.0.2"
+}

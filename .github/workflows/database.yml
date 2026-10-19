@@ -1,0 +1,29 @@
+name: Base de datos
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  supabase-local:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run db:start
+      - run: npm run db:seed
+      - run: npm run db:lint
+      - run: npm run db:test
+      - run: npm run db:types
+      - run: npm run typecheck
+      - name: Comprobar tipos versionados
+        run: git diff --exit-code -- src/lib/supabase/database.types.ts
+      - name: Detener entorno local
+        if: always()
+        run: npm run db:stop

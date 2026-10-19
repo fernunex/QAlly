@@ -1,6 +1,6 @@
 # Stack y estilo arquitectónico aprobados — 2026-10-18
 
-**Estado: APROBADO por el PM tras revisar la propuesta técnica.** Esta es la fuente canónica del stack. No implica que exista aún una implementación funcional ni que estén aprobadas versiones o configuraciones específicas.
+**Estado: APROBADO por el PM tras revisar la propuesta técnica.** Esta es la fuente canónica del stack. El bootstrap de datos autorizado posteriormente se registra al final; no implica que la aplicación Next.js esté implementada.
 
 | Responsabilidad | Selección aprobada | Razón aplicada a QAlly |
 |---|---|---|
@@ -36,10 +36,16 @@
 
 El diseño inicial C4, ER, diccionario y controles está documentado en [diseño arquitectural](diseno-arquitectural.md) tras [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md), sin cambiar este stack. Los puntos siguientes se refieren al detalle o implementación aún pendiente.
 
-- Versiones exactas de Node.js, Next.js y dependencias; comando de arranque hasta verificar el repositorio.
-- Migraciones/semillas ejecutables, funciones transaccionales y políticas RLS SQL. ER, límites, tipos, precisión e interfaces ya están aprobados por ADR-002; falta realizarlos y probarlos.
-- Configuración final del ciclo de sesión de Next.js con Supabase Auth; implementación de políticas Storage y protocolo de archivos aprobado (PDF 3 MiB, enlaces HTTP/HTTPS, reserva/limpieza), pendiente de pruebas.
-- Variables de entorno, cuentas/planes y configuración de despliegue; definición precisa de checks de CI y estrategia de pruebas.
+- Versiones de Next.js y dependencias de interfaz. Las herramientas de datos y sus comandos ya están fijados y comprobados localmente.
+- Promoción futura a Cloud de las migraciones, catálogos, funciones y políticas RLS ya implementados y probados localmente conforme a ADR-002.
+- Ciclo de sesión de Next.js con Supabase Auth y endpoints de evidencias. Auth, políticas Storage y protocolo local de reserva/confirmación/limpieza ya cuentan con pruebas de integración; falta la aplicación web.
+- Cuentas/planes y despliegue remoto. Variables locales y workflow de BD preparados; CI remoto aún no ejecutado.
 - Implementación de [contratos v1](contratos-v1.md) aprobados y estructura concreta de `src/`; responsabilidades en C3 y archivos/credenciales en seguridad e integridad.
 
 **No confundir:** stack/diseño aprobados ≠ código ya implementado; catálogos v1 aprobados por usuario ≠ ratificación académica independiente. Registrar decisiones técnicas posteriores en `docs/decisiones/registro.md`.
+
+## Versiones del bootstrap de datos — 2026-10-18
+
+Se usa Node.js 24 (comprobado 24.18.1), npm 12.0.2, Supabase CLI 2.121.0, Supabase JS 2.118.0, TypeScript 7.0.2, Vitest 5.0.5 y @types/node 24.19.2. Dependencias exactas y lockfile versionados; Docker local disponible 29.8.2. PostgreSQL local configurado en versión mayor 17. Las versiones de Next.js/UI todavía no se han elegido ni instalado.
+
+El usuario autorizó este bootstrap después de aprobar el plan. [Guía y estado de implementación](../datos/guia-supabase.md). La compatibilidad con una futura base Cloud se verificará antes de enlazarla.

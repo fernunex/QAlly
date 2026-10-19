@@ -6,6 +6,7 @@ export const mensajes = {
   CONFLICTO:
     "El registro cambió o esta solicitud tiene otro contenido. Recarga antes de volver a intentarlo.",
   PROYECTO_CERRADO: "El proyecto está cerrado y solo permite consultas.",
+  TAMANO_EXCEDIDO: "El archivo supera el límite de 3 MiB.",
   FALLO_PERSISTENCIA: "No pudimos completar la operación. Inténtalo de nuevo.",
 } as const;
 export type CodigoError = keyof typeof mensajes;

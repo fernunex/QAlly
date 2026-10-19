@@ -70,3 +70,18 @@ Se conservan RF, RNF y reglas aprobadas. [Realización, ejecución y límites](.
 | RNF-07 (parte CU-01) | UI reutilizada con datos reales. | Escenarios CU-01 aprobados en Chrome Stable/Firefox; no cubre todavía los otros cinco CU. |
 
 RNF-04/05: pendientes mediciones de aceptación en entorno desplegado; las duraciones de las suites locales no sustituyen sus umbrales. CU-02 a CU-06 y el algoritmo de salud mantienen el estado indicado en sus fuentes.
+
+## CU-04 implementado — 2026-10-19
+
+Se conservan RF, RNF y reglas aprobadas. [Realización, ejecución y límites](../modulos/cu04-implementacion.md).
+
+| Subflujo / requisito | Implementación | Evidencia automatizada |
+|---|---|---|
+| Pasos 1–4; RF-20; RF-33; RNF-01/02/03 | Mis actividades con sesión del usuario y RLS: solo actividades asignadas, observaciones de QA e intentos. | E2E lista sin actividades ajenas; acceso de otro miembro y sin sesión rechazados. |
+| SF-01; RF-21; RNF-08/09 | `iniciar_actividad` con versión esperada y preparación del intento 1. | E2E iniciar y registrar; proyecto cerrado sin acciones. |
+| Pasos 6–9; RF-22–24; FE-02/03/04 | Resultado, enlace y PDF validados en servidor; PDF por Route Handler con origen, 3 MiB, formato básico, reserva/confirmación y compensación; envío atómico. | Unitarias de enlace/PDF/entradas; E2E faltantes, inválidos, adjuntos, envío y persistencia; integración BD existente. |
+| SF-02; RF-25; RNF-08/09 | `preparar_entrega` copia resultado y evidencias del intento devuelto; el intento enviado queda inmutable. | E2E devolución, corrección en intento 2 e intento 1 sin cambios. |
+| Lectura privada; RNF-03 | GET de PDF autorizado en cada solicitud, adjunto, `no-store` y `nosniff`. | E2E cabeceras y contenido descargado. |
+| RNF-07 (parte CU-04) | UI existente con datos reales. | Escenarios CU-04 aprobados en Chrome for Testing y Firefox. |
+
+RNF-04/05: pendientes mediciones en entorno desplegado. La asignación y revisión por QA siguen en CU-03.

@@ -16,7 +16,7 @@ npm run db:test
 npm run typecheck
 ```
 
-`db:start` prepara una red Docker con puertos publicados solo en 127.0.0.1, inicia PostgreSQL/Auth/Storage/Studio y genera `.env.local` sin mostrar claves. El registro público queda deshabilitado en `[auth].enable_signup`; `[auth.email].enable_signup` mantiene activo el proveedor para permitir iniciar sesión a las cuentas existentes. No inicia Next.js: la UI se inicia aparte con `npm run dev -- --hostname 127.0.0.1` y conserva datos de demostración hasta conectar los casos de uso. Las herramientas son locales y no requieren login ni cuenta Supabase Cloud.
+`db:start` prepara una red Docker con puertos publicados solo en 127.0.0.1, inicia PostgreSQL/Auth/Storage/Studio y genera `.env.local` sin mostrar claves. El registro público queda deshabilitado en `[auth].enable_signup`; `[auth.email].enable_signup` mantiene activo el proveedor para permitir iniciar sesión a las cuentas existentes. No inicia Next.js: la UI se inicia aparte con `npm run dev -- --hostname 127.0.0.1` y ya conecta CU-01 con estas cuentas y datos locales. Las herramientas son locales y no requieren login ni cuenta Supabase Cloud.
 
 Abrir **http://127.0.0.1:54323** para Studio. Allí se pueden inspeccionar tablas, usuarios de Auth y objetos Storage. API local: http://127.0.0.1:54321. No editar allí el esquema como fuente de verdad: los cambios se hacen en migraciones versionadas.
 
@@ -98,7 +98,13 @@ Todavía no se ha creado ni enlazado un proyecto remoto. Cuando el equipo lo sol
 5. Configurar los secretos del servidor y la clave pública del cliente en el entorno correspondiente. No copiar la contraseña ni las cuentas de desarrollo local a producción.
 6. Repetir pruebas de acceso e integridad en un proyecto de pruebas autorizado antes de usar datos reales. Invitar al equipo a la organización/proyecto mediante el panel, sin compartir claves privilegiadas.
 
-Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js ya está integrada; conectar sus sesiones SSR/Route Handlers, reportes y pruebas de aceptación Chrome/Firefox sigue siendo trabajo posterior al bootstrap de datos.
+Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js ya está integrada y CU-01 utiliza sesiones reales y operaciones de servidor con RLS. [Estado y pruebas de CU-01](../modulos/cu01-implementacion.md). Reportes y demás casos siguen pendientes.
+
+## Usar las cuentas desde la aplicación
+
+Tras iniciar Supabase y ejecutar el seed, abrir Next.js con `npm run dev -- --hostname 127.0.0.1`. Entrar con una cuenta de la tabla y la contraseña `QALLY_DEV_PASSWORD` del archivo local. No hay registro público ni acceso con cualquier contraseña. QA ve solo sus proyectos; Miembro consulta los suyos. Los cambios de CU-01 se guardan mediante la sesión del usuario, sin usar la credencial de servicio.
+
+Las pruebas E2E añaden cuentas `e2e-miembro-*`, proyectos de paginación y proyectos aislados de cada ejecución. Son fixtures de prueba locales; el seed ordinario sigue creando sus seis cuentas y tres proyectos. No ejecutar reset para probar CU-01 salvo que se quiera borrar expresamente la base local.
 
 ## Estado comprobado
 

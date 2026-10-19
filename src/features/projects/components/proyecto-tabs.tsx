@@ -5,20 +5,32 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /** Navegación por secciones del proyecto. Desplazable en móvil, sin scroll de página. */
-export function ProyectoTabs({ proyectoId, mostrarReportes }: { proyectoId: string; mostrarReportes: boolean }) {
+export function ProyectoTabs({
+  proyectoId,
+  mostrarReportes,
+}: {
+  proyectoId: string;
+  mostrarReportes: boolean;
+}) {
   const pathname = usePathname();
   const base = `/proyectos/${proyectoId}`;
   const tabs = [
-    { href: base, label: "Salud" },
+    { href: base, label: "Información general" },
     { href: `${base}/metricas`, label: "Métricas" },
     { href: `${base}/actividades`, label: "Actividades SQA" },
-    ...(mostrarReportes ? [{ href: `${base}/reportes`, label: "Reportes" }] : []),
+    ...(mostrarReportes
+      ? [{ href: `${base}/reportes`, label: "Reportes" }]
+      : []),
   ];
 
   return (
-    <nav aria-label="Secciones del proyecto" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
+    <nav
+      aria-label="Secciones del proyecto"
+      className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]"
+    >
       {tabs.map((tab) => {
-        const activo = tab.href === base ? pathname === base : pathname.startsWith(tab.href);
+        const activo =
+          tab.href === base ? pathname === base : pathname.startsWith(tab.href);
         return (
           <Link
             key={tab.href}

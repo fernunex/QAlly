@@ -17,5 +17,25 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run unit:test
       - run: npm run typecheck
       - run: npm run build
+
+  cu01-local:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run db:start
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm run e2e:test
+      - name: Detener Supabase local
+        if: always()
+        run: npm run db:stop

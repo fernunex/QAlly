@@ -2,6 +2,8 @@
 
 **Estado: APROBADO, 2026-10-18**, por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md). Especificación documental sin código ni SQL ejecutable. Usa el [detalle de datos](../datos/detalle-tecnico-v1.md). Salud permanece Sin evaluar.
 
+**Implementación posterior:** CU-01 y su precondición de sesión ya se conectan a las funciones de servidor y RPC existentes, conforme a estos contratos. [Guía y validación](../modulos/cu01-implementacion.md). Esto no implica que las operaciones de CU-02 a CU-06 estén implementadas en la aplicación.
+
 ## 1. Convenciones del contrato
 
 Las funciones internas reciben `(contextoServidor, entrada)`. El contexto se crea desde identidad Auth verificada; no se serializa ni se acepta como argumento procedente del navegador. Las RPC ordinarias vuelven a autorizar con `auth.uid()`; `contextoServidor` no es un parámetro SQL para suplantar identidad.

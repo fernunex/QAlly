@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { EllipsisIcon, FolderOpenIcon, LockIcon, PencilIcon } from "lucide-react";
+import {
+  EllipsisIcon,
+  FolderOpenIcon,
+  LockIcon,
+  PencilIcon,
+} from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { cerrarProyectoAction } from "../actions";
+import { ErrorAccion } from "./error-accion";
+import type { ErrorPublico } from "@/lib/resultados";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +36,14 @@ import type { Proyecto } from "@/lib/domain";
 
 type ProyectoAccionable = Pick<
   Proyecto,
-  "id" | "nombre" | "descripcion" | "periodoAcademico" | "fechaInicio" | "fechaFinPrevista" | "cerradoEn"
+  | "id"
+  | "version"
+  | "nombre"
+  | "descripcion"
+  | "periodoAcademico"
+  | "fechaInicio"
+  | "fechaFinPrevista"
+  | "cerradoEn"
 >;
 
 /**
@@ -41,7 +57,36 @@ export function ProyectoAcciones({
   proyecto: ProyectoAccionable;
   mostrarAbrir?: boolean;
 }) {
+  const router = useRouter();
+  const [pendiente, setPendiente] = useState(false);
+  const [error, setError] = useState<ErrorPublico | null>(null);
   const [editar, setEditar] = useState(false);
+  async function confirmarCierre() {
+    if (pendiente) return;
+    setPendiente(true);
+    setError(null);
+    try {
+      const r = await cerrarProyectoAction({
+        proyectoId: proyecto.id,
+        versionEsperada: proyecto.version,
+      });
+      if (!r.ok) {
+        setError(r.error);
+        return;
+      }
+      toast.success(`Proyecto «${proyecto.nombre}» cerrado`);
+      setCerrar(false);
+      router.refresh();
+    } catch {
+      setError({
+        codigo: "FALLO_PERSISTENCIA",
+        mensaje:
+          "No recibimos confirmación. Recarga para comprobar el estado del proyecto.",
+      });
+    } finally {
+      setPendiente(false);
+    }
+  }
   const [cerrar, setCerrar] = useState(false);
   const cerrado = proyecto.cerradoEn !== null;
 
@@ -51,7 +96,11 @@ export function ProyectoAcciones({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label={`Acciones de ${proyecto.nombre}`}>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={`Acciones de ${proyecto.nombre}`}
+          >
             <EllipsisIcon />
           </Button>
         </DropdownMenuTrigger>
@@ -71,7 +120,13 @@ export function ProyectoAcciones({
                 Editar información general
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onSelect={() => setCerrar(true)}>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => {
+                  setError(null);
+                  setCerrar(true);
+                }}
+              >
                 <LockIcon />
                 Cerrar proyecto…
               </DropdownMenuItem>
@@ -82,30 +137,47 @@ export function ProyectoAcciones({
 
       {!cerrado ? (
         <>
-          <EditarProyectoDialog proyecto={proyecto} open={editar} onOpenChange={setEditar} />
+          <EditarProyectoDialog
+            key={`${proyecto.id}:${proyecto.version}:${editar}`}
+            proyecto={proyecto}
+            open={editar}
+            onOpenChange={setEditar}
+          />
           <AlertDialog open={cerrar} onOpenChange={setCerrar}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>¿Cerrar el proyecto «{proyecto.nombre}»?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  ¿Cerrar el proyecto «{proyecto.nombre}»?
+                </AlertDialogTitle>
                 <AlertDialogDescription asChild>
                   <div className="space-y-3">
                     <p>
-                      El proyecto quedará en <strong className="text-foreground">solo lectura</strong>: no se podrá
-                      modificar nada (actividades, métricas, mediciones ni evidencias). Seguirás pudiendo consultar su
-                      información, evidencias, salud y reportes, y exportar el reporte.
+                      El proyecto quedará en{" "}
+                      <strong className="text-foreground">solo lectura</strong>:
+                      no se podrá modificar nada (actividades, métricas,
+                      mediciones ni evidencias). Seguirás pudiendo consultar su
+                      información, evidencias, salud y reportes, y exportar el
+                      reporte.
                     </p>
                     <p>
-                      <strong className="text-foreground">Esta acción no se puede deshacer.</strong> Los proyectos
-                      cerrados no se reabren.
+                      <strong className="text-foreground">
+                        Esta acción no se puede deshacer.
+                      </strong>{" "}
+                      Los proyectos cerrados no se reabren.
                     </p>
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
+              {error ? <ErrorAccion error={error} /> : null}
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-white hover:bg-destructive/90"
-                  onClick={() => toast.success(`Proyecto «${proyecto.nombre}» cerrado`)}
+                  disabled={pendiente}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    void confirmarCierre();
+                  }}
                 >
                   Cerrar proyecto
                 </AlertDialogAction>

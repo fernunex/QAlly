@@ -1,50 +1,46 @@
 import { PageContainer } from "@/components/shell/page-header";
-import { AvisoSoloLectura, EstadoNoDisponible } from "@/components/states/ui-states";
-import { TableroActividades } from "@/features/activities/components/tablero-actividades";
-import type { Nombres } from "@/features/activities/utils";
-import { ETAPAS } from "@/lib/catalogs";
-import { listarActividades, nombreUsuario } from "@/lib/mock/queries";
-import { obtenerContextoProyecto } from "@/lib/project-context";
-
-export default async function ActividadesPage({ params, searchParams }: PageProps<"/proyectos/[proyectoId]/actividades">) {
+import {
+  AvisoSoloLectura,
+  EstadoNoDisponible,
+  NotaPendiente,
+} from "@/components/states/ui-states";
+import { ActividadesConfiguradas } from "@/features/projects/components/consulta-proyecto";
+import {
+  listarActividadesIniciales,
+  consultarProyecto,
+} from "@/features/projects/server/queries";
+import { obtenerUsuarioActual } from "@/lib/session";
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ proyectoId: string }>;
+  searchParams: Promise<{ cursor?: string }>;
+}) {
+  await obtenerUsuarioActual();
   const { proyectoId } = await params;
-  const { etapa } = await searchParams;
-  const etapaInicial = ETAPAS.some((e) => e.codigo === etapa) ? (etapa as string) : "todas";
-  const { usuario, proyecto, cerrado, puedeGestionar } = await obtenerContextoProyecto(proyectoId);
-
-  if (!proyecto) {
+  const proyecto = await consultarProyecto(proyectoId);
+  if (!proyecto)
     return (
       <PageContainer>
         <EstadoNoDisponible />
       </PageContainer>
     );
-  }
-
-  const actividades = listarActividades(proyecto.id);
-  const participantes = proyecto.participantes
-    .filter((p) => p.rol === "Miembro")
-    .map((p) => ({ usuarioId: p.usuarioId, nombre: p.nombre }));
-
-  const nombres: Nombres = { [usuario.id]: usuario.nombre };
-  for (const a of actividades) {
-    for (const e of a.entregas) {
-      nombres[e.autorId] = nombreUsuario(e.autorId);
-      if (e.revision) nombres[e.revision.qaId] = nombreUsuario(e.revision.qaId);
-    }
-  }
-
+  const { cursor } = await searchParams;
+  const pagina = await listarActividadesIniciales(proyectoId, { cursor });
   return (
     <PageContainer className="space-y-5">
-      {cerrado ? <AvisoSoloLectura /> : null}
-      <TableroActividades
-        actividades={actividades}
-        participantes={participantes}
-        nombres={nombres}
-        puedeGestionar={puedeGestionar}
-        usuarioId={usuario.id}
-        usuarioNombre={usuario.nombre}
-        etapaInicial={etapaInicial}
+      {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
+      <ActividadesConfiguradas
+        pagina={pagina}
+        proyecto={proyecto}
+        base={`/proyectos/${proyectoId}/actividades`}
+        cursor={cursor}
       />
+      <NotaPendiente>
+        La gestión y entrega de actividades estará disponible en una próxima
+        versión.
+      </NotaPendiente>
     </PageContainer>
   );
 }

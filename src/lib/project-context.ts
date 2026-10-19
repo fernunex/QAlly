@@ -1,6 +1,6 @@
 import "server-only";
 import type { Proyecto, Usuario } from "@/lib/domain";
-import { consultarProyecto } from "@/lib/mock/queries";
+import { consultarProyecto } from "@/features/projects/server/queries";
 import { obtenerUsuarioActual } from "@/lib/session";
 
 export type ContextoProyecto = {
@@ -13,10 +13,18 @@ export type ContextoProyecto = {
   puedeGestionar: boolean;
 };
 
-export async function obtenerContextoProyecto(proyectoId: string): Promise<ContextoProyecto> {
+export async function obtenerContextoProyecto(
+  proyectoId: string,
+): Promise<ContextoProyecto> {
   const usuario = await obtenerUsuarioActual();
-  const proyecto = consultarProyecto(proyectoId, usuario.id);
+  const proyecto = await consultarProyecto(proyectoId);
   const esQA = usuario.rol === "QA";
   const cerrado = proyecto?.cerradoEn != null;
-  return { usuario, proyecto, esQA, cerrado, puedeGestionar: esQA && !!proyecto && !cerrado };
+  return {
+    usuario,
+    proyecto,
+    esQA,
+    cerrado,
+    puedeGestionar: esQA && !!proyecto && !cerrado,
+  };
 }

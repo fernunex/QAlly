@@ -1,28 +1,36 @@
 import { PageContainer } from "@/components/shell/page-header";
-import { EstadoNoDisponible } from "@/components/states/ui-states";
-import { MetricasVista } from "@/features/metrics/components/metricas-vista";
-import { obtenerContextoProyecto } from "@/lib/project-context";
-import { listarMetricas, nombreUsuario } from "@/lib/mock/queries";
-
-/** CU-02 · Métricas del proyecto. Lectura para ambos roles; escritura solo QA en proyecto abierto. */
-export default async function MetricasPage({ params }: PageProps<"/proyectos/[proyectoId]/metricas">) {
+import {
+  AvisoSoloLectura,
+  EstadoNoDisponible,
+  NotaPendiente,
+} from "@/components/states/ui-states";
+import { MetricasConfiguradas } from "@/features/projects/components/consulta-proyecto";
+import {
+  listarMetricasIniciales,
+  consultarProyecto,
+} from "@/features/projects/server/queries";
+import { obtenerUsuarioActual } from "@/lib/session";
+export default async function Page({
+  params,
+}: PageProps<"/proyectos/[proyectoId]/metricas">) {
+  await obtenerUsuarioActual();
   const { proyectoId } = await params;
-  const { proyecto, esQA, cerrado } = await obtenerContextoProyecto(proyectoId);
-  if (!proyecto) {
+  const proyecto = await consultarProyecto(proyectoId);
+  if (!proyecto)
     return (
       <PageContainer>
         <EstadoNoDisponible />
       </PageContainer>
     );
-  }
-
-  const metricas = listarMetricas(proyecto.id);
-  const ids = new Set(metricas.flatMap((m) => m.mediciones.flatMap((md) => md.revisiones.map((r) => r.autorId))));
-  const autores = Object.fromEntries([...ids].map((id) => [id, nombreUsuario(id)]));
-
+  const metricas = await listarMetricasIniciales(proyectoId);
   return (
-    <PageContainer>
-      <MetricasVista metricas={metricas} autores={autores} esQA={esQA} cerrado={cerrado} />
+    <PageContainer className="space-y-5">
+      {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
+      <MetricasConfiguradas metricas={metricas} />
+      <NotaPendiente>
+        El seguimiento de mediciones y objetivos estará disponible en una
+        próxima versión.
+      </NotaPendiente>
     </PageContainer>
   );
 }

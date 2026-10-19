@@ -1,6 +1,17 @@
 # Estructura inicial sugerida para QAlly
 
-**Estado: PROPUESTA TÉCNICA**, no estructura física final aprobada ni creada. Compatible con monolito modular, Next.js y Supabase del stack aprobado.
+**Estado: PROPUESTA TÉCNICA de referencia**, compatible con monolito modular, Next.js y Supabase del stack aprobado. La integración UI/BD y CU-01 ya crearon una estructura física similar; el árbol siguiente conserva la propuesta original y no es un inventario exacto. No obliga a crear carpetas o capas adicionales.
+
+## Realización actual — 2026-10-19
+
+- `src/app/`, `src/components/` y `src/features/` contienen rutas y componentes de los módulos. Solo CU-01 y sesión están conectados al backend real; el resto conserva componentes para reutilización posterior.
+- `src/features/projects/actions.ts`, `validation.ts` y `server/queries.ts` concentran mutaciones, validación y lecturas de proyectos; autorización compartida en `src/lib/session.ts` y `project-context.ts`. No se crearon carpetas `permissions/` o `validations/` vacías.
+- `src/lib/supabase/server.ts` y `src/proxy.ts` gestionan el cliente SSR y la sesión; `database.types.ts` contiene los tipos generados. `src/lib/mock/` conserva datos del prototipo, fuera del flujo real de CU-01.
+- `supabase/migrations/`, `supabase/seed.sql` y `scripts/` implementan BD, catálogos, cuentas/datos ficticios y operación local. `tests/database/`, `tests/unit/` y `tests/e2e/` contienen verificaciones reales.
+
+Consultar [guía de CU-01](../modulos/cu01-implementacion.md) y [guía Supabase](../datos/guia-supabase.md).
+
+## Árbol de referencia original
 
 ```text
 qally/

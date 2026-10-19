@@ -132,7 +132,7 @@ Reporte y PDF usan la misma captura consistente del resumen, cifrada con AES-256
 
 ## Escenarios de aceptación y estado de ejecución
 
-La parte de datos cuenta con pruebas de integración locales: ver [resultados del bootstrap](plan-bootstrap-supabase.md#resultado-de-ejecución-local--2026-10-18). Los escenarios de páginas/acciones Next.js, reportes, navegadores y rendimiento desplegado continúan pendientes. Esta tabla conserva los criterios completos; no certifica todos los RNF.
+La parte de datos cuenta con pruebas de integración locales: ver [resultados del bootstrap](plan-bootstrap-supabase.md#resultado-de-ejecución-local--2026-10-18). CU-01 ya valida páginas/acciones Next.js, autorización, idempotencia y concurrencia en Chrome estable y Firefox: [resultados](../modulos/cu01-implementacion.md). Los demás CU, reportes y rendimiento desplegado continúan pendientes. Esta tabla conserva los criterios completos; no certifica todos los RNF.
 
 | RNF | Escenarios mínimos |
 |---|---|
@@ -149,6 +149,6 @@ La parte de datos cuenta con pruebas de integración locales: ver [resultados de
 
 Rendimiento requiere entorno desplegado, dataset representativo, diez ejecuciones por operación/vista y registro de equipo, navegador y conexión. El presente diseño permite preparar las pruebas, pero no demuestra cumplimiento sin implementación y mediciones.
 
-Casos adicionales de ADR-002: alta reintentada con misma clave y contenido idéntico/diferente; llamada directa a RPC técnicas y subida a Storage como authenticated rechazadas; limpieza de PDF compartido entre intentos; token de reporte alterado, expirado o de otro usuario rechazado; vista/PDF invariables ante cambios concurrentes. Dataset representativo especificado en el [detalle técnico](detalle-tecnico-v1.md). Esto no sustituye las pruebas de ejecución pendientes.
+Casos adicionales de ADR-002: alta reintentada con misma clave y contenido idéntico/diferente; llamada directa a RPC técnicas y subida a Storage como authenticated rechazadas; limpieza de PDF compartido entre intentos; token de reporte alterado, expirado o de otro usuario rechazado; vista/PDF invariables ante cambios concurrentes. Dataset representativo especificado en el [detalle técnico](detalle-tecnico-v1.md). Las pruebas de BD y de CU-01 cubren parte de estos criterios; no sustituyen la validación pendiente de los demás flujos de aplicación y del rendimiento desplegado.
 
 Referencias oficiales: [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [funciones](https://supabase.com/docs/guides/database/functions), [Storage](https://supabase.com/docs/guides/storage/security/access-control) y [bloqueos PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html).

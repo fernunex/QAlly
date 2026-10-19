@@ -56,4 +56,8 @@ Integración autorizada de `origin/feat/ui-base` y `base/supabase-bootstrap` sob
 
 TypeScript se unifica en **5.9.3**, versión existente en la UI, porque el analizador de ESLint de esa rama admite `>=4.8.4 <6.1.0`; reemplaza la versión 7.0.2 del bootstrap. `tsconfig.json` conserva las opciones de Next.js/JSX, alias `@/` y los tipos de BD, con target ES2024. No se cambia el esquema ni los contratos del producto.
 
-La UI conserva temporalmente datos y sesión de demostración; tener ambas bases en una rama no equivale a conectar la aplicación a Supabase. El backend se realizará por caso de uso. [Flujo y validación](../equipo/integracion-ui-bd.md).
+En el momento de la integración, la UI conservaba datos y sesión de demostración; reunir ambas bases no equivalía a conectar la aplicación a Supabase. CU-01 sustituyó posteriormente esa sesión y conectó sus operaciones; los demás casos se desarrollarán progresivamente. [Flujo y validación](../equipo/integracion-ui-bd.md).
+
+## Implementación local de CU-01 — 2026-10-19
+
+Se incorpora el adaptador oficial `@supabase/ssr` 0.12.7 para sesiones de Auth con Next.js, Zod 4.6.7 para las entradas aprobadas y Playwright 1.64.1 para los flujos de navegador. Mismo monolito y mismos servicios Supabase; no se añade backend separado ni se modifica el esquema. Sesión SSR y proxy Next.js 16 implementados localmente, sin clientes privilegiados en las operaciones de CU-01. [Validación y límites](../modulos/cu01-implementacion.md).

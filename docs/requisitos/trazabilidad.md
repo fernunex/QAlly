@@ -54,4 +54,19 @@ El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementa la parte de
 | CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Algoritmo aprobado de salud y dashboard. |
 | CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Captura cifrada, exportación PDF y correspondencia visual. |
 
-Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. No cambia ningún RF ni se da por implementada la aplicación.
+Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. Este resultado del bootstrap no cambia ningún RF ni acredita por sí mismo los flujos de la aplicación; el avance posterior de CU-01 se detalla a continuación.
+
+## CU-01 implementado — 2026-10-19
+
+Se conservan RF, RNF y reglas aprobadas. [Realización, ejecución y límites](../modulos/cu01-implementacion.md).
+
+| Subflujo / requisito | Implementación | Evidencia automatizada |
+|---|---|---|
+| Sesión y RF-33; RNF-01/02/03 | Auth SSR, perfil verificado, acciones autorizadas, sesión del usuario y RLS. | E2E sesión/logout/renovación, llamadas directas como Miembro/QA ajeno/sin sesión; integración BD existente. |
+| SF-01; RF-01–04; RNF-08/09 | Asistente existente, catálogos reales, miembros por búsqueda paginada y crear_proyecto atómico/idempotente. | E2E alta/configuración/etapas/persistencia, validaciones y recuperación tras pérdida de respuesta; unitarias y atomicidad en BD. |
+| SF-02; RF-05; RNF-03/08 | Listado autorizado y consulta con participantes/configuración; paginación con cursor validado. | E2E proyecto ajeno/inexistente/malformado y paginación; unitarias de cursor. |
+| SF-03; RF-06; RNF-02/08/09 | Editar campos generales con versión esperada, errores y revalidación. | E2E edición, dos pestañas y solicitudes directas rechazadas; unitarias de fechas/campos/versiones. |
+| SF-04; RF-07; RNF-02/08/09 | Confirmación de cierre, RPC y consulta conservada en solo lectura. | E2E cancelar/confirmar cierre, consulta como Miembro y rechazo de edición posterior; bloqueo concurrente en BD. |
+| RNF-07 (parte CU-01) | UI reutilizada con datos reales. | Escenarios CU-01 aprobados en Chrome Stable/Firefox; no cubre todavía los otros cinco CU. |
+
+RNF-04/05: pendientes mediciones de aceptación en entorno desplegado; las duraciones de las suites locales no sustituyen sus umbrales. CU-02 a CU-06 y el algoritmo de salud mantienen el estado indicado en sus fuentes.

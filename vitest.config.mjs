@@ -1,2 +1,11 @@
-import { defineConfig } from 'vitest/config';
-export default defineConfig({test:{include:['tests/database/**/*.test.mjs'],fileParallelism:false,testTimeout:60000,hookTimeout:180000}});
+import { defineConfig } from "vitest/config";
+import { fileURLToPath } from "node:url";
+export default defineConfig({
+  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  test: {
+    include: ["tests/database/**/*.test.mjs", "tests/unit/**/*.test.ts"],
+    fileParallelism: false,
+    testTimeout: 60000,
+    hookTimeout: 180000,
+  },
+});

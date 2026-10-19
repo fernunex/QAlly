@@ -11,7 +11,6 @@ import {
   MonitorIcon,
   MoonIcon,
   SunIcon,
-  UserRoundCogIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -43,22 +42,49 @@ import { Logo } from "@/components/shell/logo";
 import type { Rol } from "@/lib/domain";
 import { ROL_ETIQUETA } from "@/lib/domain";
 import { iniciales } from "@/lib/format";
-import { cambiarCuentaDemo, cerrarSesion } from "@/lib/session-actions";
+import { cerrarSesion } from "@/lib/session-actions";
 
-export type UsuarioSidebar = { id: string; nombre: string; correo: string; rol: Rol };
+export type UsuarioSidebar = {
+  id: string;
+  nombre: string;
+  correo: string;
+  rol: Rol;
+};
 
 const NAV = [
-  { href: "/proyectos", label: "Proyectos", icon: FolderIcon, roles: ["QA", "Miembro"] as Rol[] },
-  { href: "/mis-actividades", label: "Mis actividades", icon: ListChecksIcon, roles: ["Miembro"] as Rol[] },
+  {
+    href: "/proyectos",
+    label: "Proyectos",
+    icon: FolderIcon,
+    roles: ["QA", "Miembro"] as Rol[],
+  },
+  {
+    href: "/mis-actividades",
+    label: "Mis actividades",
+    icon: ListChecksIcon,
+    roles: ["Miembro"] as Rol[],
+  },
 ];
 
-function SidebarMarco({ children, footer }: { children: React.ReactNode; footer: React.ReactNode }) {
+function SidebarMarco({
+  children,
+  footer,
+}: {
+  children: React.ReactNode;
+  footer: React.ReactNode;
+}) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-14 justify-center px-3">
-        <Link href="/proyectos" className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Link
+          href="/proyectos"
+          className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           <Logo className="group-data-[collapsible=icon]:hidden" />
-          <Logo compacto className="hidden group-data-[collapsible=icon]:inline-flex" />
+          <Logo
+            compacto
+            className="hidden group-data-[collapsible=icon]:inline-flex"
+          />
         </Link>
       </SidebarHeader>
       <SidebarContent>
@@ -81,10 +107,16 @@ export function AppSidebar({ usuario }: { usuario: UsuarioSidebar }) {
   return (
     <SidebarMarco footer={<MenuUsuario usuario={usuario} />}>
       {NAV.filter((item) => item.roles.includes(usuario.rol)).map((item) => {
-        const activo = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const activo =
+          pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton asChild isActive={activo} tooltip={item.label} size="lg">
+            <SidebarMenuButton
+              asChild
+              isActive={activo}
+              tooltip={item.label}
+              size="lg"
+            >
               <Link href={item.href} onClick={() => setOpenMobile(false)}>
                 <item.icon />
                 <span>{item.label}</span>
@@ -110,22 +142,28 @@ export function AppSidebarCargando() {
 
 function MenuUsuario({ usuario }: { usuario: UsuarioSidebar }) {
   const { theme, setTheme } = useTheme();
-  const otraCuenta = usuario.rol === "QA" ? { id: "u-emi", label: "Miembro del equipo (Emi)" } : { id: "u-david", label: "QA (David S.)" };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent">
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent"
+            >
               <Avatar className="size-8 rounded-md">
                 <AvatarFallback className="rounded-md bg-primary/15 text-xs font-semibold text-primary">
                   {iniciales(usuario.nombre)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate text-sm font-semibold">{usuario.nombre}</span>
-                <span className="truncate text-xs text-muted-foreground">{ROL_ETIQUETA[usuario.rol]}</span>
+                <span className="truncate text-sm font-semibold">
+                  {usuario.nombre}
+                </span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {ROL_ETIQUETA[usuario.rol]}
+                </span>
               </div>
               <ChevronsUpDownIcon className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
@@ -136,8 +174,13 @@ function MenuUsuario({ usuario }: { usuario: UsuarioSidebar }) {
               <p className="text-xs text-muted-foreground">{usuario.correo}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs text-muted-foreground">Tema</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={theme ?? "system"} onValueChange={setTheme}>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              Tema
+            </DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              value={theme ?? "system"}
+              onValueChange={setTheme}
+            >
               <DropdownMenuRadioItem value="light">
                 <SunIcon /> Claro
               </DropdownMenuRadioItem>
@@ -150,11 +193,10 @@ function MenuUsuario({ usuario }: { usuario: UsuarioSidebar }) {
             </DropdownMenuRadioGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={() => cambiarCuentaDemo(otraCuenta.id)}>
-                <UserRoundCogIcon />
-                Ver como {otraCuenta.label}
-              </DropdownMenuItem>
-              <DropdownMenuItem variant="destructive" onSelect={() => cerrarSesion()}>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => cerrarSesion()}
+              >
                 <LogOutIcon />
                 Cerrar sesión
               </DropdownMenuItem>

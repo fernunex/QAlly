@@ -15,6 +15,12 @@ Es un proyecto académico orientado principalmente a navegadores de escritorio (
 
 > El algoritmo y las categorías definitivas de salud aún están pendientes de validación. El módulo y sus datos sí forman parte del alcance.
 
+## Estado de implementación local
+
+La base de datos, Auth, Storage privado, migraciones y seeds están preparados para desarrollo local. CU-01 está conectado y probado: inicio de sesión, alta, consulta, edición y cierre de proyectos. La UI de los demás casos se conserva para reutilizarla; su presencia no implica operaciones persistentes implementadas. Salud sigue Sin evaluar. No se ha configurado Cloud ni desplegado la aplicación.
+
+[Alcance y pruebas de CU-01](docs/modulos/cu01-implementacion.md).
+
 ## Roles
 
 | Rol | Funciones principales |
@@ -54,7 +60,7 @@ npm run db:test
 npm run typecheck
 ```
 
-Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. La UI Next.js está integrada y todavía utiliza datos y sesión de demostración; los casos de uso se conectarán progresivamente a Supabase.
+Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 ya utiliza Supabase local: autenticación, alta, consulta, edición y cierre de proyectos. Los demás casos se conectarán progresivamente.
 
 Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
 
@@ -66,9 +72,11 @@ Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos
 npm run dev -- --hostname 127.0.0.1
 ```
 
-Abrir http://127.0.0.1:3000. La UI de demostración permite entrar con `david@equipo.dev` (QA) o `emi@equipo.dev` (Miembro) y cualquier contraseña no vacía; no usa las cuentas reales del seed ni persiste los cambios en PostgreSQL. Al implementar cada caso de uso se reemplazarán su sesión/consultas simuladas por autenticación y operaciones reales del servidor.
+Abrir http://127.0.0.1:3000. Iniciar sesión con `qa1@qally.example.test` (QA) o `miembro1@qally.example.test` (Miembro). Usar la contraseña local generada en `.env.local` (`QALLY_DEV_PASSWORD`); no publicarla. Las cuentas demo anteriores y el selector «Ver como» ya no conceden acceso. Los proyectos de CU-01 se guardan en PostgreSQL y se conservan al recargar o volver a iniciar sesión.
 
 Validar la aplicación con `npm run lint`, `npm run typecheck` y `npm run build`; validar la base con los comandos anteriores. `typecheck` genera primero los tipos de rutas Next.js para funcionar desde una instalación limpia.
+
+Pruebas nuevas: `npm run unit:test` y `npm run e2e:test`. Antes de E2E instalar los navegadores con `npx playwright install chromium firefox`; la suite construye la aplicación y usa el puerto 3100, que debe estar libre. Usa exclusivamente Supabase local y añade fixtures de prueba. Para comprobar Chrome estable puede indicarse `QALLY_CHROME_PATH` con la ruta de su ejecutable. [Implementación y validación de CU-01](docs/modulos/cu01-implementacion.md).
 
 `dev` reúne la base de UI y BD; desarrollar funcionalidades en ramas creadas desde `dev`, revisar mediante PR hacia `dev` y promover versiones verificadas a `main`. [Flujo y registro de integración](docs/equipo/integracion-ui-bd.md).
 

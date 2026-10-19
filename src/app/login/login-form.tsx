@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { iniciarSesion, type EstadoLogin } from "@/lib/session-actions";
@@ -50,14 +50,15 @@ export function LoginForm() {
           </Alert>
         ) : null}
 
-        <Button type="submit" size="lg" className="h-10 w-full" disabled={pendiente}>
+        <Button
+          type="submit"
+          size="lg"
+          className="h-10 w-full"
+          disabled={pendiente}
+        >
           {pendiente ? <Spinner /> : null}
           Iniciar sesión
         </Button>
-        <FieldDescription className="text-center">
-          Demo: <span className="font-mono">david@equipo.dev</span> (QA) o{" "}
-          <span className="font-mono">emi@equipo.dev</span> (Miembro), cualquier contraseña.
-        </FieldDescription>
       </FieldGroup>
     </form>
   );

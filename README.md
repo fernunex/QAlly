@@ -60,7 +60,7 @@ npm run db:test
 npm run typecheck
 ```
 
-Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 ya utiliza Supabase local: autenticación, alta, consulta, edición y cierre de proyectos. Los demás casos se conectarán progresivamente.
+Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 ya utiliza Supabase local: autenticación, alta, consulta, edición y cierre de proyectos. CU-02 gestiona métricas, mediciones, correcciones y objetivos. Los demás casos se conectarán progresivamente.
 
 Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
 

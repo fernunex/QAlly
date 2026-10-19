@@ -1,20 +1,32 @@
 # Decisiones pendientes — corte 2026-10-18
 
-El **stack tecnológico y el monolito modular ya están aprobados**: ver `../arquitectura/stack-aprobado.md`. No volver a tratarlos como selecciones abiertas salvo propuesta explícita de cambio.
+Stack, monolito modular y diseño v1 aprobados por [ADR-001](ADR-001-diseno-tecnico-v1.md) y [ADR-002](ADR-002-cierre-diseno-v1.md). La autorización actual comprende documentación; no ejecución de código, migraciones ni cambios externos.
+
+## Pendiente de diseño del producto
 
 | Prioridad | Por resolver | Puede avanzar mientras tanto |
 |---|---|---|
-| **Alta** | Algoritmo de salud general/por etapa: pesos, rangos, datos ausentes y actividades pendientes. | Consultas, indicadores, dashboard, estado «Sin evaluar» y estructura de PDF. |
-| **Alta** | Catálogo final de 10 actividades, evidencia por tipo, criterios de aprobación y selección inicial. | Tablas de catálogo y semillas preliminares editables. |
-| **Alta** | Catálogo final de cuatro métricas, etapa por tipo, datos fuente y umbrales definitivos. | Selección, mediciones e historial usando catálogo provisional. |
-| **Alta** | Diseño ER de PostgreSQL, restricciones, políticas RLS, seguridad de Storage y contratos entre módulos. | Elaborar y revisar diagramas; bootstrap después de aprobación. |
-| **Media** | Versiones de dependencias/Node, configuración Supabase/Vercel, variables de entorno, pruebas y CI concretos. | Preparar plan de bootstrap y documentar alternativas. |
-| **Media** | Campos obligatorios de Proyecto y significado de «uno por periodo». | Modelar estructura revisable sin restricción inventada. |
-| **Media** | Qué cambios se bloquean exactamente al cerrar un proyecto. | Mantener cierre y consulta; marcar validaciones pendientes. |
-| **Media** | Tamaño máximo del PDF, validación de enlaces, subida fallida y limpieza de archivos huérfanos. | Diseñar Storage privado y escenarios RNF-09. |
-| **Media** | Dataset y entorno de ejecución para medición de RNF; comandos verificables del repositorio. | Preparar casos de prueba y evidencia. |
-| **Media** | Apartados adicionales de la plantilla SRS de la asignatura. | Usar los documentos canónicos para completarlos. |
+| Alta | Algoritmo de salud general/por etapa: pesos, categorías, rangos, tratamiento de datos ausentes y actividades pendientes. | Consultas, indicadores, resumen general y tres etapas con Sin evaluar; reporte sin puntajes inventados. |
 
-**No bloquear salud:** su funcionalidad no se elimina ni se deja fuera del diseño; únicamente el algoritmo y la clasificación quedan por definir.
+La salud es el único pendiente de producto de este cierre, por instrucción expresa del usuario. No se elimina RF-26/27.
 
-Para cerrar un pendiente: registrar acuerdo fechado en `registro.md`, actualizar su fuente canónica y las referencias CU/RF/RNF que correspondan.
+## Resueltos en diseño — ADR-002
+
+| Acuerdo | Fuente canónica |
+|---|---|
+| Diez actividades, cinco preselecciones, evidencia y criterios QA por tipo. | [Catálogo de actividades](../producto/catalogo-actividades.md). |
+| Cuatro métricas en Desarrollo, capturas/fórmulas y objetivos configurables, incluido objetivo crítico de M-01. | [Catálogo de métricas](../producto/catalogo-metricas.md). |
+| Periodo opcional informativo, varios proyectos permitidos, sin unicidad. | Reglas globales, CU-01 y diccionario. |
+| PDF 3 MiB, validación, reserva, compensación y limpieza diaria tras 24 horas sin referencias. | [Seguridad e integridad](../datos/seguridad-integridad.md). |
+| Tipos, longitudes, numeric(20,8), constraints, archivo físico, privilegios y bloqueos. | [Diccionario](../datos/diccionario-datos.md), [detalle técnico](../datos/detalle-tecnico-v1.md) y ER. |
+| Interfaces, idempotencia, versiones y captura cifrada de reporte de 15 minutos. | [Contratos v1](../arquitectura/contratos-v1.md). |
+| Dataset de aceptación: proyectos aislados, abierto grande, pequeño y cerrado, historiales y fallos. | Detalle técnico y escenarios RNF en seguridad/integridad. |
+
+## Trabajo posterior de implementación y validación
+
+- SQL ejecutable, funciones/políticas, script de limpieza, aplicación de contratos TypeScript y pruebas. Se siguen los acuerdos, sin reabrir reglas por suposición.
+- Versiones exactas Node/dependencias, configuración de sesión SSR, cuentas/planes/regiones, variables, CI y estructura física. Preparar plan de bootstrap antes de instalar.
+- Crear dataset y ejecutar pruebas de RLS, concurrencia, archivos, rendimiento y Chrome/Firefox. Registrar equipo, entorno, versiones, conexión y resultados; no afirmar RNF superados solo por diseño.
+- Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
+
+Las propuestas se conservan como antecedentes históricos con enlaces a sus reemplazos; no son decisiones todavía pendientes. Para futuros cambios, registrar nueva aprobación y actualizar fuente canónica y trazabilidad CU–RF–RNF.

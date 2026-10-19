@@ -11,7 +11,7 @@
 - Etapas: Especificación de requerimientos, Diseño del software y Desarrollo.
 - Actividad SQA: Pendiente → En progreso → En revisión → Aprobada; QA puede devolver a En progreso con observaciones.
 - Un tipo de actividad puede repetirse por proyecto; un tipo de métrica, no.
-- Salud general y por etapa **requerida**; algoritmo y clasificación **pendientes**. Catálogos de actividades y métricas **preliminares**. No inventar cálculos.
+- Salud general y por etapa **requerida**; algoritmo y clasificación **pendientes**. Catálogos v1 de actividades y métricas **aprobados para esta versión** en ADR-002; no presumir ratificación académica independiente. No inventar cálculos.
 
 ## Tecnología y seguridad
 - Stack y arquitectura **aprobados**: `docs/arquitectura/stack-aprobado.md` (Next.js/TypeScript, Supabase, Vercel y herramientas asociadas). Monolito modular; no agregar Prisma, backend separado ni servicios nuevos sin justificar y aprobar.

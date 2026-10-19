@@ -11,10 +11,10 @@ Reporte actual del proyecto, visualización en la web y exportación PDF con mé
 Solo QA genera/exporta; mismo origen de información que CU-05; no mostrar clasificación inventada ni almacenar historial de reportes.
 
 ## Interfaces y dependencias
-Consultas de proyectos, métricas y actividades, y servicio futuro compartido de salud.
+Consultas de proyectos, métricas y actividades, y consulta compartida de indicadores y salud Sin evaluar.
 
 ## Pendientes relevantes
-Clasificación de salud cuando se apruebe. La biblioteca PDF seleccionada es `@react-pdf/renderer`; formato y contrato del reporte por diseñar.
+Clasificación de salud pendiente. Reporte, captura cifrada de 15 minutos y exportación definidos en [contratos v1](../arquitectura/contratos-v1.md), aún sin implementación.
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-06.md` enlazado.

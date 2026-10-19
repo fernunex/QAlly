@@ -8,7 +8,7 @@
 Consulta de datos actuales, métricas/umbrales/actividades por tres etapas, indicadores y espacios para estado de salud general/por etapa.
 
 ## Reglas esenciales acordadas
-NO inventar fórmula, pesos, rangos Malo/Regular/Bueno/Excelente ni interpretar pendientes como mala salud; mostrar Sin medir/Sin evaluar; misma lógica que reporte.
+NO inventar fórmula, pesos, rangos Malo/Regular/Bueno/Excelente ni interpretar pendientes como mala salud; mostrar Sin medición para métricas sin captura y Sin evaluar para salud; misma lógica que reporte.
 
 ## Interfaces y dependencias
 Métricas y actividades; CU-06 debe utilizar el mismo resultado cuando el cálculo esté definido.
@@ -24,4 +24,4 @@ Algoritmo, pesos, clasificación, valores de corte, ausencia de datos y etapas s
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-Diseñar consulta/contrato de indicadores compartible con reportes; no introducir categorías ni puntuaciones hasta aprobación del algoritmo.
+Usar consulta/contrato de indicadores v1 aprobado y compartido con reportes; no introducir categorías ni puntuaciones hasta aprobación del algoritmo.

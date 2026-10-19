@@ -1,0 +1,49 @@
+# Dependencias y caché local de npm
+node_modules/
+.npm/
+
+# Compilación y archivos regenerables de Next.js / TypeScript
+/.next/
+/out/
+/dist/
+/build/
+/next-env.d.ts
+*.tsbuildinfo
+
+# Variables y secretos locales; versionar únicamente plantillas sin credenciales
+.env*
+!.env.example
+!.env.*.example
+
+# Configuración local del despliegue y estado de Supabase CLI
+/.vercel/
+/supabase/.temp/
+/supabase/.branches/
+
+# Resultados y cachés de Vitest / Playwright
+/coverage/
+/.vitest/
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/tests/.auth/
+
+# Cachés de herramientas de calidad y registros de diagnóstico
+.eslintcache
+.prettiercache
+*.log
+
+# Archivos locales del sistema operativo y del editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+*.swp
+*.swo
+*~
+
+# Mantener versionados package-lock.json, supabase/config.toml,
+# supabase/migrations/, supabase/seed.sql, tipos de BD generados
+# y snapshots de pruebas. No ignorar todos los PDF: pueden ser documentación.

@@ -14,7 +14,7 @@ Un tipo se repite en un proyecto; actividades nuevas en Pendiente; solo QA aprue
 Catálogo de actividades, membresía y flujo de CU-04.
 
 ## Pendientes relevantes
-Catálogo final, evidencia aceptable y criterios de aprobación por tipo.
+Implementación y pruebas del [catálogo v1 aprobado](../producto/catalogo-actividades.md) y [contratos](../arquitectura/contratos-v1.md); criterios por tipo ya definidos.
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-03.md` enlazado.
@@ -24,4 +24,4 @@ Catálogo final, evidencia aceptable y criterios de aprobación por tipo.
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-Estados y autorizaciones deben aplicarse en servidor y respetarse por RLS; transiciones específicas sujetas a diseño de contratos compartidos.
+Estados y autorizaciones deben aplicarse en servidor y respetarse por RLS; transiciones definidas en los contratos v1 aprobados, con versión esperada.

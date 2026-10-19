@@ -39,3 +39,5 @@
 Nota de alcance: RF-26 requiere definir el algoritmo y las clasificaciones de salud; RF-27 podrá desplegar indicadores disponibles y el estado «Sin evaluar» hasta que haya datos y modelo suficiente. Los RF no incorporan gestión interna de defectos: la métrica M-04 se captura desde datos externos.
 
 **Estado:** línea base v0.1 para traslado al SRS. RF-26/27 mantienen el cálculo de salud como decisión pendiente, no funcionalidad descartada.
+
+**Precisión de diseño aprobada, ADR-002 (2026-10-18):** [catálogos v1](../producto/catalogo-metricas.md), [reglas globales](../producto/reglas-globales.md) y [contratos](../arquitectura/contratos-v1.md) concretan RF existentes: preselección, captura/objetivo crítico, PDF 3 MiB, periodo informativo, reintentos y reporte consistente. No se renumeran los 33 RF ni se introduce cálculo de salud. [Trazabilidad](trazabilidad.md).

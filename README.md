@@ -61,9 +61,14 @@ No se deben incluir claves privadas ni credenciales reales en el repositorio.
 - [Requerimientos no funcionales](docs/requisitos/no-funcionales.md)
 - [Casos de uso](docs/requisitos/casos-uso/)
 - [Reglas de negocio](docs/producto/reglas-globales.md)
-- [Catálogo preliminar de actividades](docs/producto/catalogo-actividades.md)
-- [Catálogo preliminar de métricas](docs/producto/catalogo-metricas.md)
+- [Catálogo de actividades v1 aprobado](docs/producto/catalogo-actividades.md)
+- [Catálogo de métricas v1 aprobado](docs/producto/catalogo-metricas.md)
 - [Tecnologías seleccionadas](docs/arquitectura/stack-aprobado.md)
+- [Diseño arquitectural y C4](docs/arquitectura/diseno-arquitectural.md)
+- [Modelo de datos](docs/datos/modelo-entidad-relacion.md)
+- [Decisión de diseño aprobada](docs/decisiones/ADR-001-diseno-tecnico-v1.md)
+- [Cierre de diseño aprobado — ADR-002](docs/decisiones/ADR-002-cierre-diseno-v1.md)
+- [Contratos internos v1](docs/arquitectura/contratos-v1.md)
 - [Decisiones pendientes](docs/decisiones/pendientes.md)
 
 ## Contribución y calidad

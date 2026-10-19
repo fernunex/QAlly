@@ -4,7 +4,14 @@ import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import type { ErrorPublico } from "@/lib/resultados";
-export function ErrorAccion({ error }: { error: ErrorPublico }) {
+export function ErrorAccion({
+  error,
+  onRecargar,
+}: {
+  error: ErrorPublico;
+  /** Recarga adicional del componente (p. ej. un detalle abierto) además de la ruta. */
+  onRecargar?: () => void;
+}) {
   const router = useRouter();
   return (
     <Alert variant="destructive" role="alert">
@@ -18,7 +25,13 @@ export function ErrorAccion({ error }: { error: ErrorPublico }) {
           </ul>
         ) : null}
         {["CONFLICTO", "PROYECTO_CERRADO"].includes(error.codigo) ? (
-          <Button variant="outline" onClick={() => router.refresh()}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.refresh();
+              onRecargar?.();
+            }}
+          >
             Recargar información
           </Button>
         ) : null}

@@ -1,4 +1,4 @@
-import type { Actividad, Entrega, Evidencia } from "@/lib/domain";
+import type { Actividad, ActividadResumen, Entrega, Evidencia } from "@/lib/domain";
 
 /** Mapa id de usuario → nombre, resuelto en servidor para autores y revisores. */
 export type Nombres = Record<string, string>;
@@ -29,6 +29,11 @@ export function ultimaDevolucion(a: ConEntregas): Entrega | undefined {
 /** En progreso cuyo último intento fue devuelto con observaciones. */
 export function estaDevuelta(a: Pick<Actividad, "estado" | "entregas">): boolean {
   return a.estado === "En progreso" && ultimaDevolucion(a) !== undefined;
+}
+
+/** Fila del tablero En progreso cuyo último intento enviado fue devuelto. */
+export function resumenDevuelto(a: Pick<ActividadResumen, "estado" | "ultimoEnvio">): boolean {
+  return a.estado === "En progreso" && a.ultimoEnvio?.decision === "Devolver";
 }
 
 export function nombreDe(nombres: Nombres, id: string): string {

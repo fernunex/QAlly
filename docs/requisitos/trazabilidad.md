@@ -40,3 +40,18 @@ Entidades/llaves: [modelo ER](../datos/modelo-entidad-relacion.md) y [diccionari
 | Salud sigue Sin evaluar sin algoritmo ni categorías definitivas. | CU-05/06; RF-26–29, 30–32. | Conserva alcance pendiente; no se demuestra cálculo inexistente. |
 
 Las verificaciones anteriores son escenarios exigidos al implementar, no resultados de ejecución. Se conservan los seis CU de doce apartados y diez RNF.
+
+## Implementación local de datos — bootstrap 2026-10-18
+
+El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementa la parte de datos de los acuerdos anteriores. La [guía local](../datos/guia-supabase.md) registra operación y límites de validación; los resultados efectivos se registran al finalizar el bootstrap.
+
+| CU | Implementación de datos | Pendiente fuera de este bootstrap |
+|---|---|---|
+| CU-01 | RPC de alta/configuración atómica, edición, cierre y consulta; participación y RLS. | Formularios y autorización de rutas Next.js. |
+| CU-02 | Objetivos, mediciones idempotentes, revisiones anexadas y consulta de vigencia. | Interfaz y validación Zod de sus formularios. |
+| CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Pantallas y flujos de usuario. |
+| CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Endpoint Next.js, sesiones SSR y pruebas de navegador. |
+| CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Algoritmo aprobado de salud y dashboard. |
+| CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Captura cifrada, exportación PDF y correspondencia visual. |
+
+Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. No cambia ningún RF ni se da por implementada la aplicación.

@@ -36,3 +36,15 @@ Estos identificadores `DEC-xx` son **solo para consulta en esta memoria** y **no
 |---|---|---|---|
 | [ADR-001 — Diseño técnico inicial](ADR-001-diseno-tecnico-v1.md) | 2026-10-18 | **APROBADO** | Documentación C1–C3 y datos; rol global + proyecto, entregas inmutables, mediciones con revisiones, campos generales y cierre de solo lectura. Catálogos/salud siguen abiertos. Sin implementación. |
 | [ADR-002 — Cierre de diseño v1](ADR-002-cierre-diseno-v1.md) | 2026-10-18 | **APROBADO** | Catálogos, periodo, PDF/limpieza, contratos y ajustes de esquema: archivo físico, idempotencia/versión de proyecto y objetivo crítico. Salud sigue pendiente. Sin implementación. |
+
+## Ejecución autorizada del bootstrap — 2026-10-18
+
+El usuario solicitó «Realiza el plan completamente» tras la propuesta y precisó «Todavía no; completa primero el entorno local» respecto a Cloud. Se implementó el [plan de datos](../datos/plan-bootstrap-supabase.md) conforme a ADR-001/002, sin cambiar arquitectura ni esquema aprobado. Herramientas fijadas en [stack](../arquitectura/stack-aprobado.md), SQL en `supabase/migrations/`, operación en [guía](../datos/guia-supabase.md).
+
+Se eligió validar primero con CLI/Docker local para reproducir Auth, RLS y Storage sin depender de cuentas remotas; la alternativa de empezar directamente en Cloud queda pospuesta por el usuario. Los catálogos se aplican como migración de referencia y los ejemplos mediante Auth Admin API/script separado, evitando llevar cuentas ficticias al despliegue. Resultado: reconstrucción y veinte pruebas de integración aprobadas; salud y aplicación web pendientes. Esta autorización posterior reemplaza únicamente la restricción histórica de no implementar durante el diseño, sin extenderla a push ni despliegue.
+
+## Integración autorizada de UI y BD — 2026-10-19
+
+El usuario solicitó ejecutar el plan de integración para reutilizar la UI existente y la base local al implementar el backend de cada caso de uso. Se reúnen las historias de `feat/ui-base` y `base/supabase-bootstrap` en una rama de integración, se valida su configuración conjunta y se incorpora a `dev`; `main` permanece estable. La alternativa de desarrollar CU-01 sobre una sola base retrasaba la detección de conflictos de dependencias y configuración.
+
+Se mantienen la estructura modular de UI y las migraciones/RLS; TypeScript se unifica en 5.9.3 por compatibilidad con el analizador ESLint de Next.js. [Resultado, flujo del equipo y pendientes de auditoría](../equipo/integracion-ui-bd.md). Sesión y datos UI siguen siendo demo; no se modifican reglas de negocio ni se considera conectado el backend. No incluye push, Cloud ni despliegue.

@@ -130,7 +130,9 @@ El cumplimiento usa objetivo actual y valor vigente. No se infiere salud a parti
 
 Reporte y PDF usan la misma captura consistente del resumen, cifrada con AES-256-GCM y ligada a usuario/proyecto. Expira a los 15 minutos; secreto exclusivo de servidor, sin tabla de histórico ni dependencia de memoria local compartida. La exportación vuelve a autorizar QA y participación, verifica token/expiración y no acepta un resumen modificable enviado por cliente. Detalles del formato, claves, límites de 1 MiB de captura, 2 MiB de petición y 3 MiB de PDF en [contratos v1](../arquitectura/contratos-v1.md). No truncar datos para cumplir límites: error explícito y revisión del diseño si se superan.
 
-## Escenarios de aceptación pendientes de ejecución
+## Escenarios de aceptación y estado de ejecución
+
+La parte de datos cuenta con pruebas de integración locales: ver [resultados del bootstrap](plan-bootstrap-supabase.md#resultado-de-ejecución-local--2026-10-18). Los escenarios de páginas/acciones Next.js, reportes, navegadores y rendimiento desplegado continúan pendientes. Esta tabla conserva los criterios completos; no certifica todos los RNF.
 
 | RNF | Escenarios mínimos |
 |---|---|

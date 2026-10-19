@@ -38,21 +38,39 @@ Es un proyecto académico orientado principalmente a navegadores de escritorio (
 | Despliegue | Vercel + Supabase |
 | Paquetes | npm |
 
-Arquitectura: **monolito modular en un solo repositorio**. La lista de tecnologías está aprobada; versiones concretas y configuración final se fijarán durante la inicialización.
+Arquitectura: **monolito modular en un solo repositorio**. La lista de tecnologías está aprobada; versiones de UI y datos se fijan en package-lock.json.
 
-## Instalación y ejecución
+## Entorno de base de datos local
 
-**Estado actual:** repositorio en preparación. Todavía no se ha validado un proyecto ejecutable; por eso no se publican comandos de arranque ni variables de entorno supuestamente funcionales.
+Requisitos: Node.js 24 y Docker funcionando. Herramientas con versiones fijadas en package-lock.json; sin instalaciones globales.
 
-Una vez realizado el bootstrap, este apartado se completará con los pasos verificados para:
+```sh
+npm ci
+npm run db:start
+npm run db:seed
+npm run db:types
+npm run db:lint
+npm run db:test
+npm run typecheck
+```
 
-1. Instalar los requisitos previos y dependencias.
-2. Configurar el entorno desde `.env.example` y las credenciales propias de desarrollo.
-3. Preparar el esquema de PostgreSQL con migraciones y datos iniciales.
-4. Ejecutar QAlly localmente.
-5. Ejecutar lint, pruebas y compilación.
+Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. La UI Next.js está integrada y todavía utiliza datos y sesión de demostración; los casos de uso se conectarán progresivamente a Supabase.
 
-No se deben incluir claves privadas ni credenciales reales en el repositorio.
+Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
+
+[Guía de Supabase](docs/datos/guia-supabase.md): conceptos, datos iniciales, seguridad, scripts, pruebas y conexión futura a Cloud. No versionar credenciales reales ni ejecutar seeds/reset de desarrollo contra un proyecto remoto.
+
+## Ejecutar la interfaz y trabajar en equipo
+
+```sh
+npm run dev -- --hostname 127.0.0.1
+```
+
+Abrir http://127.0.0.1:3000. La UI de demostración permite entrar con `david@equipo.dev` (QA) o `emi@equipo.dev` (Miembro) y cualquier contraseña no vacía; no usa las cuentas reales del seed ni persiste los cambios en PostgreSQL. Al implementar cada caso de uso se reemplazarán su sesión/consultas simuladas por autenticación y operaciones reales del servidor.
+
+Validar la aplicación con `npm run lint`, `npm run typecheck` y `npm run build`; validar la base con los comandos anteriores. `typecheck` genera primero los tipos de rutas Next.js para funcionar desde una instalación limpia.
+
+`dev` reúne la base de UI y BD; desarrollar funcionalidades en ramas creadas desde `dev`, revisar mediante PR hacia `dev` y promover versiones verificadas a `main`. [Flujo y registro de integración](docs/equipo/integracion-ui-bd.md).
 
 ## Documentación
 

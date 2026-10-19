@@ -1,7 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { uploadPdf } from './lib/files.server.mjs';
 import { samplePdf } from './lib/fixtures.mjs';
-import { clients, provisionUsers, configureStorage, checked, rpc, stableId } from './lib/local.mjs';
+import { provisionUsers, configureStorage, checked, rpc, stableId } from './lib/local.mjs';
 export async function seedDevelopment({large=false}={}) {
  const users=await provisionUsers(); await configureStorage();
  const [qa1,qa2,m1,m2,m3,m4]=users;

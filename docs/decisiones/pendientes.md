@@ -30,3 +30,7 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
 
 Las propuestas se conservan como antecedentes históricos con enlaces a sus reemplazos; no son decisiones todavía pendientes. Para futuros cambios, registrar nueva aprobación y actualizar fuente canónica y trazabilidad CU–RF–RNF.
+
+## Integración local — 2026-10-19
+
+UI y base de datos reunidas y verificadas sobre `dev`; la rama siguiente es `feat/cu01-gestion-proyectos`. [Registro de integración](../equipo/integracion-ui-bd.md), incluyendo los avisos transitivos de auditoría pendientes. Falta conectar autenticación/sesión real y los flujos CU-01 a las RPC existentes; los demás casos se implementarán progresivamente reutilizando la UI. Salud permanece pendiente de diseño; publicación de ramas/PR y Cloud no ejecutados.

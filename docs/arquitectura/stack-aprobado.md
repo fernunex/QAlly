@@ -49,3 +49,11 @@ El diseño inicial C4, ER, diccionario y controles está documentado en [diseño
 Se usa Node.js 24 (comprobado 24.18.1), npm 12.0.2, Supabase CLI 2.121.0, Supabase JS 2.118.0, TypeScript 7.0.2, Vitest 5.0.5 y @types/node 24.19.2. Dependencias exactas y lockfile versionados; Docker local disponible 29.8.2. PostgreSQL local configurado en versión mayor 17. Las versiones de Next.js/UI todavía no se han elegido ni instalado.
 
 El usuario autorizó este bootstrap después de aprobar el plan. [Guía y estado de implementación](../datos/guia-supabase.md). La compatibilidad con una futura base Cloud se verificará antes de enlazarla.
+
+## Integración de UI y datos — 2026-10-19
+
+Integración autorizada de `origin/feat/ui-base` y `base/supabase-bootstrap` sobre `dev`, conservando monolito modular, migraciones y catálogos aprobados. UI: Next.js 16.4.2, React/React DOM 19.3.0 y Tailwind 4 (resoluciones exactas en lockfile). Node 24 y @types/node 24 se conservan.
+
+TypeScript se unifica en **5.9.3**, versión existente en la UI, porque el analizador de ESLint de esa rama admite `>=4.8.4 <6.1.0`; reemplaza la versión 7.0.2 del bootstrap. `tsconfig.json` conserva las opciones de Next.js/JSX, alias `@/` y los tipos de BD, con target ES2024. No se cambia el esquema ni los contratos del producto.
+
+La UI conserva temporalmente datos y sesión de demostración; tener ambas bases en una rama no equivale a conectar la aplicación a Supabase. El backend se realizará por caso de uso. [Flujo y validación](../equipo/integracion-ui-bd.md).

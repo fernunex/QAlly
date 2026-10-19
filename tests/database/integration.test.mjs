@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { seedDevelopment } from '../../scripts/seed-dev.mjs';
 import { clients,checked,rpc,userClient } from '../../scripts/lib/local.mjs';
 import { uploadPdf,cleanupFiles } from '../../scripts/lib/files.server.mjs';
-let seed,qa,other,member,stranger,admin,anon;
+let seed,qa,member,stranger,admin,anon;
 const pdf=Buffer.from('%PDF-1.4\n1 0 obj <</Type /Catalog>> endobj\ntrailer <</Root 1 0 R>>\n%%EOF\n');
 const source=(count=0)=>({criticos_abiertos:count,altos_abiertos:0,fuente_referencia:'Prueba de integración'});
 async function project(extra={}) {return rpc(qa.client,'crear_proyecto',{p_solicitud_id:randomUUID(),p_nombre:'Proyecto de integración',p_descripcion:'Verificación aislada',p_fecha_inicio:'2026-10-01',p_miembros_ids:[member.id],...extra});}
@@ -17,7 +17,7 @@ async function draft(pid) {
 }
 const rejected=async(promise,code)=>{const result=await promise;expect(result.error,JSON.stringify(result.data)).toBeTruthy();if(code)expect(result.error.message).toContain(code);return result.error;};
 beforeAll(async()=>{
- seed=await seedDevelopment();[qa,other,member,,stranger]=seed.users;({admin,anon}=clients());
+ seed=await seedDevelopment();[qa,,member,,stranger]=seed.users;({admin,anon}=clients());
 });
 describe('Supabase local: identidad, esquema y RLS',()=>{
  test('catálogos exactos y bucket privado de 3 MiB',async()=>{

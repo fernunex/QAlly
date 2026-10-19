@@ -14,7 +14,7 @@ No duplicar el mismo tipo por proyecto; un registro nuevo no reemplaza anteriore
 Catálogo de métricas y selección por proyecto; CU-05/06 consumen último valor y cumplimiento.
 
 ## Pendientes relevantes
-Implementar [catálogo v1](../producto/catalogo-metricas.md) aprobado: cuatro métricas en Desarrollo, datos fuente y objetivos configurables. Algoritmo de salud ajeno a este cálculo sigue pendiente.
+El [catálogo v1](../producto/catalogo-metricas.md), restricciones y RPC de mediciones/correcciones están implementados en la BD local. CU-01 ya configura y consulta métricas iniciales/objetivos con datos reales. Falta conectar los componentes UI de CU-02 a las acciones y consultas de servidor, con pruebas E2E; no considerar sus componentes de prototipo un flujo persistente. Algoritmo de salud ajeno a este cálculo sigue pendiente. [Estado local](cu01-implementacion.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-02.md` enlazado.

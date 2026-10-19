@@ -14,7 +14,7 @@ Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisi�
 Estados/permiso de actividades (CU-03); almacenamiento de PDFs y protección de evidencias.
 
 ## Pendientes relevantes
-Implementar límites y protocolo aprobados: PDF 3 MiB, enlaces HTTP/HTTPS, reserva/compensación y limpieza diaria. [Seguridad](../datos/seguridad-integridad.md).
+BD/RLS, bucket privado y adaptador de archivos de scripts implementados y probados localmente: PDF 3 MiB, enlaces HTTP/HTTPS y reserva/compensación; comando de limpieza disponible. Falta integrar el adaptador al servidor Next.js, conectar la UI de CU-04 y probar su flujo completo; programar la limpieza diaria al preparar el despliegue. [Guía Supabase](../datos/guia-supabase.md) y [seguridad](../datos/seguridad-integridad.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-04.md` enlazado.
@@ -24,4 +24,4 @@ Implementar límites y protocolo aprobados: PDF 3 MiB, enlaces HTTP/HTTPS, reser
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-PDF en Supabase Storage privado y metadata en PostgreSQL; implementar la reserva de archivo físico, confirmación atómica y limpieza aprobadas, sin presentar preparación como entrega enviada.
+PDF en Supabase Storage privado y metadata en PostgreSQL; reutilizar la reserva de archivo físico, confirmación atómica y limpieza aprobadas, sin presentar preparación como entrega enviada. La credencial privilegiada del adaptador permanece exclusivamente en servidor.

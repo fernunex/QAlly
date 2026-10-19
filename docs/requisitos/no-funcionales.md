@@ -84,4 +84,4 @@ Atributos acordados: Seguridad (RNF-01 a 03), Rendimiento (RNF-04 a 06), Portabi
 
 Condiciones comunes para rendimiento: al menos 10 ejecuciones por operación o vista crítica, entorno de pruebas desplegado y datos representativos; registrar equipo, navegador, versión, conexión y resultados. La meta 9/10 equivale a 90% de las ejecuciones de la muestra; no es una garantía estadística sobre todos los usuarios.
 
-**Estado:** diez RNF y cuatro atributos aprobados en la planificación; métricas de prueba definidas; escenarios y dataset especificados documentalmente por ADR-002 en seguridad/integridad y detalle técnico. Su creación y ejecución siguen pendientes.
+**Estado:** diez RNF y cuatro atributos aprobados en la planificación; métricas de prueba definidas; escenarios y dataset especificados documentalmente por ADR-002 en seguridad/integridad y detalle técnico. Hay validación local de BD y [CU-01](../modulos/cu01-implementacion.md); quedan pendientes las verificaciones de los demás CU y las mediciones de aceptación en entorno desplegado. No se presume cumplimiento global de los diez RNF.

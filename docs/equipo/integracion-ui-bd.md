@@ -2,6 +2,8 @@
 
 **Fecha: 2026-10-19. Estado: integración local completada y validada.** El usuario aprobó ejecutar el plan para reunir las bases antes de desarrollar los casos de uso. No modifica las reglas de ADR-001/002 ni requiere Cloud.
 
+**Actualización posterior:** CU-01 y la sesión real ya están implementados; las referencias a demo y backend pendiente de este registro describen el estado al integrar las ramas. [Estado actual y pruebas](../modulos/cu01-implementacion.md).
+
 ## Ramas y alcance
 
 - `main`: versión estable de referencia; se mantiene sin cambios en esta integración.

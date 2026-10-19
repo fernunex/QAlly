@@ -1,4 +1,4 @@
-# Decisiones pendientes — corte 2026-10-18
+# Decisiones pendientes — corte 2026-10-19
 
 Stack, monolito modular y diseño v1 aprobados por [ADR-001](ADR-001-diseno-tecnico-v1.md) y [ADR-002](ADR-002-cierre-diseno-v1.md). ADR-001/002 aprobaron documentación. El usuario autorizó posteriormente ejecutar el [bootstrap local](../datos/plan-bootstrap-supabase.md); la conexión a Cloud se pospone expresamente hasta que disponga de proyecto. No se autoriza push ni despliegue.
 
@@ -24,13 +24,13 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 
 ## Trabajo posterior de implementación y validación
 
-- Adaptadores y contratos de aplicación Next.js. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD ya implementados; consultar resultados del bootstrap.
-- Sesión SSR, cuentas/planes/regiones remotos y estructura de la aplicación. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
-- Pruebas de rendimiento extremo a extremo y Chrome/Firefox cuando exista la aplicación. RLS, concurrencia y archivos tienen pruebas locales; dataset y resultados en el plan de bootstrap. No afirmar todos los RNF superados.
+- Adaptadores de aplicación Next.js de CU-02 a CU-06; CU-01 y sesión real ya implementados. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
+- Cuentas/planes/regiones remotos y configuración de despliegue. Sesión SSR local implementada en CU-01. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
+- Rendimiento desplegado y pruebas de los CU restantes. CU-01 ya tiene pruebas E2E en Chrome estable y Firefox; RLS, concurrencia y archivos tienen pruebas locales de BD. Dataset y resultados en el plan de bootstrap y la guía de CU-01. No afirmar todos los RNF superados.
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
 
 Las propuestas se conservan como antecedentes históricos con enlaces a sus reemplazos; no son decisiones todavía pendientes. Para futuros cambios, registrar nueva aprobación y actualizar fuente canónica y trazabilidad CU–RF–RNF.
 
 ## Integración local — 2026-10-19
 
-UI y base de datos reunidas y verificadas sobre `dev`; la rama siguiente es `feat/cu01-gestion-proyectos`. [Registro de integración](../equipo/integracion-ui-bd.md), incluyendo los avisos transitivos de auditoría pendientes. Falta conectar autenticación/sesión real y los flujos CU-01 a las RPC existentes; los demás casos se implementarán progresivamente reutilizando la UI. Salud permanece pendiente de diseño; publicación de ramas/PR y Cloud no ejecutados.
+UI y base de datos reunidas y verificadas sobre `dev`; la rama siguiente es `feat/cu01-gestion-proyectos`. [Registro de integración](../equipo/integracion-ui-bd.md), incluyendo los avisos transitivos de auditoría pendientes. Autenticación/sesión real y CU-01 ya conectados y validados localmente: [resultados](../modulos/cu01-implementacion.md). Los demás casos se implementarán progresivamente reutilizando la UI. Salud permanece pendiente de diseño; publicación de ramas/PR y Cloud no ejecutados.

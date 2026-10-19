@@ -15,8 +15,10 @@ Campos generales y cierre en solo lectura aprobados en [ADR-001](../decisiones/A
 ## Interfaces y dependencias
 Catálogos, membresía/roles, consulta de actividades/métricas.
 
-## Pendientes relevantes
-Implementar SQL y contratos aprobados; periodo informativo ya resuelto, sin unicidad. [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md).
+## Estado de implementación — 2026-10-19
+CU-01 implementado y validado localmente: sesión real, alta atómica con reintentos idempotentes, consulta autorizada/paginada, edición y cierre con control de versión. Reutiliza UI y RPC/RLS existentes, sin nuevas migraciones. [Guía de implementación, alcance y pruebas](cu01-implementacion.md).
+
+Pendientes: revisión de pares e integración en `dev`, ejecución de CI remoto y mediciones de rendimiento desplegado. Cloud no es necesario para desarrollar o probar localmente. Periodo informativo sin unicidad, según [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-01.md` enlazado.

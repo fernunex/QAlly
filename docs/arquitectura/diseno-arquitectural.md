@@ -2,6 +2,8 @@
 
 **Estado: APROBADO para documentación, 2026-10-18.** La aprobación del usuario comprende la propuesta arquitectónica y conceptual de datos, rol global con participación por proyecto, entregas enviadas inmutables, orden temporal de mediciones, campos generales y cierre en solo lectura. No autoriza código, migraciones ejecutables, cambios en Supabase, dependencias o despliegue. [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md) y [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md), que aprueba el cierre de diseño salvo salud.
 
+**Actualización de ejecución — 2026-10-19:** las autorizaciones posteriores permitieron implementar el [bootstrap local de BD](../datos/guia-supabase.md), integrar la UI y completar [CU-01 con sesión real](../modulos/cu01-implementacion.md). Las restricciones del párrafo anterior describen el alcance de la aprobación inicial. Se mantiene este diseño; los CU restantes, Cloud y despliegue no están implementados.
+
 ## Objetivo y decisiones
 
 Una aplicación Next.js App Router con React y TypeScript concentra interfaz y servidor, organizada por funcionalidades. Supabase aporta identidad, PostgreSQL y Storage privado. Vercel aloja la aplicación. El equipo de cinco estudiantes puede trabajar por módulo compartiendo permisos, consultas y contratos sin mantener servicios independientes.
@@ -46,7 +48,7 @@ El resumen de calidad incluye proyecto y fecha, tres etapas, actividades por est
 
 ## Plan documental de migraciones y semillas
 
-La implementación futura utilizará migraciones SQL versionadas de Supabase CLI; este cambio solo las describe:
+El plan de diseño siguiente se realizó en `supabase/migrations/` y los scripts locales; véase la [guía Supabase](../datos/guia-supabase.md). La enumeración expresa responsabilidades, no nombres de archivos:
 
 1. Perfiles y base de autorización; cuentas mediante Auth, no inserciones manuales en sus tablas internas.
 2. Etapas definitivas y estructura de catálogos.
@@ -62,7 +64,7 @@ Las tres etapas se pueden sembrar definitivamente. Catálogos v1 aprobados: A-01
 
 Los supuestos S1, S2 y S3 de la propuesta fueron aceptados por el usuario: rol global, intentos inmutables y vigencia por fecha de medición con desempate estable. Se documentan como decisiones aprobadas, no como hechos anteriores a la aprobación. También se aceptaron campos generales revisables y cierre de solo lectura.
 
-ADR-002 cierra catálogos, periodo informativo, límites/validación/limpieza, interfaces v1 y ajustes concretos de datos. PENDIENTE de diseño de producto: algoritmo y clasificación de salud. Implementación SQL/TypeScript, pruebas, versiones y configuración corresponden a bootstrap posterior, sin autorización en esta tarea. La ratificación académica independiente no se presume.
+ADR-002 cierra catálogos, periodo informativo, límites/validación/limpieza, interfaces v1 y ajustes concretos de datos. PENDIENTE de diseño de producto: algoritmo y clasificación de salud. La autorización inicial no comprendía implementación; el bootstrap, la integración y CU-01 se ejecutaron con autorización posterior registrada en [decisiones](../decisiones/registro.md). La ratificación académica independiente no se presume.
 
 ## Validación documental del diseño
 
@@ -77,7 +79,7 @@ ADR-002 cierra catálogos, periodo informativo, límites/validación/limpieza, i
 
 Revisión de coherencia: C1 sitúa Supabase externo; C2 abre sus servicios y la aplicación única; C3 abre solo esa aplicación y mantiene las mismas dependencias externas. Todas las entidades tienen propietario funcional y los seis CU tienen correspondencia. No se inventan fórmulas ni integraciones. La matriz amplía [trazabilidad](../requisitos/trazabilidad.md) sin cambiar sus IDs.
 
-Esta es validación de diseño, no prueba de funcionamiento. No hay código ejecutable en este alcance ni evidencia de rendimiento, RLS o compatibilidad en ejecución. Los escenarios de seguridad/integridad y las muestras RNF deben ejecutarse tras la implementación.
+Esta matriz valida el diseño. Posteriormente se ejecutaron pruebas de BD/RLS y pruebas de CU-01 en Chrome estable y Firefox; los [resultados](../modulos/cu01-implementacion.md) delimitan la evidencia de funcionamiento disponible. Los escenarios de los demás CU y las muestras RNF en entorno desplegado siguen pendientes.
 
 ## Cierre de diseño v1 — ADR-002
 

@@ -18,7 +18,7 @@ Catálogos, membresía/roles, consulta de actividades/métricas.
 ## Estado de implementación — 2026-10-19
 CU-01 implementado y validado localmente: sesión real, alta atómica con reintentos idempotentes, consulta autorizada/paginada, edición y cierre con control de versión. Reutiliza UI y RPC/RLS existentes, sin nuevas migraciones. [Guía de implementación, alcance y pruebas](cu01-implementacion.md).
 
-Pendientes: revisión de pares e integración en `dev`, ejecución de CI remoto y mediciones de rendimiento desplegado. Cloud no es necesario para desarrollar o probar localmente. Periodo informativo sin unicidad, según [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md).
+CU-01 ya se integró en `dev`. Pendientes: revisión de pares, ejecución de CI remoto y mediciones de rendimiento desplegado. Cloud no es necesario para desarrollar o probar localmente. Periodo informativo sin unicidad, según [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-01.md` enlazado.

@@ -1,6 +1,6 @@
 # C4-03 — Componentes de la aplicación Next.js
 
-**Estado: APROBADO, 2026-10-18.** Se abre exclusivamente el contenedor Aplicación web de [C2](C4-02-contenedores.md). Las interfaces conceptuales se concretan en [contratos v1](contratos-v1.md), aprobados por ADR-002; la BD local ya realiza los contratos de datos y CU-01 implementa los componentes de Proyectos, sesión y acceso a datos. Los demás componentes representan el diseño objetivo. [Realización y pruebas de CU-01](../modulos/cu01-implementacion.md).
+**Estado: APROBADO, 2026-10-18.** Se abre exclusivamente el contenedor Aplicación web de [C2](C4-02-contenedores.md). Las interfaces conceptuales se concretan en [contratos v1](contratos-v1.md), aprobados por ADR-002; la BD local ya realiza los contratos de datos y CU-01 implementa los componentes de Proyectos, sesión y acceso a datos. CU-02 a CU-04 realizan Métricas, Actividades y Evidencias; Salud/Reportes representan todavía el diseño objetivo. [Integración y límites](../equipo/integracion-cu02-cu03-cu04.md). [Realización y pruebas de CU-01](../modulos/cu01-implementacion.md).
 
 ```mermaid
 flowchart TB

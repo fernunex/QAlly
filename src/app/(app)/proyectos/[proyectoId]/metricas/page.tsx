@@ -1,19 +1,17 @@
 import { PageContainer } from "@/components/shell/page-header";
+import { EstadoNoDisponible } from "@/components/states/ui-states";
+import { MetricasVista } from "@/features/metrics/components/metricas-vista";
+import { listarMetricas } from "@/features/metrics/server/queries";
 import {
-  AvisoSoloLectura,
-  EstadoNoDisponible,
-  NotaPendiente,
-} from "@/components/states/ui-states";
-import { MetricasConfiguradas } from "@/features/projects/components/consulta-proyecto";
-import {
-  listarMetricasIniciales,
   consultarProyecto,
+  listarCatalogos,
 } from "@/features/projects/server/queries";
 import { obtenerUsuarioActual } from "@/lib/session";
+
 export default async function Page({
   params,
 }: PageProps<"/proyectos/[proyectoId]/metricas">) {
-  await obtenerUsuarioActual();
+  const usuario = await obtenerUsuarioActual();
   const { proyectoId } = await params;
   const proyecto = await consultarProyecto(proyectoId);
   if (!proyecto)
@@ -22,15 +20,19 @@ export default async function Page({
         <EstadoNoDisponible />
       </PageContainer>
     );
-  const metricas = await listarMetricasIniciales(proyectoId);
+  const [metricas, catalogos] = await Promise.all([
+    listarMetricas(proyectoId),
+    listarCatalogos(),
+  ]);
   return (
-    <PageContainer className="space-y-5">
-      {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
-      <MetricasConfiguradas metricas={metricas} />
-      <NotaPendiente>
-        El seguimiento de mediciones y objetivos estará disponible en una
-        próxima versión.
-      </NotaPendiente>
+    <PageContainer>
+      <MetricasVista
+        proyectoId={proyecto.id}
+        metricas={metricas}
+        catalogo={catalogos.metricas}
+        cerrado={!!proyecto.cerradoEn}
+        esQA={usuario.rol === "QA"}
+      />
     </PageContainer>
   );
 }

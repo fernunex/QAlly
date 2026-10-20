@@ -14,7 +14,7 @@ Un tipo se repite en un proyecto; actividades nuevas en Pendiente; solo QA aprue
 Catálogo de actividades, membresía y flujo de CU-04.
 
 ## Pendientes relevantes
-[Catálogo v1](../producto/catalogo-actividades.md), instancias, transiciones y RPC/RLS disponibles en BD local. CU-01 permite seleccionar actividades iniciales y consultarlas con paginación. Falta conectar el alta posterior, asignación y revisión de CU-03 a la UI y validarlas de extremo a extremo; criterios por tipo ya definidos. [Estado local](cu01-implementacion.md).
+CU-03 implementado localmente (2026-10-19): tablero paginado por estado con filtros de etapa/responsable, alta, asignación, aprobación y devolución conectadas a las RPC, y descarga autorizada de PDF. [Implementación y pruebas](cu03-implementacion.md). La preparación y el envío de intentos de CU-04 ya están conectados en la integración conjunta. [Estado y pruebas entre roles](../equipo/integracion-cu02-cu03-cu04.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-03.md` enlazado.

@@ -40,10 +40,18 @@ export function MisActividadesLista({
   const [abierto, setAbierto] = useState(false);
   const [iniciando, setIniciando] = useState<string | null>(null);
 
-  // Al revalidar la ruta llegan datos nuevos del servidor: prevalecen sobre el estado local.
+  // Al revalidar la ruta llegan datos del servidor: prevalecen sobre el estado local, salvo que
+  // sean anteriores a la última confirmación (la revalidación de una acción puede aplicarse
+  // después de subir un PDF por el Route Handler y no debe ocultarlo).
   if (iniciales !== previas) {
     setPrevias(iniciales);
-    setActividades(iniciales);
+    setActividades((locales) => {
+      const porId = new Map(locales.map((a) => [a.id, a]));
+      return iniciales.map((s) => {
+        const local = porId.get(s.id);
+        return local && BigInt(local.version) > BigInt(s.version) ? local : s;
+      });
+    });
     setNombres((n) => ({ ...n, ...nombresIniciales }));
   }
 

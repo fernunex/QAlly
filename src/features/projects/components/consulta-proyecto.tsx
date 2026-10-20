@@ -200,11 +200,11 @@ export function MetricasConfiguradas({ metricas }: { metricas: Metricas }) {
                   </TableCell>
                   <TableCell>{etapa(m.tipo.etapa_codigo)}</TableCell>
                   <TableCell>
-                    {m.operador === ">=" ? "≥" : "≤"} {m.objetivo}{" "}
+                    {m.operador === ">=" ? "≥" : "≤"} {Number(m.objetivo)}{" "}
                     {m.tipo.unidad}
                     {m.objetivo_critico !== null ? (
                       <p className="text-xs text-muted-foreground">
-                        Pruebas críticas ≥ {m.objetivo_critico} %
+                        Pruebas críticas ≥ {Number(m.objetivo_critico)} %
                       </p>
                     ) : null}
                   </TableCell>

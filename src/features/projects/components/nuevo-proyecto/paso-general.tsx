@@ -163,8 +163,9 @@ export function PasoGeneral({
           ) : null}
         </div>
         <p className="text-sm text-muted-foreground" aria-live="polite">
-          {estado.miembros.length + 1} personas en el proyecto (incluye al QA
-          creador).
+          {estado.miembros.length + 1}{" "}
+          {estado.miembros.length ? "personas" : "persona"} en el proyecto
+          (incluye al QA creador).
         </p>
       </FieldSet>
     </div>

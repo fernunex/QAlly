@@ -270,7 +270,7 @@ test("Integración CU-01/03/04: asignar, entregar, devolver, corregir, aprobar y
     await mp.getByLabel("Seleccionar archivo PDF", { exact: true }).setInputFiles({
       name: "integracion.pdf", mimeType: "application/pdf", buffer: samplePdf(),
     });
-    await expect(mp.getByText("integracion.pdf")).toBeVisible();
+    await expect(mp.getByText("integracion.pdf", { exact: true })).toBeVisible();
     await mp.getByLabel("Resultado", { exact: true }).fill("Resultado original de integración.");
     await mp.getByRole("button", { name: "Enviar a revisión", exact: true }).click();
     await expect(mp.getByRole("dialog").getByText(/Solo lectura · enviada/)).toBeVisible();
@@ -309,6 +309,9 @@ test("Integración CU-01/03/04: asignar, entregar, devolver, corregir, aprobar y
     expect(finales[1].resultado).toBe("Resultado corregido con conclusión.");
     expect(finales[1].evidencia).toHaveLength(1);
     expect(finales[1].evidencia[0].tipo).toBe("PDF");
+    // Esperar el router.refresh() posterior a aprobar: navegar con él en vuelo aborta el goto en Firefox.
+    await page.keyboard.press("Escape");
+    await expect(tarjeta("Aprobada")).toBeVisible();
 
     await page.goto(`/proyectos/${proyecto.id}`);
     await page.getByRole("button", { name: `Acciones de ${nombre}`, exact: true }).click();

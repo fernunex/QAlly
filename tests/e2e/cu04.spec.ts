@@ -233,3 +233,127 @@ test("CU-04: rechaza accesos ajenos, sin origen, sin sesión y proyecto cerrado"
   await expect(propia.getByRole("button", { name: "Enviar a revisión" })).toHaveCount(0);
   await propia.close();
 });
+
+test("Integración CU-01/03/04: asignar, entregar, devolver, corregir, aprobar y cerrar desde UI", async ({ page, browser }) => {
+  test.setTimeout(120000);
+  const qa = await cliente("qa1@qally.example.test");
+  const nombre = `Integración ${randomUUID().slice(0, 8)}`;
+  const descripcion = `Actividad ${nombre}`;
+  const proyecto = await rpc(qa, "crear_proyecto", {
+    p_solicitud_id: randomUUID(), p_nombre: nombre,
+    p_descripcion: "Recorrido conjunto QA y Miembro", p_fecha_inicio: "2026-10-01",
+    p_miembros_ids: [stableId(miembro)],
+  });
+  await login(page, "qa1@qally.example.test");
+  await page.goto(`/proyectos/${proyecto.id}/actividades`);
+  await page.getByRole("button", { name: "Agregar actividad", exact: true }).first().click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Tipo de actividad", { exact: true }).click();
+  await page.getByRole("option", { name: /^A-01 · / }).click();
+  await dialog.getByLabel("Descripción", { exact: true }).fill(descripcion);
+  await dialog.getByRole("button", { name: "Agregar actividad", exact: true }).click();
+  const tarjeta = (estado: string) => page.getByRole("region", { name: new RegExp(`^${estado}`) })
+    .getByRole("listitem").filter({ hasText: descripcion });
+  await tarjeta("Pendiente").getByRole("button", { name: "Asignar responsable" }).click();
+  await dialog.getByText("Miembro 2", { exact: true }).click();
+  await dialog.getByRole("button", { name: "Asignar", exact: true }).click();
+  await expect(tarjeta("Pendiente")).toContainText("Miembro 2");
+  const actividad = checked(await qa.from("actividad_sqa").select("id").eq("proyecto_id", proyecto.id).single());
+
+  const contexto = await browser.newContext({ baseURL: base });
+  try {
+    const mp = await contexto.newPage();
+    await login(mp, miembro);
+    await abrir(mp, descripcion);
+    await mp.getByRole("button", { name: "Iniciar actividad", exact: true }).click();
+    await expect(mp.getByText("Intento 1 · en preparación")).toBeVisible();
+    await mp.getByLabel("Seleccionar archivo PDF", { exact: true }).setInputFiles({
+      name: "integracion.pdf", mimeType: "application/pdf", buffer: samplePdf(),
+    });
+    await expect(mp.getByText("integracion.pdf")).toBeVisible();
+    await mp.getByLabel("Resultado", { exact: true }).fill("Resultado original de integración.");
+    await mp.getByRole("button", { name: "Enviar a revisión", exact: true }).click();
+    await expect(mp.getByRole("dialog").getByText(/Solo lectura · enviada/)).toBeVisible();
+    const [original] = await entregas(qa, actividad.id);
+    const pdfId = original.evidencia[0].id;
+
+    await page.reload();
+    await tarjeta("En revisión").getByRole("button").first().click();
+    await expect(dialog).toContainText("Resultado original de integración.");
+    expect((await page.request.get(`/api/evidencias/${pdfId}/archivo`)).status()).toBe(200);
+    await dialog.getByLabel(/Observaciones para el responsable/).fill("Completar la conclusión del informe.");
+    await dialog.getByRole("button", { name: "Devolver con observaciones" }).click();
+    await expect(dialog).toContainText("En progreso");
+    await page.keyboard.press("Escape");
+    await expect(tarjeta("En progreso")).toContainText("Devuelta con observaciones");
+
+    await mp.reload();
+    await abrir(mp, descripcion);
+    await expect(mp.getByText("Completar la conclusión del informe.").first()).toBeVisible();
+    await mp.getByRole("button", { name: "Corregir entrega", exact: true }).click();
+    await expect(mp.getByText("Intento 2 · en preparación")).toBeVisible();
+    await expect(mp.getByLabel("Resultado", { exact: true })).toHaveValue("Resultado original de integración.");
+    await mp.getByLabel("Resultado", { exact: true }).fill("Resultado corregido con conclusión.");
+    await mp.getByRole("button", { name: "Enviar a revisión", exact: true }).click();
+    await expect(mp.getByRole("dialog").getByText(/Solo lectura · enviada/)).toBeVisible();
+
+    await page.reload();
+    await tarjeta("En revisión").getByRole("button").first().click();
+    await expect(dialog).toContainText("Resultado corregido con conclusión.");
+    await dialog.getByRole("button", { name: "Aprobar", exact: true }).click();
+    await page.getByRole("alertdialog").getByRole("button", { name: "Aprobar", exact: true }).click();
+    await expect(page.getByText("Actividad aprobada", { exact: true })).toBeVisible();
+    const finales = await entregas(qa, actividad.id);
+    expect(finales).toHaveLength(2);
+    expect(finales[0]).toEqual(original);
+    expect(finales[1].resultado).toBe("Resultado corregido con conclusión.");
+    expect(finales[1].evidencia).toHaveLength(1);
+    expect(finales[1].evidencia[0].tipo).toBe("PDF");
+
+    await page.goto(`/proyectos/${proyecto.id}`);
+    await page.getByRole("button", { name: `Acciones de ${nombre}`, exact: true }).click();
+    await page.getByRole("menuitem", { name: /Cerrar proyecto/ }).click();
+    await page.getByRole("alertdialog").getByRole("button", { name: /Cerrar proyecto/ }).click();
+    await expect(page.getByRole("note")).toContainText("Proyecto cerrado");
+    await page.goto(`/proyectos/${proyecto.id}/actividades`);
+    await expect(tarjeta("Aprobada")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Agregar actividad" })).toHaveCount(0);
+    for (const r of [page.request, mp.request]) {
+      const descarga = await r.get(`/api/evidencias/${pdfId}/archivo`);
+      expect(descarga.status()).toBe(200);
+      expect(descarga.headers()["cache-control"]).toContain("no-store");
+    }
+    await mp.goto("/mis-actividades");
+    await abrir(mp, descripcion);
+    await expect(mp.getByRole("dialog")).toContainText("Proyecto cerrado");
+    await expect(mp.getByRole("button", { name: "Enviar a revisión", exact: true })).toHaveCount(0);
+  } finally {
+    await contexto.close();
+  }
+});
+
+test("CU-04: respuesta perdida tras subir PDF conserva una única evidencia al recargar", async ({ page }) => {
+  const descripcion = `Respuesta perdida ${randomUUID().slice(0, 8)}`;
+  const { qa, actividadId } = await fixture(descripcion);
+  await login(page, miembro);
+  await abrir(page, descripcion);
+  await page.getByRole("button", { name: "Iniciar actividad", exact: true }).click();
+  await expect(page.getByText("Intento 1 · en preparación")).toBeVisible();
+  await page.route("**/api/entregas/*/evidencias/pdf", async (route) => {
+    const confirmada = await route.fetch();
+    expect(confirmada.status()).toBe(200);
+    await route.abort("failed");
+  }, { times: 1 });
+  await page.getByLabel("Seleccionar archivo PDF", { exact: true }).setInputFiles({
+    name: "respuesta-perdida.pdf", mimeType: "application/pdf", buffer: samplePdf(),
+  });
+  await expect(page.getByText(/No pudimos confirmar la subida del PDF/).first()).toBeVisible();
+  const [intento] = await entregas(qa, actividadId);
+  expect(intento.enviada_en).toBeNull();
+  expect(intento.evidencia).toHaveLength(1);
+  await page.reload();
+  await abrir(page, descripcion);
+  await expect(page.getByText("respuesta-perdida.pdf")).toBeVisible();
+  const [releido] = await entregas(qa, actividadId);
+  expect(releido.evidencia).toEqual(intento.evidencia);
+});

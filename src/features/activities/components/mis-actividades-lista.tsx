@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { ChevronRightIcon, ClipboardCheckIcon, LockIcon, MessageSquareTextIcon, PlayIcon } from "lucide-react";
 import { toast } from "sonner";
 import { EstadoActividadIcon } from "@/components/status/status-badges";
@@ -31,6 +31,7 @@ export function MisActividadesLista({
   actividades: MiActividad[];
   nombres: Nombres;
 }) {
+  const grupoId = useId();
   const [actividades, setActividades] = useState(iniciales);
   const [nombres, setNombres] = useState(nombresIniciales);
   const [previas, setPrevias] = useState(iniciales);
@@ -117,8 +118,8 @@ export function MisActividadesLista({
         const lista = actividades.filter((a) => a.estado === estado);
         if (lista.length === 0 && filtro === "todas") return null;
         return (
-          <section key={estado} aria-labelledby={`grupo-${estado}`} className="space-y-2.5">
-            <h2 id={`grupo-${estado}`} className="flex items-center gap-2 text-sm font-semibold">
+          <section key={estado} aria-labelledby={`${grupoId}-${ORDEN.indexOf(estado)}`} className="space-y-2.5">
+            <h2 id={`${grupoId}-${ORDEN.indexOf(estado)}`} className="flex items-center gap-2 text-sm font-semibold">
               <EstadoActividadIcon estado={estado} />
               {estado}
               <span className="font-normal text-muted-foreground tabular-nums">{lista.length}</span>

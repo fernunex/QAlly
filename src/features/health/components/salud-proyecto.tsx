@@ -16,6 +16,7 @@ import {
   conteoGeneral,
   contarCumplimiento,
   metricasDeEtapa,
+  NOTA_SALUD,
   resumenCumplimiento,
 } from "@/features/health/lib";
 import {
@@ -26,9 +27,6 @@ import {
 import { objetivoLineas, valorActualTexto } from "@/features/metrics/lib/formato";
 import type { MetricaProyecto } from "@/features/metrics/types";
 import type { EtapaResumen, ResumenProyecto } from "@/features/health/types";
-
-export const NOTA_SALUD =
-  "La salud aún no se calcula: el algoritmo y su clasificación están pendientes de aprobación. Se muestran solo los datos reales del proyecto.";
 
 /** Estado y motivo tal como los entrega el resumen (hoy siempre «Sin evaluar»). */
 function Salud({ salud, prefijo }: { salud: EstadoSalud; prefijo?: string }) {

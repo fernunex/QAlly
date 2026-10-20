@@ -4,6 +4,7 @@ import { z } from "zod";
 import { obtenerSesion } from "@/lib/session";
 import { crearClienteAdministrativo } from "@/lib/supabase/admin";
 import { comprobarError, ErrorOperacion } from "@/lib/resultados";
+import { leerCuerpoLimitado as leerCuerpo } from "@/lib/http";
 import { uuid } from "@/features/projects/validation";
 import { contenidoPdfValido, LIMITE_PDF, nombrePdfValido } from "../validation";
 
@@ -11,31 +12,11 @@ const BUCKET = "evidencias";
 /** Rechazos transaccionales conocidos: la asociación falló y el objeto no tiene referencias. */
 const RECHAZOS_CONOCIDOS = ["P0001", "23514", "23503"];
 
-/** Lee el cuerpo contando bytes reales, sin confiar en Content-Length. */
-export async function leerCuerpoLimitado(
+/** Lee el cuerpo del PDF contando bytes reales, sin confiar en Content-Length (3 MiB). */
+export function leerCuerpoLimitado(
   cuerpo: ReadableStream<Uint8Array> | null,
 ): Promise<Uint8Array> {
-  if (!cuerpo) throw new ErrorOperacion("DATOS_INVALIDOS");
-  const reader = cuerpo.getReader();
-  const partes: Uint8Array[] = [];
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > LIMITE_PDF) {
-      await reader.cancel().catch(() => {});
-      throw new ErrorOperacion("TAMANO_EXCEDIDO");
-    }
-    partes.push(value);
-  }
-  const bytes = new Uint8Array(total);
-  let i = 0;
-  for (const p of partes) {
-    bytes.set(p, i);
-    i += p.byteLength;
-  }
-  return bytes;
+  return leerCuerpo(cuerpo, LIMITE_PDF);
 }
 
 /** Compensación inmediata de una transferencia terminada cuya asociación fue rechazada. */
@@ -153,9 +134,4 @@ export async function leerPdf(evidenciaId: string) {
   return { nombre: archivo.nombre_archivo, contenido: descarga.data };
 }
 
-/** Nombre saneado para Content-Disposition, con alternativa ASCII. */
-export function disposicionAdjunto(nombre: string): string {
-  const limpio = nombre.replace(/[\x00-\x1f\x7f"\\/;]/g, "_") || "evidencia.pdf";
-  const ascii = limpio.normalize("NFKD").replace(/[^\x20-\x7e]/g, "_");
-  return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(limpio)}`;
-}
+export { disposicionAdjunto } from "@/lib/http";

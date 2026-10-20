@@ -13,6 +13,10 @@ import type { ResumenProyecto } from "./types";
  * entrega la BD; no calculan salud, porcentajes, pesos ni categorías.
  */
 
+/** Aviso común de CU-05 y CU-06 mientras el algoritmo de salud esté PENDIENTE. */
+export const NOTA_SALUD =
+  "La salud aún no se calcula: el algoritmo y su clasificación están pendientes de aprobación. Se muestran solo los datos reales del proyecto.";
+
 export const ESTADOS_CUMPLIMIENTO: readonly EstadoCumplimiento[] = [
   "Cumple",
   "Incumple",

@@ -1,33 +1,37 @@
 "use client";
 
 import { DownloadIcon, RefreshCwIcon } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { formatFechaHora } from "@/lib/format";
 
-export function ReporteAcciones({ capturadoEn }: { capturadoEn: string }) {
+/** Barra de acciones del reporte generado: regenerar (vista + captura) y exportar a PDF. */
+export function ReporteAcciones({
+  venceEn,
+  generando,
+  exportando,
+  onRegenerar,
+  onExportar,
+}: {
+  venceEn: string;
+  generando: boolean;
+  exportando: boolean;
+  onRegenerar: () => void;
+  onExportar: () => void;
+}) {
   return (
     <div className="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
       <p className="text-sm text-muted-foreground">
-        Datos capturados el {capturadoEn} · vigencia de 15 minutos: al vencer, la vista y el PDF se regeneran juntos
+        El PDF se exporta con esta misma captura, vigente hasta el {formatFechaHora(venceEn)} (UTC). Si vence, regenera el
+        reporte: se actualizan juntos la vista, su fecha y el PDF.
       </p>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            // TODO(funcionalidad): regenerarReporte (contratos-v1 §6) — nueva captura y token.
-            toast.success("Reporte regenerado con los datos actuales");
-          }}
-        >
-          <RefreshCwIcon />
-          Generar reporte
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <Button variant="outline" onClick={onRegenerar} disabled={generando || exportando}>
+          {generando ? <Spinner aria-hidden /> : <RefreshCwIcon />}
+          Regenerar reporte
         </Button>
-        <Button
-          onClick={() => {
-            // TODO(funcionalidad): POST /api/reportes/pdf con capturaToken
-            toast.success("Exportación a PDF iniciada");
-          }}
-        >
-          <DownloadIcon />
+        <Button onClick={onExportar} disabled={generando || exportando}>
+          {exportando ? <Spinner aria-hidden /> : <DownloadIcon />}
           Exportar a PDF
         </Button>
       </div>

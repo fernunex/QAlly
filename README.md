@@ -4,7 +4,7 @@ QAlly es una plataforma web académica para gestionar actividades de aseguramien
 
 ## Estado actual
 
-**CU-01 a CU-04 están implementados e integrados en `dev`**, con persistencia en Supabase local. La integración se registró en `8fb64b4`; el ajuste posterior de formato está en `f82ffd0`. `main` conserva una versión anterior y no contiene esta integración.
+**CU-01 a CU-04 están implementados e integrados en `dev`**, con persistencia en Supabase local. La consulta de CU-05 está implementada en la rama `feat/cu05-salud-proyecto`, pendiente de revisión e integración. La integración se registró en `8fb64b4`; el ajuste posterior de formato está en `f82ffd0`. `main` conserva una versión anterior y no contiene esta integración.
 
 | Caso de uso | Disponible actualmente | Estado |
 |---|---|---|
@@ -12,7 +12,7 @@ QAlly es una plataforma web académica para gestionar actividades de aseguramien
 | [CU-02 — Métricas](docs/modulos/cu02-implementacion.md) | Agregar tipos del catálogo, configurar objetivos, registrar mediciones, consultar historial y corregir con trazabilidad. | Implementado y probado localmente. |
 | [CU-03 — Actividades SQA](docs/modulos/cu03-implementacion.md) | Tablero paginado con filtros, alta, asignación, consulta, aprobación y devolución con observaciones. | Implementado y probado localmente. |
 | [CU-04 — Entrega de evidencias](docs/modulos/cu04-implementacion.md) | Mis actividades, inicio, resultado, PDF/enlaces, envío a revisión y corrección en otro intento. | Implementado y probado; paginación de listas e intentos pendiente. |
-| [CU-05 — Salud del proyecto](docs/modulos/salud.md) | Entradas y consultas de BD preparadas; dashboard pendiente de conexión. | Algoritmo y clasificación pendientes de aprobación. |
+| [CU-05 — Salud del proyecto](docs/modulos/cu05-implementacion.md) | Pestaña Salud: salud general y por etapa «Sin evaluar», tres etapas con conteos y actividades, métricas con valor, objetivo, cumplimiento y «Sin medición». | Consulta implementada y probada localmente; algoritmo y clasificación pendientes de aprobación. |
 | [CU-06 — Reportes](docs/modulos/reportes.md) | Componentes de prototipo conservados; ruta muestra aviso de funcionalidad pendiente. | Generación y exportación de reportes pendientes. |
 
 La salud general y por etapa sigue siendo parte del alcance; no se calculan puntajes ni categorías sin un algoritmo aprobado. **Supabase Cloud y el despliegue aún no están configurados**; se puede desarrollar y probar localmente.
@@ -22,7 +22,7 @@ La salud general y por etapa sigue siendo parte del alcance; no se calculan punt
 ## Roles y flujo disponible
 
 - **QA:** crea y administra sus proyectos, configura métricas, registra/corrige mediciones, asigna actividades SQA y revisa entregas.
-- **Miembro del equipo:** consulta proyectos autorizados e inicia y entrega sus actividades asignadas desde **Mis actividades**.
+- **Miembro del equipo:** consulta proyectos autorizados y su salud, e inicia y entrega sus actividades asignadas desde **Mis actividades**.
 
 Flujo de actividad SQA: **Pendiente → En progreso → En revisión → Aprobada**. QA puede devolver una entrega de En revisión a En progreso con observaciones; la corrección conserva el intento anterior. Los proyectos cerrados siguen disponibles para consulta y descarga de evidencias, con escrituras de negocio bloqueadas.
 
@@ -101,12 +101,12 @@ npm run e2e:test
 
 E2E compila y sirve la aplicación de producción en el **puerto 3100**, que debe estar libre. Añade datos ficticios locales y no borra los existentes. Para utilizar un Chrome estable instalado, definir `QALLY_CHROME_PATH` con la ruta de su ejecutable; el navegador predeterminado de Playwright no se considera automáticamente el canal estable.
 
-La integración de CU-01 a CU-04 verificó **50 pruebas unitarias, 20 de BD y 44 escenarios E2E** en Chrome for Testing Stable 155.0.8059.84 y Firefox de Playwright 157.0. También pasaron lint, TypeScript y build, sin cambios de migraciones ni tipos generados. Son resultados locales registrados, no una nueva ejecución ni una certificación completa de todos los RNF. [Entorno, resultados y límites](docs/equipo/integracion-cu02-cu03-cu04.md#resultados-de-la-integración).
+La integración de CU-01 a CU-04 verificó **50 pruebas unitarias, 20 de BD y 44 escenarios E2E** en Chrome for Testing Stable 155.0.8059.84 y Firefox de Playwright 157.0. También pasaron lint, TypeScript y build, sin cambios de migraciones ni tipos generados. Son resultados locales registrados, no una nueva ejecución ni una certificación completa de todos los RNF. [Entorno, resultados y límites](docs/equipo/integracion-cu02-cu03-cu04.md#resultados-de-la-integración). La rama de CU-05 registró después **54 unitarias, 20 de BD y 50 E2E** con Chromium y Firefox de Playwright: [resultados de CU-05](docs/modulos/cu05-implementacion.md#resultado-comprobado).
 
 ## Pendientes relevantes
 
 - Paginar **Mis actividades** y los intentos de CU-04: hoy carga listas completas, con riesgo de respuestas grandes o truncadas por el límite de PostgREST.
-- Definir el algoritmo de salud e implementar CU-05 y CU-06.
+- Definir el algoritmo de salud (CU-05 muestra «Sin evaluar» mientras tanto) e implementar CU-06 reutilizando `consultarResumen`.
 - Medir los tiempos de aceptación RNF en un entorno desplegado y representativo.
 - Preparar Cloud/despliegue y automatizar la limpieza diaria cuando corresponda. La ejecución remota de GitHub Actions no está acreditada por las pruebas locales.
 - Dar seguimiento a los avisos de dependencias registrados durante la integración, sin aplicar actualizaciones forzadas de versiones principales.

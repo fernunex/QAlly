@@ -25,3 +25,7 @@ Algoritmo, pesos, clasificación, valores de corte, ausencia de datos y etapas s
 
 ## Consideración técnica de implementación
 Usar consulta/contrato de indicadores v1 aprobado y compartido con reportes; no introducir categorías ni puntuaciones hasta aprobación del algoritmo.
+
+## Estado de implementación — 2026-10-20
+
+Consulta de CU-05 implementada en `feat/cu05-salud-proyecto`: adaptador `consultarResumen` y DTO `ResumenProyecto` (`src/features/health/`), reutilizables por CU-06, y pestaña **Salud** con datos reales. Salud general y por etapa permanecen «Sin evaluar»; algoritmo, pesos y clasificación siguen **PENDIENTES**. [Realización, pruebas y trazabilidad](cu05-implementacion.md).

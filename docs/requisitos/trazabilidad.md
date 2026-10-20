@@ -51,7 +51,7 @@ El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementó la parte d
 | CU-02 | Objetivos, mediciones idempotentes, revisiones anexadas y consulta de vigencia. | Implementado el 2026-10-19: [trazabilidad CU–RF–RNF y evidencia](../modulos/cu02-implementacion.md#trazabilidad). |
 | CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Integrado en `dev`: [CU-03](../modulos/cu03-implementacion.md). |
 | CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Integrado en `dev`: [CU-04](../modulos/cu04-implementacion.md); paginación pendiente. |
-| CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Algoritmo aprobado de salud y dashboard. |
+| CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Consulta implementada en `feat/cu05-salud-proyecto`: [CU-05](../modulos/cu05-implementacion.md); algoritmo aprobado de salud pendiente. |
 | CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Captura cifrada, exportación PDF y correspondencia visual. |
 
 Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. Este resultado del bootstrap no cambia ningún RF ni acredita por sí mismo los flujos de la aplicación; el avance de CU-01 a CU-04 y su validación conjunta se detallan a continuación.
@@ -114,3 +114,16 @@ La integración conserva los requisitos y la ampliación de filtros aprobada par
 | RF-22/24/25; RNF-08/09 | Respuesta de subida perdida después de persistir: recargar recupera una única evidencia; pruebas de fallos del adaptador comprueban compensación de rechazos conocidos y conservación ante confirmación ambigua. |
 
 Los resultados y límites se registran en la guía conjunta. No equivalen a aceptación de CU-05/06 ni a mediciones de rendimiento desplegado.
+
+## CU-05 implementado — 2026-10-20
+
+Se conservan RF, RNF y reglas aprobadas; salud general y por etapa siguen «Sin evaluar» y RF-26 y la clasificación final de RF-27 permanecen pendientes de diseño. [Realización, ejecución y límites](../modulos/cu05-implementacion.md).
+
+| Subflujo / requisito | Implementación | Evidencia automatizada |
+|---|---|---|
+| RF-33; RNF-01/02/03; FE-02 | `consultarResumen` con sesión del usuario sobre `consultar_resumen`; participación exigida en la BD; NO_DISPONIBLE indistinguible. | E2E QA ajeno, Miembro no participante, inexistente, malformado y sin sesión. |
+| Flujo principal; RF-28; RNF-07 | Pestaña Salud con resumen general, tres etapas en orden fijo y métricas reales. | E2E QA y Miembro en Chromium y Firefox de Playwright; unitarias de mapeo. |
+| FA-01; RF-26/27 (parcial); RF-29 | «Sin evaluar» con motivo, sin puntajes ni categorías; validación literal del estado. | E2E sin categorías; unitarias de rechazo. |
+| SF-01, FE-01; RF-28/29 | Valor actual, objetivo, cumplimiento, estado de medición y fecha; Sin medición ≠ 0. | E2E Sin medición, medida y No evaluable. |
+| SF-02; RF-28 | Conteos por estado y actividades por etapa con responsable. | E2E conteos y listas por etapa. |
+| FE-03; RNF-04 | Error de carga con reintento, sin datos parciales. | Sin E2E (no provocable desde el navegador); RNF-04 pendiente en despliegue. |

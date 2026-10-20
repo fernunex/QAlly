@@ -48,7 +48,7 @@ El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementa la parte de
 | CU | Implementación de datos | Pendiente fuera de este bootstrap |
 |---|---|---|
 | CU-01 | RPC de alta/configuración atómica, edición, cierre y consulta; participación y RLS. | Formularios y autorización de rutas Next.js. |
-| CU-02 | Objetivos, mediciones idempotentes, revisiones anexadas y consulta de vigencia. | Interfaz y validación Zod de sus formularios. |
+| CU-02 | Objetivos, mediciones idempotentes, revisiones anexadas y consulta de vigencia. | Implementado el 2026-10-19: [trazabilidad CU–RF–RNF y evidencia](../modulos/cu02-implementacion.md#trazabilidad). |
 | CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Pantallas y flujos de usuario. |
 | CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Endpoint Next.js, sesiones SSR y pruebas de navegador. |
 | CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Algoritmo aprobado de salud y dashboard. |

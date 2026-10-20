@@ -1,22 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GaugeIcon, PlusIcon } from "lucide-react";
+import { toast } from "sonner";
 import { SectionTitle } from "@/components/shell/page-header";
 import { AvisoSoloLectura, EstadoVacio } from "@/components/states/ui-states";
 import { CumplimientoBadge, CumplimientoIcon, cumplimientoEtiqueta } from "@/components/status/status-badges";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TIPOS_METRICA, nombreEtapa } from "@/lib/catalogs";
-import type { EstadoCumplimiento, Medicion, MetricaVista } from "@/lib/domain";
+import { nombreEtapa } from "@/lib/catalogs";
+import type { EstadoCumplimiento, TipoMetrica } from "@/lib/domain";
+import { listarMedicionesAction } from "@/features/metrics/actions";
 import { AgregarMetricaDialog } from "@/features/metrics/components/agregar-metrica-dialog";
 import { MedicionDialog } from "@/features/metrics/components/medicion-dialog";
-import { MetricaDetalleSheet } from "@/features/metrics/components/metrica-detalle-sheet";
+import {
+  MetricaDetalleSheet,
+  type EstadoHistorial,
+} from "@/features/metrics/components/metrica-detalle-sheet";
 import { objetivoLineas, valorActualTexto } from "@/features/metrics/lib/formato";
+import type { Medicion, MetricaProyecto } from "@/features/metrics/types";
 
 const ORDEN: EstadoCumplimiento[] = ["Cumple", "Incumple", "No evaluable", "Sin medición"];
 
-function Objetivo({ m }: { m: MetricaVista }) {
+function Objetivo({ m }: { m: MetricaProyecto }) {
   return (
     <div className="space-y-0.5 tabular-nums">
       {objetivoLineas(m).map((l) => (
@@ -29,8 +36,8 @@ function Objetivo({ m }: { m: MetricaVista }) {
   );
 }
 
-function Valor({ m }: { m: MetricaVista }) {
-  const sinValor = !m.medicionVigente || m.valorActual === null;
+function Valor({ m }: { m: MetricaProyecto }) {
+  const sinValor = !m.medidaEn || m.valorActual === null;
   return (
     <div className="tabular-nums">
       <p className={sinValor ? "text-sm whitespace-nowrap text-muted-foreground" : "text-sm font-bold whitespace-nowrap"}>
@@ -44,24 +51,32 @@ function Valor({ m }: { m: MetricaVista }) {
 }
 
 export function MetricasVista({
-  metricas,
-  autores,
+  proyectoId,
+  metricas: recibidas,
+  catalogo,
   esQA,
   cerrado,
 }: {
-  metricas: MetricaVista[];
-  /** id de usuario → nombre. */
-  autores: Record<string, string>;
+  proyectoId: string;
+  metricas: MetricaProyecto[];
+  /** Tipos vigentes del catálogo, con IDs de la BD. */
+  catalogo: TipoMetrica[];
   esQA: boolean;
   cerrado: boolean;
 }) {
+  const router = useRouter();
   const puedeGestionar = esQA && !cerrado;
   const [seleccion, setSeleccion] = useState<string | null>(null);
+  const [historial, setHistorial] = useState<EstadoHistorial | null>(null);
+  const actual = useRef<string | null>(null);
   const [agregar, setAgregar] = useState(false);
   const [dialogo, setDialogo] = useState<{ metricaId: string; medicion: Medicion | null } | null>(null);
+  // Respuesta de la última mutación por métrica, válida hasta que llegue la lista refrescada del servidor.
+  const [locales, setLocales] = useState<Record<string, { base: MetricaProyecto; metrica: MetricaProyecto }>>({});
+  const metricas = recibidas.map((m) => (locales[m.id]?.base === m ? locales[m.id]!.metrica : m));
 
-  const configurados = new Set(metricas.map((m) => m.tipoId));
-  const disponibles = TIPOS_METRICA.filter((t) => !configurados.has(t.id));
+  const configurados = new Set(metricas.map((m) => m.tipo.id));
+  const disponibles = catalogo.filter((t) => !configurados.has(t.id));
   const conteo = Object.fromEntries(ORDEN.map((e) => [e, metricas.filter((m) => m.cumplimiento === e).length])) as Record<
     EstadoCumplimiento,
     number
@@ -69,7 +84,53 @@ export function MetricasVista({
   const seleccionada = metricas.find((m) => m.id === seleccion) ?? null;
   const metricaDialogo = dialogo ? (metricas.find((m) => m.id === dialogo.metricaId) ?? null) : null;
 
-  const registrar = (m: MetricaVista) => setDialogo({ metricaId: m.id, medicion: null });
+  const registrar = (m: MetricaProyecto) => setDialogo({ metricaId: m.id, medicion: null });
+
+  async function cargarHistorial(id: string, cursor?: string) {
+    try {
+      const r = await listarMedicionesAction({ metricaProyectoId: id, ...(cursor ? { cursor } : {}) });
+      if (actual.current !== id) return;
+      setHistorial((h) => {
+        if (!r.ok) return { id, tipo: "error", error: r.error };
+        const previos = cursor && h?.id === id && h.tipo === "ok" ? h.items : [];
+        return { id, tipo: "ok", items: [...previos, ...r.datos.items], siguienteCursor: r.datos.siguienteCursor };
+      });
+    } catch {
+      if (actual.current === id)
+        setHistorial({
+          id,
+          tipo: "error",
+          error: { codigo: "FALLO_PERSISTENCIA", mensaje: "No pudimos cargar las mediciones. Inténtalo de nuevo." },
+        });
+    }
+  }
+  function abrir(id: string) {
+    actual.current = id;
+    setSeleccion(id);
+    setHistorial({ id, tipo: "cargando" });
+    void cargarHistorial(id);
+  }
+  function cerrar() {
+    actual.current = null;
+    setSeleccion(null);
+  }
+  function recargarHistorial() {
+    if (!seleccion) return;
+    setHistorial({ id: seleccion, tipo: "cargando" });
+    void cargarHistorial(seleccion);
+  }
+  function cargarMas() {
+    if (historial?.tipo !== "ok" || !historial.siguienteCursor) return;
+    setHistorial({ ...historial, cargandoMas: true });
+    void cargarHistorial(historial.id, historial.siguienteCursor);
+  }
+  /** Tras guardar: refleja la respuesta, refresca la ruta y el historial abierto. */
+  function actualizada(m: MetricaProyecto, historialCambia: boolean) {
+    const base = recibidas.find((x) => x.id === m.id);
+    if (base) setLocales((l) => ({ ...l, [m.id]: { base, metrica: m } }));
+    router.refresh();
+    if (historialCambia && actual.current === m.id) void cargarHistorial(m.id);
+  }
 
   return (
     <div className="space-y-6">
@@ -130,7 +191,7 @@ export function MetricasVista({
                   <TableRow
                     key={m.id}
                     className="cursor-pointer"
-                    onClick={() => setSeleccion(m.id)}
+                    onClick={() => abrir(m.id)}
                     data-state={seleccion === m.id ? "selected" : undefined}
                   >
                     <TableCell className="pl-4">
@@ -139,7 +200,7 @@ export function MetricasVista({
                         className="flex items-baseline gap-2 text-left outline-none focus-visible:underline"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setSeleccion(m.id);
+                          abrir(m.id);
                         }}
                       >
                         <span className="font-mono text-xs text-muted-foreground">{m.tipo.codigo}</span>
@@ -184,7 +245,7 @@ export function MetricasVista({
               <li key={m.id} className="overflow-hidden rounded-xl border bg-card">
                 <button
                   type="button"
-                  onClick={() => setSeleccion(m.id)}
+                  onClick={() => abrir(m.id)}
                   className="block w-full space-y-3 p-4 text-left outline-none focus-visible:bg-muted/50"
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -219,7 +280,7 @@ export function MetricasVista({
           </ul>
 
           <p className="text-sm text-muted-foreground">
-            {configurados.size} de {TIPOS_METRICA.length} métricas del catálogo configuradas
+            {configurados.size} de {configurados.size + disponibles.length} métricas del catálogo configuradas
             {disponibles.length > 0
               ? ` · disponible${disponibles.length > 1 ? "s" : ""} para agregar: ${disponibles
                   .map((t) => `${t.codigo} ${t.nombre}`)
@@ -233,15 +294,31 @@ export function MetricasVista({
       <MetricaDetalleSheet
         key={seleccionada?.id ?? "ninguna"}
         metrica={seleccionada}
-        autores={autores}
+        historial={historial?.id === seleccionada?.id ? historial : null}
         puedeGestionar={puedeGestionar}
-        onCerrar={() => setSeleccion(null)}
+        onCerrar={cerrar}
         onRegistrar={registrar}
         onCorregir={(m, medicion) => setDialogo({ metricaId: m.id, medicion })}
+        onCargarMas={cargarMas}
+        onRecargar={recargarHistorial}
+        onObjetivoGuardado={(m) => {
+          toast.success(`Objetivo actualizado · ${cumplimientoEtiqueta(m.cumplimiento)}`);
+          actualizada(m, false);
+        }}
       />
 
       {puedeGestionar && agregar && disponibles.length > 0 ? (
-        <AgregarMetricaDialog disponibles={disponibles} open onOpenChange={setAgregar} />
+        <AgregarMetricaDialog
+          proyectoId={proyectoId}
+          disponibles={disponibles}
+          open
+          onOpenChange={setAgregar}
+          onAgregada={(m) => {
+            toast.success(`Métrica ${m.tipo.codigo} agregada · Sin medición`);
+            setAgregar(false);
+            router.refresh();
+          }}
+        />
       ) : null}
 
       {puedeGestionar && dialogo && metricaDialogo ? (
@@ -249,7 +326,14 @@ export function MetricasVista({
           key={`${dialogo.metricaId}-${dialogo.medicion?.id ?? "nueva"}`}
           metrica={metricaDialogo}
           medicion={dialogo.medicion}
+          esVigente={
+            historial?.tipo === "ok" && historial.id === dialogo.metricaId && historial.items[0]?.id === dialogo.medicion?.id
+          }
           onOpenChange={(o) => !o && setDialogo(null)}
+          onGuardada={(m) => {
+            setDialogo(null);
+            actualizada(m, true);
+          }}
         />
       ) : null}
     </div>

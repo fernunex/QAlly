@@ -1,5 +1,6 @@
 import { formatValor } from "@/lib/format";
-import type { MetricaVista, TipoMetrica } from "@/lib/domain";
+import type { TipoMetrica } from "@/lib/domain";
+import type { MetricaProyecto } from "../types";
 
 /*
  * Validación y cálculo de vista previa del catálogo v1 de métricas (ADR-002).
@@ -121,7 +122,6 @@ export function validarObjetivo(unidad: TipoMetrica["unidad"], valor: string): s
 }
 
 /** ¿La medición con esta fecha pasa a ser la vigente? (fecha más reciente; empate gana el último registro). */
-export function seraVigente(m: MetricaVista, medidaEn: string): boolean {
-  const v = m.medicionVigente;
-  return !v || medidaEn >= v.medidaEn;
+export function seraVigente(m: Pick<MetricaProyecto, "medidaEn">, medidaEn: string): boolean {
+  return !m.medidaEn || medidaEn >= m.medidaEn.slice(0, 10);
 }

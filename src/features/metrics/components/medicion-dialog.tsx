@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,17 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { Medicion, MetricaVista } from "@/lib/domain";
 import { formatFecha } from "@/lib/format";
+import type { ErrorPublico } from "@/lib/resultados";
+import { ErrorAccion } from "@/features/projects/components/error-accion";
+import { corregirMedicionAction, registrarMedicionAction } from "@/features/metrics/actions";
 import {
   MAX_FUENTE,
   calcularVistaPrevia,
-  seraVigente,
   validarDatosFuente,
   validarFuente,
   type DatosTexto,
 } from "@/features/metrics/lib/calculo";
 import { valorActualTexto } from "@/features/metrics/lib/formato";
+import type { Medicion, MetricaProyecto } from "@/features/metrics/types";
 
 /** Fecha local de hoy como AAAA-MM-DD; solo se invoca al abrir el diálogo (interacción, no render del servidor). */
 function hoy() {
@@ -39,54 +41,100 @@ function hoy() {
 export function MedicionDialog({
   metrica,
   medicion,
+  esVigente,
   onOpenChange,
+  onGuardada,
 }: {
-  metrica: MetricaVista;
+  metrica: MetricaProyecto;
   medicion: Medicion | null;
+  /** La medición a corregir es la actual (primera del historial). */
+  esVigente: boolean;
   onOpenChange: (open: boolean) => void;
+  onGuardada: (metrica: MetricaProyecto) => void;
 }) {
   const id = useId();
   const { tipo } = metrica;
   const corrigiendo = medicion !== null;
-  const actual = medicion?.revisiones[medicion.revisiones.length - 1];
+  const actual = medicion?.revision;
 
   const [datos, setDatos] = useState<DatosTexto>(() =>
     Object.fromEntries(tipo.campos.map((c) => [c.clave, actual ? String(actual.datosFuente[c.clave] ?? "") : ""])),
   );
-  const [fecha, setFecha] = useState(() => (medicion ? medicion.medidaEn : hoy()));
+  const [fecha, setFecha] = useState(() => (medicion ? medicion.medidaEn.slice(0, 10) : hoy()));
   const [fuente, setFuente] = useState(actual?.fuenteReferencia ?? "");
   const [intentado, setIntentado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState<ErrorPublico | null>(null);
+  // Respuesta incierta: se conservan identidad y datos para reintentar sin duplicar.
+  const [ambiguo, setAmbiguo] = useState(false);
+  // medicionId estable del formulario: se genera en el primer envío y se reutiliza en reintentos (ADR-002).
+  const medicionId = useRef<string | null>(null);
 
   const erroresDatos = validarDatosFuente(tipo.codigo, tipo.campos, datos);
   const errorFuente = validarFuente(fuente);
   const errorFecha = !corrigiendo && !fecha ? "Indica la fecha de medición." : null;
   const hayErrores = Object.keys(erroresDatos).length > 0 || !!errorFuente || !!errorFecha;
   const vista = hayErrores && Object.keys(erroresDatos).length > 0 ? null : calcularVistaPrevia(tipo, datos);
+  const bloqueado = enviando || ambiguo;
 
   const verError = (clave: string) =>
     erroresDatos[clave] && (intentado || (datos[clave] ?? "") !== "") ? erroresDatos[clave] : undefined;
 
-  function guardar() {
+  async function guardar() {
     setIntentado(true);
-    if (hayErrores || !vista) return;
-    const nuevo = vista.principal ?? "No evaluable";
-    if (corrigiendo) {
-      // TODO(funcionalidad): corregirMedicion(medicionId, revisionEsperada, datosFuente) — QA, proyecto abierto; manejar CONFLICTO.
-      const esVigente = metrica.medicionVigente?.id === medicion.id;
+    if (enviando || hayErrores || !vista) return;
+    setEnviando(true);
+    setError(null);
+    try {
+      const conteos = Object.fromEntries(tipo.campos.map((c) => [c.clave, datos[c.clave] ?? ""]));
+      let r;
+      if (corrigiendo) {
+        r = await corregirMedicionAction({
+          medicionId: medicion.id,
+          revisionEsperada: medicion.revision.numero,
+          conteos,
+          fuenteReferencia: fuente,
+        });
+      } else {
+        medicionId.current ??= crypto.randomUUID();
+        r = await registrarMedicionAction({
+          medicionId: medicionId.current,
+          metricaProyectoId: metrica.id,
+          medidaEn: fecha,
+          conteos,
+          fuenteReferencia: fuente,
+        });
+      }
+      if (!r.ok) {
+        setError(r.error);
+        // Sin respuesta definitiva del registro: se reintenta con la misma identidad y los mismos datos.
+        setAmbiguo(!corrigiendo && r.error.codigo === "FALLO_PERSISTENCIA");
+        return;
+      }
+      const m = r.datos.metrica;
+      const cambiaActual = corrigiendo ? esVigente : m.medidaEn?.slice(0, 10) === fecha;
+      const prefijo = corrigiendo
+        ? "Corrección guardada"
+        : r.datos.reutilizada
+          ? "La medición ya estaba guardada; no se duplicó"
+          : "Medición guardada";
       toast.success(
-        esVigente
-          ? `Corrección guardada · valor actual ${nuevo}`
-          : `Corrección guardada · el valor actual no cambia (${valorActualTexto(metrica)})`,
+        cambiaActual
+          ? `${prefijo} · valor actual ${valorActualTexto(m)}`
+          : `${prefijo} · el valor actual no cambia (${valorActualTexto(m)})`,
       );
-    } else {
-      // TODO(funcionalidad): registrarMedicion(medicionId, metricaProyectoId, medidaEn, datosFuente) — QA, proyecto abierto.
-      toast.success(
-        seraVigente(metrica, fecha)
-          ? `Medición guardada · valor actual ${nuevo}`
-          : `Medición guardada · el valor actual no cambia (${valorActualTexto(metrica)})`,
-      );
+      onGuardada(m);
+    } catch {
+      setError({
+        codigo: "FALLO_PERSISTENCIA",
+        mensaje: corrigiendo
+          ? "No recibimos la confirmación. Recarga para comprobar si la corrección se guardó."
+          : "No recibimos la confirmación. Reintenta con los mismos datos.",
+      });
+      setAmbiguo(!corrigiendo);
+    } finally {
+      setEnviando(false);
     }
-    onOpenChange(false);
   }
 
   return (
@@ -103,6 +151,12 @@ export function MedicionDialog({
               : "Una medición nueva no reemplaza las anteriores."}
           </DialogDescription>
         </DialogHeader>
+        {error ? <ErrorAccion error={error} /> : null}
+        {ambiguo ? (
+          <p role="status" className="text-sm">
+            La respuesta es incierta. Se conservan los datos para reintentar sin duplicar la medición.
+          </p>
+        ) : null}
         <FieldGroup>
           <div className="grid gap-4 sm:grid-cols-2">
             {tipo.campos.map((c) => {
@@ -116,6 +170,7 @@ export function MedicionDialog({
                     className="tabular-nums"
                     value={datos[c.clave] ?? ""}
                     aria-invalid={!!err}
+                    disabled={bloqueado}
                     onChange={(e) => setDatos({ ...datos, [c.clave]: e.target.value })}
                   />
                   {err ? <FieldError>{err}</FieldError> : null}
@@ -136,6 +191,7 @@ export function MedicionDialog({
                   id={`${id}-fecha`}
                   type="date"
                   value={fecha}
+                  disabled={bloqueado}
                   aria-invalid={!!errorFecha && intentado}
                   onChange={(e) => setFecha(e.target.value)}
                 />
@@ -171,6 +227,7 @@ export function MedicionDialog({
             <Input
               id={`${id}-fuente`}
               value={fuente}
+              disabled={bloqueado}
               aria-invalid={!!errorFuente && (intentado || fuente !== "")}
               placeholder="https://github.com/equipo/proyecto/pulls"
               onChange={(e) => setFuente(e.target.value)}
@@ -183,10 +240,18 @@ export function MedicionDialog({
           </Field>
         </FieldGroup>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={enviando}>
             Cancelar
           </Button>
-          <Button onClick={guardar}>{corrigiendo ? "Guardar corrección" : "Guardar medición"}</Button>
+          <Button onClick={guardar} disabled={enviando}>
+            {enviando
+              ? "Guardando…"
+              : ambiguo
+                ? "Reintentar registro"
+                : corrigiendo
+                  ? "Guardar corrección"
+                  : "Guardar medición"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

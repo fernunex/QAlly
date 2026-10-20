@@ -84,6 +84,8 @@ Reintentar el mismo medicionId, misma métrica, autor y datos/fecha originales d
 
 Actualizar objetivo usa una comparación atómica sobre `configurada_en` anterior. La BD debe generar un valor estrictamente posterior al anterior al actualizar (reloj actual o anterior + un microsegundo), para que ni dos cambios en el mismo instante puedan compartir token de concurrencia.
 
+**Implementación posterior (CU-02, 2026-10-19):** las funciones de esta sección se conectan a la aplicación sin cambiar el contrato. listarRevisionesMedicion se expone como `listarCorrecciones`: revisiones ≥ 2 con valor anterior y la captura original. La fecha de medición se captura como día y se envía como `medidaEn` a las 00:00 UTC. [Implementación](../modulos/cu02-implementacion.md).
+
 ## 5. Actividades, entregas y evidencias
 
 Toda escritura de actividad exige `versionEsperada`; aumenta `actividad.version` cuando cambia estado, responsable, borrador o referencias de evidencia. Una reserva técnica de archivo no cambia esa versión; confirmar su asociación sí la cambia. El miembro recibe la versión nueva después de cada guardado.

@@ -4,20 +4,23 @@ import {
   EstadoNoDisponible,
   NotaPendiente,
 } from "@/components/states/ui-states";
-import { ActividadesConfiguradas } from "@/features/projects/components/consulta-proyecto";
+import { TableroActividades } from "@/features/activities/components/tablero-actividades";
+import { consultarTablero } from "@/features/activities/server/queries";
+import { etapaSchema } from "@/features/activities/validation";
 import {
-  listarActividadesIniciales,
   consultarProyecto,
+  listarCatalogos,
 } from "@/features/projects/server/queries";
 import { obtenerUsuarioActual } from "@/lib/session";
+
 export default async function Page({
   params,
   searchParams,
 }: {
   params: Promise<{ proyectoId: string }>;
-  searchParams: Promise<{ cursor?: string }>;
+  searchParams: Promise<{ etapa?: string; responsable?: string }>;
 }) {
-  await obtenerUsuarioActual();
+  const usuario = await obtenerUsuarioActual();
   const { proyectoId } = await params;
   const proyecto = await consultarProyecto(proyectoId);
   if (!proyecto)
@@ -26,21 +29,42 @@ export default async function Page({
         <EstadoNoDisponible />
       </PageContainer>
     );
-  const { cursor } = await searchParams;
-  const pagina = await listarActividadesIniciales(proyectoId, { cursor });
+  const sp = await searchParams;
+  const miembros = proyecto.participantes
+    .filter((p) => p.rol === "Miembro")
+    .map((p) => ({ usuarioId: p.usuarioId, nombre: p.nombre }));
+  // Filtros desconocidos se ignoran; el responsable debe ser «sin» o un miembro del proyecto.
+  const etapa = etapaSchema.safeParse(sp.etapa).data;
+  const responsable =
+    sp.responsable === "sin" ||
+    miembros.some((m) => m.usuarioId === sp.responsable)
+      ? sp.responsable
+      : undefined;
+  const esQA = usuario.rol === "QA";
+  const [tablero, catalogos] = await Promise.all([
+    consultarTablero(proyecto, { etapa, responsable }),
+    listarCatalogos(),
+  ]);
   return (
     <PageContainer className="space-y-5">
       {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
-      <ActividadesConfiguradas
-        pagina={pagina}
-        proyecto={proyecto}
-        base={`/proyectos/${proyectoId}/actividades`}
-        cursor={cursor}
+      <TableroActividades
+        proyectoId={proyecto.id}
+        tablero={tablero}
+        filtros={{
+          etapa: etapa ?? "todas",
+          responsable: responsable ?? "todos",
+        }}
+        participantes={miembros}
+        tipos={catalogos.actividades}
+        puedeGestionar={esQA && !proyecto.cerradoEn}
       />
-      <NotaPendiente>
-        La gestión y entrega de actividades estará disponible en una próxima
-        versión.
-      </NotaPendiente>
+      {!esQA ? (
+        <NotaPendiente>
+          La entrega de actividades (iniciar, registrar resultado y evidencias)
+          estará disponible en una próxima versión.
+        </NotaPendiente>
+      ) : null}
     </PageContainer>
   );
 }

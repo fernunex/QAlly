@@ -38,8 +38,7 @@ export default async function Page({
         cursor={cursor}
       />
       <NotaPendiente>
-        Los miembros asignados entregan sus actividades desde Mis actividades.
-        La asignación y revisión por QA estarán disponibles en una próxima
+        La gestión y entrega de actividades estará disponible en una próxima
         versión.
       </NotaPendiente>
     </PageContainer>

@@ -1,22 +1,15 @@
-import { redirect } from "next/navigation";
 import { PageContainer, PageHeader } from "@/components/shell/page-header";
-import { MisActividadesLista } from "@/features/activities/components/mis-actividades-lista";
-import { listarMisActividades } from "@/features/evidences/server/queries";
+import { NotaPendiente } from "@/components/states/ui-states";
 import { obtenerUsuarioActual } from "@/lib/session";
-
-export default async function MisActividadesPage() {
-  const usuario = await obtenerUsuarioActual();
-  // Solo el Miembro tiene actividades asignadas; QA gestiona desde cada proyecto.
-  if (usuario.rol === "QA") redirect("/proyectos");
-  const { actividades, nombres } = await listarMisActividades();
-
+export default async function Page() {
+  await obtenerUsuarioActual();
   return (
-    <PageContainer className="space-y-6">
-      <PageHeader
-        titulo="Mis actividades"
-        descripcion="Actividades SQA asignadas a ti en los proyectos donde participas."
-      />
-      <MisActividadesLista actividades={actividades} nombres={nombres} />
+    <PageContainer>
+      <PageHeader titulo="Mis actividades" />
+      <NotaPendiente>
+        La entrega de actividades estará disponible en una próxima versión. Por
+        ahora puedes consultar tus proyectos y sus actividades configuradas.
+      </NotaPendiente>
     </PageContainer>
   );
 }

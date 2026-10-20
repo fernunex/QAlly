@@ -22,7 +22,7 @@ Abrir **http://127.0.0.1:54323** para Studio. Allí se pueden inspeccionar tabla
 
 ## Credenciales locales
 
-`.env.local` se genera con permisos de archivo restringidos y está ignorado por Git. Contiene URL, clave de cliente, credencial privilegiada de servidor, contraseña aleatoria de cuentas ficticias y clave futura de captura de reportes. `.env.example` solo documenta sus nombres.
+`.env.local` se genera con permisos de archivo restringidos y está ignorado por Git. Contiene URL, clave de cliente, credencial privilegiada de servidor, contraseña aleatoria de cuentas ficticias y clave de cifrado de la captura de reportes de CU-06 (`REPORT_SNAPSHOT_KEY_BASE64`, 32 bytes, solo servidor; se genera si falta y se conserva si existe). `.env.example` solo documenta sus nombres.
 
 La contraseña se consulta en tu archivo local; no pegarla en el chat, commits, capturas compartidas ni logs. La credencial de servidor no lleva prefijo `NEXT_PUBLIC_` y nunca se entrega al navegador. `npm run db:status` muestra solo direcciones; `npm run db:env` vuelve a obtener las credenciales locales sin imprimirlas y conserva contraseña/clave de reporte existentes.
 

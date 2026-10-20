@@ -1,44 +1,17 @@
 import type { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { errorPublico, ErrorOperacion } from "@/lib/resultados";
 import {
-  errorPublico,
-  ErrorOperacion,
-  type CodigoError,
-} from "@/lib/resultados";
+  CABECERAS_PRIVADAS as privado,
+  ESTADO_HTTP as HTTP,
+  origenPermitido,
+} from "@/lib/http";
 import { uuid, version } from "@/features/projects/validation";
 import { consultarMiActividad } from "@/features/evidences/server/queries";
 import {
   leerCuerpoLimitado,
   subirPdf,
 } from "@/features/evidences/server/archivos";
-
-const HTTP: Record<CodigoError, number> = {
-  SIN_SESION: 401,
-  PROHIBIDO: 403,
-  NO_DISPONIBLE: 404,
-  DATOS_INVALIDOS: 422,
-  CONFLICTO: 409,
-  PROYECTO_CERRADO: 409,
-  TAMANO_EXCEDIDO: 413,
-  FALLO_PERSISTENCIA: 500,
-};
-const privado = {
-  "Cache-Control": "private, no-store",
-  "X-Content-Type-Options": "nosniff",
-};
-
-/** Mutación web: el origen debe estar presente y coincidir con el host que atiende la petición. */
-function origenPermitido(request: NextRequest) {
-  const origen = request.headers.get("origin");
-  const host =
-    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  if (!origen || !host) return false;
-  try {
-    return new URL(origen).host === host;
-  } catch {
-    return false;
-  }
-}
 
 /** POST /api/entregas/{entregaId}/evidencias/pdf — un único PDF binario por petición (contratos-v1 §5). */
 export async function POST(

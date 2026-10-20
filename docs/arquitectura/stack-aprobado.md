@@ -39,8 +39,8 @@ El diseño C4, ER, diccionario y controles sigue los acuerdos de ADR-001/002. La
 - Versiones de aplicación y datos fijadas en package.json/lockfile: Next.js 16.4.2, React 19.3.0, TypeScript 5.9.3, Supabase JS 2.118.0 y adaptador SSR 0.12.7; Node 24.
 - Sesión Auth SSR, autorización en servidor, endpoints privados de PDF y protocolos de BD/Storage ya implementados para CU-01 a CU-04. La subida administrativa de CU-04 se limita al servidor; lecturas y descargas usan identidad de usuario y RLS.
 - Estructura de `src/` existente por funcionalidades; no crear capas vacías por seguir el árbol de referencia. [Realización física](estructura-repo-propuesta.md).
-- Pendientes: paginación de listas/intentos de CU-04, conexión de CU-05/06, algoritmo de salud, promoción a Cloud y despliegue. GitHub Actions está configurado, sin ejecución remota acreditada en el registro local.
-- `@react-pdf/renderer`, Vercel y Prettier siguen siendo selecciones aprobadas; el generador de reportes y despliegue no están implementados, ni existe configuración/dependencia propia de Prettier incorporada al proyecto.
+- Pendientes: paginación de listas/intentos de CU-04, integración de CU-05/06 en `dev`, algoritmo de salud, promoción a Cloud y despliegue. GitHub Actions está configurado, sin ejecución remota acreditada en el registro local.
+- `@react-pdf/renderer` 4.9.0 está incorporado para CU-06 en `feat/cu06-reportes` ([registro](../modulos/cu06-implementacion.md)). Vercel y Prettier siguen siendo selecciones aprobadas; el despliegue no está configurado, ni existe configuración/dependencia propia de Prettier incorporada al proyecto.
 
 Los catálogos v1 están aprobados por el usuario; no se presume ratificación académica independiente. Los apartados siguientes son registros históricos de versiones/implementación, no listas de trabajo actual pendientes.
 

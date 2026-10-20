@@ -24,7 +24,7 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 
 ## Trabajo posterior de implementación y validación
 
-- Adaptador de aplicación Next.js de CU-06; CU-01 a CU-04 y sesión real ya implementados. El adaptador y la vista de consulta de CU-05 están implementados en `feat/cu05-salud-proyecto` ([registro](../modulos/cu05-implementacion.md)), con salud «Sin evaluar»; el algoritmo sigue pendiente en la tabla anterior. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
+- CU-01 a CU-04 y sesión real ya implementados. El adaptador de aplicación de CU-06 (generación, vista y PDF) está implementado en `feat/cu06-reportes` ([registro](../modulos/cu06-implementacion.md)). El adaptador y la vista de consulta de CU-05 están implementados en `feat/cu05-salud-proyecto` ([registro](../modulos/cu05-implementacion.md)), con salud «Sin evaluar»; el algoritmo sigue pendiente en la tabla anterior. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
 - Cuentas/planes/regiones remotos y configuración de despliegue. Sesión SSR local implementada en CU-01. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
 - Rendimiento desplegado y pruebas de los CU restantes. CU-01 a CU-04 ya tienen pruebas conjuntas en Chrome estable y Firefox; RLS, concurrencia y archivos tienen pruebas locales de BD. [Resultados y límites actuales](../equipo/integracion-cu02-cu03-cu04.md). No afirmar todos los RNF superados.
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
@@ -44,3 +44,8 @@ El usuario aprobó ejecutar el plan de integración de las tres ramas sobre una 
 ## Consulta de CU-05 — 2026-10-20
 
 Implementados el adaptador `consultarResumen`, el DTO compartido con CU-06 y la pestaña **Salud** sin cambiar esquema, RLS ni contratos. [Registro](../modulos/cu05-implementacion.md). El **algoritmo de salud general/por etapa sigue PENDIENTE** (pesos, categorías, rangos, datos ausentes y actividades pendientes); la vista muestra «Sin evaluar» con su motivo. No se hizo push, merge ni despliegue.
+
+
+## Reportes de CU-06 — 2026-10-20
+
+Implementados `generarReporte`, la captura cifrada AES-256-GCM de 15 minutos, `POST /api/reportes/pdf` con `@react-pdf/renderer` 4.9.0 (dependencia ya aprobada) y la pestaña **Reportes**, sin cambiar esquema, RLS ni requisitos. [Registro](../modulos/cu06-implementacion.md). El **algoritmo de salud sigue PENDIENTE**: el reporte muestra «Sin evaluar». Requieren visto bueno del usuario: el campo aditivo `emitidaEn` en el resultado de `generarReporte`, los códigos 422/404 elegidos para token inválido y participación perdida, y «>=»/«<=» en el PDF por la fuente estándar. Pendiente configurar `REPORT_SNAPSHOT_KEY_BASE64` por entorno cuando exista despliegue y medir RNF-06 desplegado. No se hizo push, merge ni despliegue.

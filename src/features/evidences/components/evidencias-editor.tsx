@@ -5,68 +5,51 @@ import { LinkIcon, PaperclipIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { LIMITE_PDF_BYTES } from "@/lib/catalogs";
+import { LIMITE_PDF_BYTES, LIMITE_URL_CARACTERES } from "@/lib/catalogs";
 import type { Evidencia } from "@/lib/domain";
 import { EvidenciaItem } from "@/features/evidences/components/evidencia-item";
-import {
-  enlaceValido,
-  MSJ_ENLACE,
-  MSJ_FALTA_EVIDENCIA,
-  MSJ_FALTA_RESULTADO,
-  MSJ_PDF,
-  nombrePdfValido,
-} from "@/features/evidences/validation";
 
-export const ERR_PDF = MSJ_PDF;
-export const ERR_ENLACE = MSJ_ENLACE;
-export const ERR_FALTA_EVIDENCIA = MSJ_FALTA_EVIDENCIA;
-export const ERR_FALTA_RESULTADO = MSJ_FALTA_RESULTADO;
+export const ERR_PDF = "El archivo no es un PDF válido o supera 3 MiB.";
+export const ERR_ENLACE =
+  "El enlace no es válido: debe ser una URL http:// o https:// de hasta 2048 caracteres.";
+export const ERR_FALTA_EVIDENCIA = "Falta la evidencia: adjunta un PDF o agrega un enlace.";
+export const ERR_FALTA_RESULTADO = "Falta el resultado de la actividad.";
 
-/** Validación previa en el navegador; el servidor vuelve a validar tamaño, formato y nombre. */
-export function validarPdf(archivo: { name: string; type: string; size: number }): boolean {
-  return (
-    archivo.type === "application/pdf" &&
-    archivo.size > 0 &&
-    archivo.size <= LIMITE_PDF_BYTES &&
-    nombrePdfValido(archivo.name)
-  );
+export function validarPdf(archivo: { type: string; size: number }): boolean {
+  return archivo.type === "application/pdf" && archivo.size > 0 && archivo.size <= LIMITE_PDF_BYTES;
 }
 
 export function validarEnlace(valor: string): boolean {
-  return enlaceValido(valor.trim());
+  const url = valor.trim();
+  if (url.length === 0 || url.length > LIMITE_URL_CARACTERES) return false;
+  try {
+    const u = new URL(url);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
-/** Respuesta de una operación de evidencia: null si se guardó, o el mensaje del rechazo. */
-type Operacion = Promise<string | null>;
-
-/** Evidencias del intento en preparación. Cada alta o baja se guarda en el servidor antes de mostrarse. */
+/** Evidencias del intento en preparación: lista con quitar, adjuntar PDF y agregar enlace. */
 export function EvidenciasEditor({
   evidencias,
+  onChange,
   error,
-  deshabilitado = false,
-  onAdjuntarPdf,
-  onAgregarEnlace,
-  onQuitar,
+  nuevoId,
 }: {
   evidencias: Evidencia[];
-  /** Error de «falta evidencia» o de rechazo enviado por el formulario padre. */
+  onChange: (e: Evidencia[]) => void;
+  /** Error de «falta evidencia» enviado por el formulario padre. */
   error?: string;
-  deshabilitado?: boolean;
-  onAdjuntarPdf: (archivo: File) => Operacion;
-  onAgregarEnlace: (url: string) => Operacion;
-  onQuitar: (evidenciaId: string) => void;
+  nuevoId: () => string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [errorPdf, setErrorPdf] = useState<string | null>(null);
-  const [subiendo, setSubiendo] = useState<string | null>(null);
   const [agregandoEnlace, setAgregandoEnlace] = useState(false);
   const [enlace, setEnlace] = useState("");
   const [errorEnlace, setErrorEnlace] = useState<string | null>(null);
-  const [guardandoEnlace, setGuardandoEnlace] = useState(false);
-  const bloqueado = deshabilitado || subiendo !== null || guardandoEnlace;
 
-  async function alElegirArchivo(e: React.ChangeEvent<HTMLInputElement>) {
+  function alElegirArchivo(e: React.ChangeEvent<HTMLInputElement>) {
     const archivo = e.target.files?.[0];
     e.target.value = "";
     if (!archivo) return;
@@ -75,32 +58,19 @@ export function EvidenciasEditor({
       return;
     }
     setErrorPdf(null);
-    setSubiendo(archivo.name);
-    try {
-      setErrorPdf(await onAdjuntarPdf(archivo));
-    } finally {
-      setSubiendo(null);
-    }
+    // TODO(funcionalidad): reservarArchivoEvidencia + subida a Storage privado (contratos-v1 §5).
+    onChange([...evidencias, { id: nuevoId(), tipo: "pdf", nombreArchivo: archivo.name, tamanoBytes: archivo.size }]);
   }
 
-  async function agregarEnlace() {
+  function agregarEnlace() {
     if (!validarEnlace(enlace)) {
       setErrorEnlace(ERR_ENLACE);
       return;
     }
     setErrorEnlace(null);
-    setGuardandoEnlace(true);
-    try {
-      const rechazo = await onAgregarEnlace(enlace.trim());
-      if (rechazo) {
-        setErrorEnlace(rechazo);
-        return;
-      }
-      setEnlace("");
-      setAgregandoEnlace(false);
-    } finally {
-      setGuardandoEnlace(false);
-    }
+    onChange([...evidencias, { id: nuevoId(), tipo: "enlace", url: enlace.trim() }]);
+    setEnlace("");
+    setAgregandoEnlace(false);
   }
 
   const mensaje = errorPdf ?? error;
@@ -116,36 +86,23 @@ export function EvidenciasEditor({
             <EvidenciaItem
               key={ev.id}
               evidencia={ev}
-              onQuitar={bloqueado ? undefined : () => onQuitar(ev.id)}
+              onQuitar={() => onChange(evidencias.filter((x) => x.id !== ev.id))}
             />
           ))}
         </ul>
-      ) : null}
-      {subiendo ? (
-        <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Spinner />
-          Subiendo {subiendo}…
-        </p>
       ) : null}
 
       <div className="flex flex-wrap gap-2">
         <input
           ref={inputRef}
           type="file"
-          accept="application/pdf,.pdf"
+          accept="application/pdf"
           className="sr-only"
           tabIndex={-1}
           aria-label="Seleccionar archivo PDF"
-          disabled={bloqueado}
           onChange={alElegirArchivo}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={bloqueado}
-          onClick={() => inputRef.current?.click()}
-        >
+        <Button type="button" variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
           <PaperclipIcon />
           Adjuntar PDF
         </Button>
@@ -153,7 +110,6 @@ export function EvidenciasEditor({
           type="button"
           variant="outline"
           size="sm"
-          disabled={bloqueado}
           aria-expanded={agregandoEnlace}
           onClick={() => setAgregandoEnlace((v) => !v)}
         >
@@ -172,28 +128,25 @@ export function EvidenciasEditor({
               inputMode="url"
               placeholder="https://"
               value={enlace}
-              disabled={guardandoEnlace}
               aria-invalid={!!errorEnlace}
               onChange={(e) => setEnlace(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  void agregarEnlace();
+                  agregarEnlace();
                 }
               }}
             />
             <FieldError>{errorEnlace}</FieldError>
           </Field>
           <div className="flex gap-2">
-            <Button type="button" size="sm" disabled={bloqueado} onClick={() => void agregarEnlace()}>
-              {guardandoEnlace ? <Spinner /> : null}
+            <Button type="button" size="sm" onClick={agregarEnlace}>
               Agregar
             </Button>
             <Button
               type="button"
               size="sm"
               variant="ghost"
-              disabled={guardandoEnlace}
               onClick={() => {
                 setAgregandoEnlace(false);
                 setEnlace("");

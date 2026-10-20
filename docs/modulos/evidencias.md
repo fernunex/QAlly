@@ -14,7 +14,7 @@ Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisi�
 Estados/permiso de actividades (CU-03); almacenamiento de PDFs y protección de evidencias.
 
 ## Pendientes relevantes
-CU-04 implementado y validado localmente: Server Actions, Route Handlers de PDF, adaptador privilegiado en servidor y UI conectada; ver [implementación y pruebas](cu04-implementacion.md). Pendiente: programar la limpieza diaria al preparar el despliegue, mediciones RNF en entorno desplegado y la asignación/revisión por QA (CU-03). [Guía Supabase](../datos/guia-supabase.md) y [seguridad](../datos/seguridad-integridad.md).
+BD/RLS, bucket privado y adaptador de archivos de scripts implementados y probados localmente: PDF 3 MiB, enlaces HTTP/HTTPS y reserva/compensación; comando de limpieza disponible. Falta integrar el adaptador al servidor Next.js, conectar la UI de CU-04 y probar su flujo completo; programar la limpieza diaria al preparar el despliegue. [Guía Supabase](../datos/guia-supabase.md) y [seguridad](../datos/seguridad-integridad.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-04.md` enlazado.

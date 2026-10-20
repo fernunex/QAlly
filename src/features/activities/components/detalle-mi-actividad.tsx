@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { FilePenLineIcon, LockIcon, PlayIcon, SendIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { LockIcon, PlayIcon, SendIcon } from "lucide-react";
 import { toast } from "sonner";
 import { AvisoSoloLectura } from "@/components/states/ui-states";
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import type { Evidencia } from "@/lib/domain";
 import { formatFecha } from "@/lib/format";
-import type { ErrorPublico, Resultado } from "@/lib/resultados";
 import { StepperEstado } from "@/features/activities/components/stepper-estado";
 import {
   type MiActividad,
@@ -34,65 +33,23 @@ import {
   ERR_FALTA_RESULTADO,
   EvidenciasEditor,
 } from "@/features/evidences/components/evidencias-editor";
-import { ErrorAccion } from "@/features/projects/components/error-accion";
-import {
-  agregarEnlaceAction,
-  enviarEntregaAction,
-  guardarResultadoAction,
-  iniciarActividadAction,
-  prepararEntregaAction,
-  quitarEvidenciaAction,
-  type ActividadActualizada,
-} from "@/features/evidences/actions";
 
 type Props = {
   actividad: MiActividad | null;
   nombres: Nombres;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Recibe la actividad confirmada por el servidor tras cada guardado. */
-  onActualizada: (datos: ActividadActualizada) => void;
+  onIniciar: (id: string) => void;
+  onGuardar: (id: string, resultado: string, evidencias: Evidencia[]) => void;
+  onEnviar: (id: string, resultado: string, evidencias: Evidencia[]) => void;
 };
-
-/** Transferencia individual de un PDF al Route Handler (contratos-v1 §5). */
-async function subirPdf(
-  entregaId: string,
-  versionEsperada: string,
-  archivo: File,
-): Promise<Resultado<ActividadActualizada>> {
-  try {
-    const r = await fetch(`/api/entregas/${entregaId}/evidencias/pdf`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/pdf",
-        "X-Nombre-Archivo": encodeURIComponent(archivo.name),
-        "X-Version-Actividad": versionEsperada,
-      },
-      body: archivo,
-    });
-    return (await r.json()) as Resultado<ActividadActualizada>;
-  } catch {
-    // Resultado desconocido: no se presenta como guardado; recargar muestra el estado real.
-    return {
-      ok: false,
-      error: {
-        codigo: "FALLO_PERSISTENCIA",
-        mensaje: "No pudimos confirmar la subida del PDF. Recarga para ver si quedó adjunto.",
-      },
-    };
-  }
-}
 
 /** CU-04: detalle de la actividad asignada, en Sheet derecho con footer fijo. */
 export function DetalleMiActividad({ actividad, open, onOpenChange, ...acciones }: Props) {
-  const borrador = actividad ? intentoEnPreparacion(actividad) : undefined;
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full gap-0 sm:max-w-lg">
-        {actividad ? (
-          // Un intento nuevo (o copiado tras devolución) reinicia el formulario con sus datos.
-          <Contenido key={`${actividad.id}:${borrador?.id ?? "-"}`} actividad={actividad} {...acciones} />
-        ) : null}
+        {actividad ? <Contenido key={actividad.id} actividad={actividad} {...acciones} /> : null}
       </SheetContent>
     </Sheet>
   );
@@ -101,88 +58,32 @@ export function DetalleMiActividad({ actividad, open, onOpenChange, ...acciones 
 function Contenido({
   actividad,
   nombres,
-  onActualizada,
+  onIniciar,
+  onGuardar,
+  onEnviar,
 }: Omit<Props, "actividad" | "open" | "onOpenChange"> & { actividad: MiActividad }) {
   const borrador = intentoEnPreparacion(actividad);
   const [resultado, setResultado] = useState(borrador?.resultado ?? "");
+  const [evidencias, setEvidencias] = useState<Evidencia[]>(borrador?.evidencias ?? []);
   const [errores, setErrores] = useState<{ resultado?: string; evidencia?: string }>({});
-  const [error, setError] = useState<ErrorPublico | null>(null);
-  const [ocupado, setOcupado] = useState(false);
+  const contador = useRef(0);
+  const nuevoId = () => `local-${++contador.current}`;
 
   const enviados = intentosEnviados(actividad);
   const devolucion = ultimaDevolucion(actividad);
-  const devuelta = estaDevuelta(actividad);
   const editable = actividad.estado === "En progreso" && !actividad.proyectoCerrado;
-  const numeroBorrador = borrador?.numeroIntento ?? (enviados[0]?.numeroIntento ?? 0) + 1;
+  const numeroBorrador = borrador?.numeroIntento ?? enviados.length + 1;
   const ultimoEnviado = enviados[0];
-  const resultadoGuardado = borrador?.resultado ?? "";
-  const sinGuardar = resultado.trim() !== resultadoGuardado.trim();
 
-  /** Ejecuta una operación y solo muestra éxito con la confirmación del servidor. */
-  async function ejecutar(
-    operacion: () => Promise<Resultado<ActividadActualizada>>,
-    exito?: string,
-  ): Promise<ActividadActualizada | null> {
-    setOcupado(true);
-    setError(null);
-    try {
-      const r = await operacion();
-      if (!r.ok) {
-        setError(r.error);
-        setErrores({
-          resultado: r.error.campos?.resultado,
-          evidencia: r.error.campos?.evidencia ?? r.error.campos?.url,
-        });
-        return null;
-      }
-      onActualizada(r.datos);
-      if (exito) toast.success(exito);
-      return r.datos;
-    } finally {
-      setOcupado(false);
-    }
-  }
-
-  async function guardar(): Promise<string | null> {
-    if (!borrador) return null;
-    const r = await ejecutar(
-      () =>
-        guardarResultadoAction({
-          entregaId: borrador.id,
-          resultado,
-          versionEsperada: actividad.version,
-        }),
-      "Resultado guardado",
-    );
-    return r?.actividad.version ?? null;
-  }
-
-  async function enviar() {
-    if (!borrador) return;
-    // FE-02: indicar qué falta antes de llamar al servidor, que vuelve a validarlo.
+  function enviar() {
     const nuevos = {
       resultado: resultado.trim() ? undefined : ERR_FALTA_RESULTADO,
-      evidencia: borrador.evidencias.length === 0 ? ERR_FALTA_EVIDENCIA : undefined,
+      evidencia: evidencias.length === 0 ? ERR_FALTA_EVIDENCIA : undefined,
     };
     setErrores(nuevos);
     if (nuevos.resultado || nuevos.evidencia) return;
-    let version: string | null = actividad.version;
-    if (sinGuardar) version = await guardar();
-    if (!version) return;
-    const versionEsperada = version;
-    await ejecutar(
-      () => enviarEntregaAction({ entregaId: borrador.id, versionEsperada }),
-      "Actividad enviada a revisión",
-    );
-  }
-
-  async function operacionEvidencia(
-    operacion: () => Promise<Resultado<ActividadActualizada>>,
-    exito: string,
-  ): Promise<string | null> {
-    const r = await ejecutar(operacion, exito);
-    if (r) setErrores((e) => ({ ...e, evidencia: undefined }));
-    return null;
+    onEnviar(actividad.id, resultado, evidencias);
+    toast.success("Actividad enviada a revisión");
   }
 
   return (
@@ -202,9 +103,7 @@ function Contenido({
 
         {actividad.proyectoCerrado ? <AvisoSoloLectura /> : null}
 
-        {error ? <ErrorAccion error={error} /> : null}
-
-        {devuelta && devolucion?.revision?.observaciones ? (
+        {estaDevuelta(actividad) && devolucion?.revision?.observaciones ? (
           <ObservacionesQA
             autor={nombreDe(nombres, devolucion.revision.qaId)}
             fecha={devolucion.revision.revisadaEn}
@@ -235,79 +134,6 @@ function Contenido({
           </p>
         ) : null}
 
-        {editable && !borrador ? (
-          <section
-            aria-label={`Intento ${numeroBorrador} sin preparar`}
-            className="space-y-3 rounded-lg border border-dashed p-3.5 text-sm"
-          >
-            <p className="text-muted-foreground">
-              {devuelta
-                ? `Para corregir la entrega prepara el intento ${numeroBorrador}: se copiarán el resultado y las evidencias del intento anterior para que los ajustes.`
-                : `Prepara el intento ${numeroBorrador} para registrar el resultado y adjuntar evidencia.`}
-            </p>
-            <Button
-              size="sm"
-              disabled={ocupado}
-              onClick={() =>
-                void ejecutar(() =>
-                  prepararEntregaAction({ actividadId: actividad.id, versionEsperada: actividad.version }),
-                )
-              }
-            >
-              {ocupado ? <Spinner /> : <FilePenLineIcon />}
-              {devuelta ? "Corregir entrega" : "Registrar entrega"}
-            </Button>
-          </section>
-        ) : null}
-
-        {editable && borrador ? (
-          <section
-            aria-label={`Intento ${numeroBorrador} en preparación`}
-            className="space-y-4 rounded-lg border border-primary/30 bg-primary/5 p-3.5"
-          >
-            <h4 className="text-sm font-semibold">Intento {numeroBorrador} · en preparación</h4>
-            <Field data-invalid={!!errores.resultado}>
-              <FieldLabel htmlFor="mi-resultado">Resultado</FieldLabel>
-              <Textarea
-                id="mi-resultado"
-                rows={5}
-                maxLength={20000}
-                className="bg-background"
-                value={resultado}
-                disabled={ocupado}
-                aria-invalid={!!errores.resultado}
-                onChange={(e) => setResultado(e.target.value)}
-              />
-              {sinGuardar ? (
-                <p className="text-xs text-muted-foreground">Cambios sin guardar.</p>
-              ) : null}
-              <FieldError>{errores.resultado}</FieldError>
-            </Field>
-            <EvidenciasEditor
-              evidencias={borrador.evidencias}
-              error={errores.evidencia}
-              deshabilitado={ocupado}
-              onAgregarEnlace={async (url) => {
-                const r = await ejecutar(
-                  () =>
-                    agregarEnlaceAction({ entregaId: borrador.id, url, versionEsperada: actividad.version }),
-                  "Enlace agregado",
-                );
-                return r ? null : "No se agregó el enlace.";
-              }}
-              onAdjuntarPdf={(archivo) =>
-                operacionEvidencia(() => subirPdf(borrador.id, actividad.version, archivo), "PDF adjuntado")
-              }
-              onQuitar={(evidenciaId) =>
-                void operacionEvidencia(
-                  () => quitarEvidenciaAction({ evidenciaId, versionEsperada: actividad.version }),
-                  "Evidencia quitada",
-                )
-              }
-            />
-          </section>
-        ) : null}
-
         {enviados.length > 0 ? (
           <div className="space-y-3">
             {enviados.map((e) => (
@@ -320,32 +146,65 @@ function Contenido({
             ))}
           </div>
         ) : null}
+
+        {editable ? (
+          <section
+            aria-label={`Intento ${numeroBorrador} en preparación`}
+            className="space-y-4 rounded-lg border border-primary/30 bg-primary/5 p-3.5"
+          >
+            <h4 className="text-sm font-semibold">Intento {numeroBorrador} · en preparación</h4>
+            <Field data-invalid={!!errores.resultado}>
+              <FieldLabel htmlFor="mi-resultado">Resultado</FieldLabel>
+              <Textarea
+                id="mi-resultado"
+                rows={5}
+                className="bg-background"
+                value={resultado}
+                aria-invalid={!!errores.resultado}
+                onChange={(e) => setResultado(e.target.value)}
+              />
+              <FieldError>{errores.resultado}</FieldError>
+            </Field>
+            <EvidenciasEditor
+              evidencias={evidencias}
+              onChange={setEvidencias}
+              error={errores.evidencia}
+              nuevoId={nuevoId}
+            />
+          </section>
+        ) : null}
       </div>
 
       {actividad.estado === "Pendiente" && !actividad.proyectoCerrado ? (
         <SheetFooter className="border-t sm:flex-row sm:justify-end">
           <Button
-            disabled={ocupado}
-            onClick={() =>
-              void ejecutar(
-                () => iniciarActividadAction({ actividadId: actividad.id, versionEsperada: actividad.version }),
-                "Actividad iniciada",
-              )
-            }
+            onClick={() => {
+              // TODO(funcionalidad): iniciarActividad con versionEsperada (contratos-v1 §5).
+              onIniciar(actividad.id);
+              toast.success("Actividad iniciada");
+            }}
           >
-            {ocupado ? <Spinner /> : <PlayIcon />}
+            <PlayIcon />
             Iniciar actividad
           </Button>
         </SheetFooter>
       ) : null}
 
-      {editable && borrador ? (
+      {editable ? (
         <SheetFooter className="border-t sm:flex-row sm:justify-end">
-          <Button variant="outline" disabled={ocupado || !sinGuardar} onClick={() => void guardar()}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              // TODO(funcionalidad): guardarBorradorEntrega (contratos-v1 §5).
+              onGuardar(actividad.id, resultado, evidencias);
+              toast.success("Resultado guardado");
+            }}
+          >
             Guardar resultado
           </Button>
-          <Button disabled={ocupado} onClick={() => void enviar()}>
-            {ocupado ? <Spinner /> : <SendIcon />}
+          <Button onClick={enviar}>
+            {/* TODO(funcionalidad): enviarEntrega con versionEsperada; confirma recién al guardar. */}
+            <SendIcon />
             Enviar a revisión
           </Button>
         </SheetFooter>

@@ -16,6 +16,7 @@ export function ProyectoTabs({
   const base = `/proyectos/${proyectoId}`;
   const tabs = [
     { href: base, label: "Información general" },
+    { href: `${base}/salud`, label: "Salud" },
     { href: `${base}/metricas`, label: "Métricas" },
     { href: `${base}/actividades`, label: "Actividades SQA" },
     ...(mostrarReportes

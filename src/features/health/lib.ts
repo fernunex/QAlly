@@ -1,5 +1,17 @@
-import type { EstadoCumplimiento, MetricaVista } from "@/lib/domain";
+import type {
+  ConteoEstados,
+  EstadoCumplimiento,
+  EtapaCodigo,
+  TipoMetrica,
+} from "@/lib/domain";
+import { ESTADOS_ACTIVIDAD } from "@/lib/domain";
 import { cumplimientoEtiqueta } from "@/components/status/status-badges";
+import type { ResumenProyecto } from "./types";
+
+/*
+ * Utilidades puras sobre el resumen (CU-05/CU-06). Solo cuentan y agrupan datos que ya
+ * entrega la BD; no calculan salud, porcentajes, pesos ni categorías.
+ */
 
 export const ESTADOS_CUMPLIMIENTO: readonly EstadoCumplimiento[] = [
   "Cumple",
@@ -8,35 +20,56 @@ export const ESTADOS_CUMPLIMIENTO: readonly EstadoCumplimiento[] = [
   "Sin medición",
 ];
 
-function unidad(m: MetricaVista) {
-  return m.tipo.unidad === "%" ? " %" : m.tipo.unidad === "defectos" ? " defectos" : "";
+/** Suma de los conteos por estado de las tres etapas. */
+export function conteoGeneral(resumen: Pick<ResumenProyecto, "etapas">): ConteoEstados {
+  const total = Object.fromEntries(ESTADOS_ACTIVIDAD.map((e) => [e, 0])) as ConteoEstados;
+  for (const etapa of resumen.etapas)
+    for (const e of ESTADOS_ACTIVIDAD) total[e] += etapa.conteos[e];
+  return total;
 }
 
-/** «general ≥ 90 %» / «críticas ≥ 100 %» / «≤ 0 defectos». */
-export function objetivoTexto(m: MetricaVista): { principal: string; critico: string | null } {
-  const c = m.tipo.comparador;
-  const tieneCritico = m.objetivoCritico !== null;
-  return {
-    principal: `${tieneCritico ? "general " : ""}${c} ${Number(m.objetivo)}${unidad(m)}`,
-    critico: tieneCritico ? `críticas ${c} ${Number(m.objetivoCritico)}${unidad(m)}` : null,
-  };
+/** Métricas cuyo tipo pertenece a la etapa (ADR-002: las cuatro v1 son de Desarrollo). */
+export function metricasDeEtapa<M extends { tipo: { etapaCodigo: EtapaCodigo } }>(
+  metricas: M[],
+  etapa: EtapaCodigo,
+): M[] {
+  return metricas.filter((m) => m.tipo.etapaCodigo === etapa);
 }
 
-/** Datos fuente de la medición vigente: «Ejecutadas: 18 · Aprobadas: 17». */
-export function datosFuenteTexto(m: MetricaVista): string | null {
-  const vigente = m.medicionVigente;
-  if (!vigente) return null;
-  const rev = vigente.revisiones[vigente.revisiones.length - 1]!;
-  return m.tipo.campos
-    .filter((c) => rev.datosFuente[c.clave] !== undefined)
-    .map((c) => `${c.etiqueta}: ${rev.datosFuente[c.clave]}`)
-    .join(" · ");
+/** Número de métricas por estado de cumplimiento. Cumplimiento de métricas no es salud. */
+export function contarCumplimiento(
+  metricas: { cumplimiento: EstadoCumplimiento }[],
+): Record<EstadoCumplimiento, number> {
+  const conteo = Object.fromEntries(ESTADOS_CUMPLIMIENTO.map((e) => [e, 0])) as Record<
+    EstadoCumplimiento,
+    number
+  >;
+  for (const m of metricas) conteo[m.cumplimiento]++;
+  return conteo;
 }
 
 /** «1 Cumple · 1 No cumple · 1 Sin medición» (omite ceros). */
-export function resumenCumplimiento(metricas: MetricaVista[]): string {
-  return ESTADOS_CUMPLIMIENTO.map((e) => ({ e, n: metricas.filter((m) => m.cumplimiento === e).length }))
-    .filter((x) => x.n > 0)
-    .map((x) => `${x.n} ${cumplimientoEtiqueta(x.e)}`)
+export function resumenCumplimiento(metricas: { cumplimiento: EstadoCumplimiento }[]): string {
+  const conteo = contarCumplimiento(metricas);
+  return ESTADOS_CUMPLIMIENTO.filter((e) => conteo[e] > 0)
+    .map((e) => `${conteo[e]} ${cumplimientoEtiqueta(e)}`)
     .join(" · ");
+}
+
+function unidad(tipo: Pick<TipoMetrica, "unidad">) {
+  return tipo.unidad === "%" ? " %" : tipo.unidad === "defectos" ? " defectos" : "";
+}
+
+/** «general ≥ 90 %» / «críticas ≥ 100 %» / «≤ 0 defectos». */
+export function objetivoTexto(m: {
+  tipo: Pick<TipoMetrica, "comparador" | "unidad">;
+  objetivo: string;
+  objetivoCritico: string | null;
+}): { principal: string; critico: string | null } {
+  const c = m.tipo.comparador;
+  const tieneCritico = m.objetivoCritico !== null;
+  return {
+    principal: `${tieneCritico ? "general " : ""}${c} ${Number(m.objetivo)}${unidad(m.tipo)}`,
+    critico: tieneCritico ? `críticas ${c} ${Number(m.objetivoCritico)}${unidad(m.tipo)}` : null,
+  };
 }

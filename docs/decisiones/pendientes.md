@@ -24,7 +24,7 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 
 ## Trabajo posterior de implementación y validación
 
-- Adaptadores de aplicación Next.js de CU-05 y CU-06; CU-01 a CU-04 y sesión real ya implementados. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
+- Adaptador de aplicación Next.js de CU-06; CU-01 a CU-04 y sesión real ya implementados. El adaptador y la vista de consulta de CU-05 están implementados en `feat/cu05-salud-proyecto` ([registro](../modulos/cu05-implementacion.md)), con salud «Sin evaluar»; el algoritmo sigue pendiente en la tabla anterior. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
 - Cuentas/planes/regiones remotos y configuración de despliegue. Sesión SSR local implementada en CU-01. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
 - Rendimiento desplegado y pruebas de los CU restantes. CU-01 a CU-04 ya tienen pruebas conjuntas en Chrome estable y Firefox; RLS, concurrencia y archivos tienen pruebas locales de BD. [Resultados y límites actuales](../equipo/integracion-cu02-cu03-cu04.md). No afirmar todos los RNF superados.
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
@@ -39,3 +39,8 @@ UI y base de datos reunidas y verificadas sobre `dev`; la rama siguiente es `fea
 ## Integración CU-02/03/04
 
 El usuario aprobó ejecutar el plan de integración de las tres ramas sobre una rama temporal desde `dev`. [Resoluciones, validación y limitaciones](../equipo/integracion-cu02-cu03-cu04.md). Salud sigue pendiente; también la paginación de Mis actividades y sus intentos, conforme al contrato vigente, y las mediciones de aceptación en entorno desplegado. No se cambió el esquema ni se configuró Cloud.
+
+
+## Consulta de CU-05 — 2026-10-20
+
+Implementados el adaptador `consultarResumen`, el DTO compartido con CU-06 y la pestaña **Salud** sin cambiar esquema, RLS ni contratos. [Registro](../modulos/cu05-implementacion.md). El **algoritmo de salud general/por etapa sigue PENDIENTE** (pesos, categorías, rangos, datos ausentes y actividades pendientes); la vista muestra «Sin evaluar» con su motivo. No se hizo push, merge ni despliegue.

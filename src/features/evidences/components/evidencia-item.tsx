@@ -1,7 +1,6 @@
 "use client";
 
-import { ExternalLinkIcon, FileTextIcon, LinkIcon, XIcon } from "lucide-react";
-import { toast } from "sonner";
+import { DownloadIcon, ExternalLinkIcon, FileTextIcon, LinkIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Evidencia } from "@/lib/domain";
 import { formatBytes } from "@/lib/format";
@@ -43,15 +42,12 @@ export function EvidenciaItem({
           <XIcon />
         </Button>
       ) : esPdf ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            // TODO(funcionalidad): obtener URL firmada de corta duración del PDF privado (contratos-v1 §5).
-            toast.info("Se abriría el PDF privado con un enlace temporal.");
-          }}
-        >
-          Abrir
+        <Button variant="outline" size="sm" asChild>
+          {/* Descarga autorizada en cada solicitud; sin rutas de Storage en el cliente. */}
+          <a href={`/api/evidencias/${evidencia.id}/archivo`} download>
+            Descargar
+            <DownloadIcon />
+          </a>
         </Button>
       ) : (
         <Button variant="outline" size="sm" asChild>

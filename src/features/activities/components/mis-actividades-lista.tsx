@@ -7,17 +7,17 @@ import { EstadoActividadIcon } from "@/components/status/status-badges";
 import { EstadoVacio } from "@/components/states/ui-states";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Spinner } from "@/components/ui/spinner";
 import { DetalleMiActividad } from "@/features/activities/components/detalle-mi-actividad";
 import {
   type MiActividad,
   type Nombres,
-  conBorrador,
-  conEvento,
   estaDevuelta,
   ultimaDevolucion,
   ultimoEnviado,
 } from "@/features/activities/utils";
-import { ESTADOS_ACTIVIDAD, type EstadoActividad, type Evidencia } from "@/lib/domain";
+import { iniciarActividadAction, type ActividadActualizada } from "@/features/evidences/actions";
+import { ESTADOS_ACTIVIDAD, type EstadoActividad } from "@/lib/domain";
 import { formatFechaCorta } from "@/lib/format";
 
 /** Orden de lectura: primero lo que requiere acción del Miembro. */
@@ -26,19 +26,25 @@ type Filtro = "todas" | EstadoActividad;
 
 export function MisActividadesLista({
   actividades: iniciales,
-  nombres,
-  usuarioId,
-  usuarioNombre,
+  nombres: nombresIniciales,
 }: {
   actividades: MiActividad[];
   nombres: Nombres;
-  usuarioId: string;
-  usuarioNombre: string;
 }) {
   const [actividades, setActividades] = useState(iniciales);
+  const [nombres, setNombres] = useState(nombresIniciales);
+  const [previas, setPrevias] = useState(iniciales);
   const [filtro, setFiltro] = useState<Filtro>("todas");
   const [seleccion, setSeleccion] = useState<string | null>(null);
   const [abierto, setAbierto] = useState(false);
+  const [iniciando, setIniciando] = useState<string | null>(null);
+
+  // Al revalidar la ruta llegan datos nuevos del servidor: prevalecen sobre el estado local.
+  if (iniciales !== previas) {
+    setPrevias(iniciales);
+    setActividades(iniciales);
+    setNombres((n) => ({ ...n, ...nombresIniciales }));
+  }
 
   const conteo = Object.fromEntries(
     ESTADOS_ACTIVIDAD.map((e) => [e, actividades.filter((a) => a.estado === e).length]),
@@ -46,8 +52,10 @@ export function MisActividadesLista({
 
   const actual = actividades.find((a) => a.id === seleccion) ?? null;
 
-  function actualizar(id: string, fn: (a: MiActividad) => MiActividad) {
-    setActividades((lista) => lista.map((a) => (a.id === id ? fn(a) : a)));
+  /** Sustituye la actividad por la versión confirmada por el servidor. */
+  function actualizada({ actividad, nombres: nuevos }: ActividadActualizada) {
+    setActividades((lista) => lista.map((a) => (a.id === actividad.id ? actividad : a)));
+    setNombres((n) => ({ ...n, ...nuevos }));
   }
 
   function abrir(id: string) {
@@ -55,27 +63,20 @@ export function MisActividadesLista({
     setAbierto(true);
   }
 
-  function iniciar(id: string) {
-    const ahora = new Date().toISOString();
-    actualizar(id, (a) => conEvento({ ...a, estado: "En progreso" }, ahora, `${usuarioNombre} inició la actividad`) as MiActividad);
-  }
-
-  function guardar(id: string, resultado: string, evidencias: Evidencia[]) {
-    const ahora = new Date().toISOString();
-    actualizar(id, (a) => conBorrador(a, { resultado, evidencias, autorId: usuarioId, ahora, enviar: false }) as MiActividad);
-  }
-
-  function enviar(id: string, resultado: string, evidencias: Evidencia[]) {
-    const ahora = new Date().toISOString();
-    actualizar(id, (a) => {
-      const enviada = conBorrador(a, { resultado, evidencias, autorId: usuarioId, ahora, enviar: true });
-      const n = enviada.entregas[0]!.numeroIntento;
-      return conEvento(
-        { ...enviada, estado: "En revisión" },
-        ahora,
-        `${usuarioNombre} envió a revisión (intento ${n})`,
-      ) as MiActividad;
-    });
+  async function iniciar(a: MiActividad) {
+    setIniciando(a.id);
+    try {
+      const r = await iniciarActividadAction({ actividadId: a.id, versionEsperada: a.version });
+      if (!r.ok) {
+        toast.error(r.error.mensaje);
+        return;
+      }
+      actualizada(r.datos);
+      toast.success("Actividad iniciada");
+      abrir(a.id);
+    } finally {
+      setIniciando(null);
+    }
   }
 
   if (actividades.length === 0) {
@@ -129,11 +130,13 @@ export function MisActividadesLista({
             ) : (
               <ul className="space-y-2.5">
                 {lista.map((a) => (
-                  <Fila key={a.id} actividad={a} onAbrir={() => abrir(a.id)} onIniciar={() => {
-                    // TODO(funcionalidad): iniciarActividad con versionEsperada (contratos-v1 §5).
-                    iniciar(a.id);
-                    toast.success("Actividad iniciada");
-                  }} />
+                  <Fila
+                    key={a.id}
+                    actividad={a}
+                    iniciando={iniciando === a.id}
+                    onAbrir={() => abrir(a.id)}
+                    onIniciar={() => void iniciar(a)}
+                  />
                 ))}
               </ul>
             )}
@@ -146,9 +149,7 @@ export function MisActividadesLista({
         nombres={nombres}
         open={abierto}
         onOpenChange={setAbierto}
-        onIniciar={iniciar}
-        onGuardar={guardar}
-        onEnviar={enviar}
+        onActualizada={actualizada}
       />
     </div>
   );
@@ -156,10 +157,12 @@ export function MisActividadesLista({
 
 function Fila({
   actividad: a,
+  iniciando,
   onAbrir,
   onIniciar,
 }: {
   actividad: MiActividad;
+  iniciando: boolean;
   onAbrir: () => void;
   onIniciar: () => void;
 }) {
@@ -170,8 +173,8 @@ function Fila({
     derecha = <Nota icono={<LockIcon />}>Proyecto cerrado · solo lectura</Nota>;
   } else if (a.estado === "Pendiente") {
     derecha = (
-      <Button size="sm" variant="outline" onClick={onIniciar}>
-        <PlayIcon />
+      <Button size="sm" variant="outline" disabled={iniciando} onClick={onIniciar}>
+        {iniciando ? <Spinner /> : <PlayIcon />}
         Iniciar
       </Button>
     );

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { formatFecha } from "@/lib/format";
+import { formatDia } from "@/lib/format";
 import type { ErrorPublico } from "@/lib/resultados";
 import { ErrorAccion } from "@/features/projects/components/error-accion";
 import { corregirMedicionAction, registrarMedicionAction } from "@/features/metrics/actions";
@@ -142,7 +142,7 @@ export function MedicionDialog({
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {corrigiendo ? `Corregir medición del ${formatFecha(medicion.medidaEn)}` : "Registrar medición"}
+            {corrigiendo ? `Corregir medición del ${formatDia(medicion.medidaEn)}` : "Registrar medición"}
           </DialogTitle>
           <DialogDescription>
             <span className="font-mono">{tipo.codigo}</span> · {tipo.nombre}.{" "}
@@ -184,7 +184,7 @@ export function MedicionDialog({
               <FieldLabel htmlFor={`${id}-fecha`}>Fecha de medición</FieldLabel>
               {corrigiendo ? (
                 <p id={`${id}-fecha`} className="flex h-8 items-center text-sm tabular-nums">
-                  {formatFecha(medicion.medidaEn)}
+                  {formatDia(medicion.medidaEn)}
                 </p>
               ) : (
                 <Input

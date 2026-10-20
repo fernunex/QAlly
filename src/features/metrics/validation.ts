@@ -93,7 +93,7 @@ export function datosFuenteDeTipo(
   } as Record<string, number | string>;
 }
 
-/** Fecha de medición capturada como día: se guarda a las 00:00 UTC, como la muestran los formateadores. */
+/** Fecha de medición capturada como día: se guarda a las 00:00 UTC y se muestra con formatDia. */
 export function medidaEnISO(fecha: string) {
   return `${fecha}T00:00:00Z`;
 }

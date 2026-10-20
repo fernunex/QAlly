@@ -239,7 +239,7 @@ describe("CU-06: captura cifrada del reporte", () => {
 describe("CU-06: contenido del reporte y PDF", () => {
   test("el modelo muestra Sin medición, Sin evaluar y las tres etapas sin calcular salud", () => {
     const m = modeloReporte(resumen(), "2026-10-20T10:00:00.000Z");
-    expect(m.fechaGeneracion).toBe("20 oct 2026, 10:00 (UTC)");
+    expect(m.fechaGeneracion).toBe("20 oct 2026, 04:00 (hora de CDMX)");
     expect(m.proyecto).toMatchObject({ periodoAcademico: "2026-2", estado: "Abierto", fechas: "01 oct 2026 – sin fin previsto" });
     const [m1, m2, m4] = m.metricas;
     expect(m1).toMatchObject({ ultimoValor: "Sin medición", estadoMedicion: "Sin medición (no equivale a 0)", fechaMedicion: "Sin fecha de medición" });
@@ -256,10 +256,10 @@ describe("CU-06: contenido del reporte y PDF", () => {
 
   test("nombre de archivo saneado y textos compatibles con la fuente estándar", () => {
     expect(nombreArchivoReporte("Proyecto Ñandú: calidad/2026", "2026-10-20T10:05:00.000Z")).toBe(
-      "reporte-calidad-proyecto-nandu-calidad-2026-20261020-1005.pdf",
+      "reporte-calidad-proyecto-nandu-calidad-2026-20261020-0405.pdf",
     );
-    expect(nombreArchivoReporte('../"; rm', "2026-10-20T10:05:00.000Z")).toBe("reporte-calidad-rm-20261020-1005.pdf");
-    expect(nombreArchivoReporte("¿?", "2026-10-20T10:05:00.000Z")).toBe("reporte-calidad-proyecto-20261020-1005.pdf");
+    expect(nombreArchivoReporte('../"; rm', "2026-10-20T10:05:00.000Z")).toBe("reporte-calidad-rm-20261020-0405.pdf");
+    expect(nombreArchivoReporte("¿?", "2026-10-20T10:05:00.000Z")).toBe("reporte-calidad-proyecto-20261020-0405.pdf");
     expect(textoPdf("general ≥ 90 % · ≤ 0 defectos")).toBe("general >= 90 % · <= 0 defectos");
   });
 

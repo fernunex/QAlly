@@ -22,7 +22,7 @@ Misma preparación que [CU-01](cu01-implementacion.md#uso-local). Abrir un proye
 - **Corregir:** envía la revisión esperada; una segunda corrección sobre la misma revisión recibe CONFLICTO y no crea otra. La fecha de medición no se edita.
 - **Objetivo:** reenvía `configuradaEn` exacto devuelto por la BD (microsegundos y zona) como token; una pestaña desactualizada recibe CONFLICTO y no sobrescribe.
 - **Agregar:** el tipo ya configurado no se ofrece; una solicitud duplicada se rechaza por la restricción única y se informa (FE-02).
-- **Fecha de medición:** se captura como día y se guarda a las 00:00 UTC, coherente con los formateadores en UTC de la UI. La vigencia la determina la BD; la «Actual» del historial es la primera en su orden.
+- **Fecha de medición:** se captura como día y se guarda a las 00:00 UTC y se muestra como día de calendario con `formatDia`, sin conversión de zona (DEC-24). La vigencia la determina la BD; la «Actual» del historial es la primera en su orden.
 
 Tras cada guardado se muestra la respuesta del servidor, se revalida la ruta y se recarga el historial abierto. No se muestra éxito antes de la confirmación.
 

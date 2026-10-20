@@ -169,7 +169,14 @@ test("QA genera el reporte con Sin medición y Sin evaluar, lo regenera y descar
   expect(h["cache-control"]).toBe("private, no-store");
   expect(h["x-content-type-options"]).toBe("nosniff");
   expect(h["content-disposition"]).toMatch(/^attachment; filename="reporte-calidad-cu-06-[a-z0-9-]+\.pdf"/);
-  const sello = emitida.slice(0, 16).replace(/[-:]/g, "").replace("T", "-");
+  // El sello usa la hora de CDMX, como el resto de la presentación (DEC-24).
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Mexico_City", year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    }).formatToParts(new Date(emitida)).map((x) => [x.type, x.value]),
+  );
+  const sello = `${p.year}${p.month}${p.day}-${p.hour}${p.minute}`;
   expect(descarga.suggestedFilename()).toBe(`reporte-calidad-${nombre.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${sello}.pdf`);
   await esPdf((await descarga.path())!);
   // El token no aparece en la URL ni en el almacenamiento del navegador.

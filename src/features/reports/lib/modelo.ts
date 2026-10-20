@@ -6,7 +6,7 @@ import {
   type EstadoCumplimiento,
   type EstadoSalud,
 } from "@/lib/domain";
-import { formatFecha, formatFechaHora, formatRango } from "@/lib/format";
+import { formatDia, formatFecha, formatFechaHora, formatRango, ROTULO_ZONA, selloFechaHora } from "@/lib/format";
 import { conteoGeneral, NOTA_SALUD } from "@/features/health/lib";
 import type { ResumenProyecto } from "@/features/health/types";
 import { objetivoLineas, valorActualTexto } from "@/features/metrics/lib/formato";
@@ -65,7 +65,7 @@ export type ModeloReporte = {
   };
   /** ISO de emisión de la captura. */
   emitidaEn: string;
-  /** «20 oct 2026, 10:42 (UTC)». */
+  /** «20 oct 2026, 10:42 (hora de CDMX)». */
   fechaGeneracion: string;
   metricas: MetricaReporte[];
   actividades: { total: number; conteos: ConteoFila[] };
@@ -100,7 +100,7 @@ export function modeloReporte(resumen: ResumenProyecto, emitidaEn: string): Mode
       estado: proyecto.cerradoEn ? `Cerrado el ${formatFecha(proyecto.cerradoEn)}` : "Abierto",
     },
     emitidaEn,
-    fechaGeneracion: `${formatFechaHora(emitidaEn)} (UTC)`,
+    fechaGeneracion: `${formatFechaHora(emitidaEn)} (${ROTULO_ZONA})`,
     metricas: resumen.metricas.map((m) => ({
       id: m.id,
       codigo: m.tipo.codigo,
@@ -114,7 +114,7 @@ export function modeloReporte(resumen: ResumenProyecto, emitidaEn: string): Mode
       cumplimiento: m.cumplimiento,
       cumplimientoTexto: cumplimientoEtiqueta(m.cumplimiento),
       estadoMedicion: estadoMedicion(m),
-      fechaMedicion: m.medidaEn ? formatFecha(m.medidaEn) : "Sin fecha de medición",
+      fechaMedicion: m.medidaEn ? formatDia(m.medidaEn) : "Sin fecha de medición",
     })),
     actividades: { total: total(general), conteos: filas(general) },
     salud: { general: resumen.salud, nota: NOTA_SALUD_REPORTE },
@@ -146,8 +146,5 @@ export function nombreArchivoReporte(nombreProyecto: string, emitidaEn: string):
       .replace(/^-+|-+$/g, "")
       .slice(0, 60)
       .replace(/-+$/g, "") || "proyecto";
-  const d = new Date(emitidaEn);
-  const p = (n: number) => String(n).padStart(2, "0");
-  const sello = `${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}-${p(d.getUTCHours())}${p(d.getUTCMinutes())}`;
-  return `reporte-calidad-${base}-${sello}.pdf`;
+  return `reporte-calidad-${base}-${selloFechaHora(emitidaEn)}.pdf`;
 }

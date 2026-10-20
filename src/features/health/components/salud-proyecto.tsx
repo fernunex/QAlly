@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TIPOS_METRICA } from "@/lib/catalogs";
 import type { EstadoSalud } from "@/lib/domain";
-import { formatFecha, formatFechaHora } from "@/lib/format";
+import { formatDia, formatFechaHora, ROTULO_ZONA } from "@/lib/format";
 import {
   conteoGeneral,
   contarCumplimiento,
@@ -120,7 +120,7 @@ function MetricaTarjeta({ m, urlMetricas }: { m: MetricaProyecto; urlMetricas: s
                 .join(" · ")}
             </p>
             <EstadoMedicion m={m} />
-            <p>{m.medidaEn ? `Medido el ${formatFecha(m.medidaEn)}` : "Sin fecha de medición"}</p>
+            <p>{m.medidaEn ? `Medido el ${formatDia(m.medidaEn)}` : "Sin fecha de medición"}</p>
             <Link href={urlMetricas} className="inline-block pt-1 font-medium text-foreground underline-offset-4 hover:underline">
               Ver historial en Métricas
             </Link>
@@ -142,7 +142,7 @@ export function SaludProyecto({ resumen }: { resumen: ResumenProyecto }) {
   return (
     <div className="space-y-8">
       <p className="text-sm text-muted-foreground">
-        Datos actuales consultados el {formatFechaHora(resumen.generadoEn)} (UTC).
+        Datos actuales consultados el {formatFechaHora(resumen.generadoEn)} ({ROTULO_ZONA}).
       </p>
 
       {total === 0 && resumen.metricas.length === 0 ? (

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { nombreEtapa } from "@/lib/catalogs";
-import { formatFecha, formatFechaHora } from "@/lib/format";
+import { formatDia, formatFechaHora } from "@/lib/format";
 import type { ErrorPublico } from "@/lib/resultados";
 import { cn } from "@/lib/utils";
 import { ErrorAccion } from "@/features/projects/components/error-accion";
@@ -126,7 +126,7 @@ function Correcciones({
 }) {
   return (
     <div className="mt-2 space-y-3 rounded-lg border bg-muted/30 p-3">
-      <p className="text-sm font-medium">Correcciones de la medición del {formatFecha(medicion.medidaEn)}</p>
+      <p className="text-sm font-medium">Correcciones de la medición del {formatDia(medicion.medidaEn)}</p>
       <p className="text-xs leading-relaxed text-muted-foreground">
         Corregir una medición anterior no cambia el valor actual: sigue siendo la de la fecha de medición más
         reciente.
@@ -274,7 +274,7 @@ function Historial({
             <li key={md.id} className="px-3 py-2.5">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium whitespace-nowrap tabular-nums">{formatFecha(md.medidaEn)}</span>
+                  <span className="text-sm font-medium whitespace-nowrap tabular-nums">{formatDia(md.medidaEn)}</span>
                   {vigente ? (
                     <span className="rounded-md border border-progress/25 bg-progress/10 px-1.5 py-0.5 text-xs font-medium text-progress">
                       Actual
@@ -326,7 +326,7 @@ function Historial({
                     <Button
                       variant="ghost"
                       size="xs"
-                      aria-label={`Corregir medición del ${formatFecha(md.medidaEn)}`}
+                      aria-label={`Corregir medición del ${formatDia(md.medidaEn)}`}
                       onClick={() => onCorregir(metrica, md)}
                     >
                       <PencilIcon /> Corregir
@@ -408,7 +408,7 @@ export function MetricaDetalleSheet({
                   <div>
                     <p className="text-xs text-muted-foreground">
                       Valor actual
-                      {metrica.medidaEn ? ` · medición del ${formatFecha(metrica.medidaEn)}` : null}
+                      {metrica.medidaEn ? ` · medición del ${formatDia(metrica.medidaEn)}` : null}
                     </p>
                     <p
                       className={cn(

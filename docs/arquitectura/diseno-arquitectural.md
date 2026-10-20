@@ -79,7 +79,7 @@ ADR-002 cierra catálogos, periodo informativo, límites/validación/limpieza, i
 
 Revisión de coherencia: C1 sitúa Supabase externo; C2 abre sus servicios y la aplicación única; C3 abre solo esa aplicación y mantiene las mismas dependencias externas. Todas las entidades tienen propietario funcional y los seis CU tienen correspondencia. No se inventan fórmulas ni integraciones. La matriz amplía [trazabilidad](../requisitos/trazabilidad.md) sin cambiar sus IDs.
 
-Esta matriz valida el diseño. Posteriormente se ejecutaron pruebas de BD/RLS y pruebas de CU-01 en Chrome estable y Firefox; los [resultados](../modulos/cu01-implementacion.md) delimitan la evidencia de funcionamiento disponible. Los escenarios de los demás CU y las muestras RNF en entorno desplegado siguen pendientes.
+Esta matriz valida el diseño. CU-01 a CU-04 se integraron después en `dev` y se verificaron conjuntamente con BD/RLS y Chrome estable/Firefox; los [resultados y límites](../equipo/integracion-cu02-cu03-cu04.md) delimitan la evidencia disponible. CU-05/06, la paginación de CU-04 y las muestras RNF en entorno desplegado siguen pendientes.
 
 ## Cierre de diseño v1 — ADR-002
 

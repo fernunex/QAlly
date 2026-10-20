@@ -2,7 +2,7 @@
 
 **Fecha: 2026-10-19. Estado: integración local completada y validada.** El usuario aprobó ejecutar el plan para reunir las bases antes de desarrollar los casos de uso. No modifica las reglas de ADR-001/002 ni requiere Cloud.
 
-**Actualización posterior:** CU-01 y la sesión real ya están implementados; las referencias a demo y backend pendiente de este registro describen el estado al integrar las ramas. [Estado actual y pruebas](../modulos/cu01-implementacion.md).
+**Actualización posterior:** CU-01 a CU-04 y la sesión real están implementados e integrados en `dev`. Las referencias a demo, cuentas del prototipo y backend pendiente de este registro describen el estado histórico de la primera integración UI/BD. Para operar la versión actual, usar el [README](../../README.md), la [guía Supabase](../datos/guia-supabase.md) y los [resultados conjuntos](integracion-cu02-cu03-cu04.md).
 
 ## Ramas y alcance
 

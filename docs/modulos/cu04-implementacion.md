@@ -1,6 +1,6 @@
 # CU-04 — Implementación y validación local
 
-**Fecha: 2026-10-19. Estado: implementado y validado localmente** en la rama `feat/cu04-entrega-evidencias`, pendiente de revisión e integración en `dev`. Fuente de alcance: [CU-04](../requisitos/casos-uso/CU-04.md), RF-20 a RF-25/RF-33, RNF asociados, [contratos v1](../arquitectura/contratos-v1.md) §5 y [seguridad e integridad](../datos/seguridad-integridad.md). Sin nuevas migraciones, dependencias ni cambios de reglas de negocio: se reutilizan las RPC, RLS, bucket privado y protocolo de reserva aprobados.
+**Fecha: 2026-10-19. Estado: implementado y validado localmente** en la rama `feat/cu04-entrega-evidencias`, integrado en `dev` mediante `8fb64b4`, con revisión de pares pendiente. Fuente de alcance: [CU-04](../requisitos/casos-uso/CU-04.md), RF-20 a RF-25/RF-33, RNF asociados, [contratos v1](../arquitectura/contratos-v1.md) §5 y [seguridad e integridad](../datos/seguridad-integridad.md). Sin nuevas migraciones, dependencias ni cambios de reglas de negocio: se reutilizan las RPC, RLS, bucket privado y protocolo de reserva aprobados.
 
 **Actualización de integración:** este registro conserva los resultados individuales de la rama. CU-02, CU-03 y CU-04 se reúnen posteriormente con CU-01; consultar [resoluciones, pruebas conjuntas y pendientes actuales](../equipo/integracion-cu02-cu03-cu04.md). Las referencias a otro CU sin interfaz describen el estado previo a esa integración.
 
@@ -8,7 +8,7 @@
 
 Igual que [CU-01](cu01-implementacion.md). Con el seed, `miembro1@qally.example.test` tiene actividades Pendiente, En progreso (con PDF y enlace), En revisión, Aprobada y devuelta en el proyecto «QAlly demo A». Abrir **Mis actividades**.
 
-La asignación de responsable y la revisión por QA pertenecen a CU-03, todavía sin interfaz: en local se preparan con el seed o con las RPC `asignar_responsable` y `revisar_entrega`.
+La asignación de responsable y la revisión por QA pertenecen a CU-03 y ya están conectadas en `dev`, desde la pestaña Actividades del proyecto. El seed sigue ofreciendo ejemplos para probar sin crear una actividad nueva.
 
 ## Realización técnica
 
@@ -35,7 +35,7 @@ Mismos comandos que CU-01 (`npm run unit:test`, `db:test`, `typecheck`, `lint`, 
 ## Límites y pendientes
 
 - RNF-04/05/06: sin mediciones de tiempos en entorno desplegado (igual que CU-01).
-- No se probó en E2E la compensación tras un fallo después de la subida ni la pérdida de respuesta durante la subida; la lógica sigue el protocolo y el script `files.server.mjs` ya probados en BD.
+- En la validación individual no se probó la pérdida de respuesta de subida ni la compensación desde la aplicación. La integración posterior añadió E2E de respuesta perdida tras persistir y unitarias con fallos de Storage/RPC; la BD ya prueba compensación y archivos compartidos. No se simuló una caída física del servicio. [Cobertura conjunta](../equipo/integracion-cu02-cu03-cu04.md#resultados-de-la-integración).
 - Lista de Mis actividades sin paginación ni paginación de intentos (contrato §2); suficiente para los datos actuales, pendiente si un miembro acumula muchas asignaciones.
 - El historial de eventos de la actividad no existe en el modelo aprobado; no se muestra.
 - `npm run db:start`/`db:lint` fallan en Windows porque `scripts/db.mjs` invoca `supabase.cmd` sin shell (restricción de Node). Problema previo y ajeno a CU-04: aquí se ejecutó el CLI directamente. Conviene corregirlo aparte.

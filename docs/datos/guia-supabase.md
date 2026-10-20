@@ -98,11 +98,11 @@ Todavía no se ha creado ni enlazado un proyecto remoto. Cuando el equipo lo sol
 5. Configurar los secretos del servidor y la clave pública del cliente en el entorno correspondiente. No copiar la contraseña ni las cuentas de desarrollo local a producción.
 6. Repetir pruebas de acceso e integridad en un proyecto de pruebas autorizado antes de usar datos reales. Invitar al equipo a la organización/proyecto mediante el panel, sin compartir claves privilegiadas.
 
-Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js ya está integrada y CU-01 utiliza sesiones reales y operaciones de servidor con RLS. [Estado y pruebas de CU-01](../modulos/cu01-implementacion.md). CU-02/03/04 se integran posteriormente: [estado conjunto](../equipo/integracion-cu02-cu03-cu04.md). Salud y reportes siguen pendientes.
+Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js de CU-01 a CU-04 está integrada en `dev`, con sesiones reales, operaciones de servidor y RLS. [Estado, pruebas conjuntas y limitaciones](../equipo/integracion-cu02-cu03-cu04.md). Salud y reportes siguen pendientes.
 
 ## Usar las cuentas desde la aplicación
 
-Tras iniciar Supabase y ejecutar el seed, abrir Next.js con `npm run dev -- --hostname 127.0.0.1`. Entrar con una cuenta de la tabla y la contraseña `QALLY_DEV_PASSWORD` del archivo local. No hay registro público ni acceso con cualquier contraseña. QA ve solo sus proyectos; Miembro consulta los suyos. Los cambios de CU-01 se guardan mediante la sesión del usuario, sin usar la credencial de servicio.
+Tras iniciar Supabase y ejecutar el seed, abrir Next.js con `npm run dev -- --hostname 127.0.0.1`. Entrar con una cuenta de la tabla y la contraseña `QALLY_DEV_PASSWORD` del archivo local. No hay registro público ni acceso con cualquier contraseña. QA ve solo sus proyectos; Miembro consulta los suyos. Las operaciones ordinarias de CU-01 a CU-04 se guardan con la sesión del usuario. El adaptador administrativo de PDF de CU-04 verifica primero autorización y utiliza la credencial de servicio solo en servidor; las descargas conservan identidad de usuario y RLS.
 
 Las pruebas E2E añaden cuentas `e2e-miembro-*`, proyectos de paginación y proyectos aislados de cada ejecución. Son fixtures de prueba locales; el seed ordinario sigue creando sus seis cuentas y tres proyectos. No ejecutar reset para probar CU-01 salvo que se quiera borrar expresamente la base local.
 

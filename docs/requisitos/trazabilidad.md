@@ -43,18 +43,18 @@ Las verificaciones anteriores son escenarios exigidos al implementar, no resulta
 
 ## Implementación local de datos — bootstrap 2026-10-18
 
-El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementa la parte de datos de los acuerdos anteriores. La [guía local](../datos/guia-supabase.md) registra operación y límites de validación; los resultados efectivos se registran al finalizar el bootstrap.
+El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementó la parte de datos de los acuerdos anteriores. La [guía local](../datos/guia-supabase.md) registra operación y límites de validación. La tabla siguiente muestra también el avance posterior de la aplicación, sin modificar los requisitos.
 
-| CU | Implementación de datos | Pendiente fuera de este bootstrap |
+| CU | Implementación de datos | Aplicación actual / pendiente |
 |---|---|---|
-| CU-01 | RPC de alta/configuración atómica, edición, cierre y consulta; participación y RLS. | Formularios y autorización de rutas Next.js. |
+| CU-01 | RPC de alta/configuración atómica, edición, cierre y consulta; participación y RLS. | Integrado en `dev`: [CU-01](../modulos/cu01-implementacion.md). |
 | CU-02 | Objetivos, mediciones idempotentes, revisiones anexadas y consulta de vigencia. | Implementado el 2026-10-19: [trazabilidad CU–RF–RNF y evidencia](../modulos/cu02-implementacion.md#trazabilidad). |
-| CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Pantallas y flujos de usuario. |
-| CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Endpoint Next.js, sesiones SSR y pruebas de navegador. |
+| CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Integrado en `dev`: [CU-03](../modulos/cu03-implementacion.md). |
+| CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Integrado en `dev`: [CU-04](../modulos/cu04-implementacion.md); paginación pendiente. |
 | CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Algoritmo aprobado de salud y dashboard. |
 | CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Captura cifrada, exportación PDF y correspondencia visual. |
 
-Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. Este resultado del bootstrap no cambia ningún RF ni acredita por sí mismo los flujos de la aplicación; el avance posterior de CU-01 se detalla a continuación.
+Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. Este resultado del bootstrap no cambia ningún RF ni acredita por sí mismo los flujos de la aplicación; el avance de CU-01 a CU-04 y su validación conjunta se detallan a continuación.
 
 ## CU-01 implementado — 2026-10-19
 
@@ -84,7 +84,7 @@ Se conservan RF, RNF y reglas aprobadas; el contrato de listarActividades se amp
 | SF-04/05; RF-18/19; RNF-08/09 | revisar_entrega con decisión fija por acción; observaciones obligatorias al devolver; FE-03 identificado. | E2E aprobar/devolver, revisión registrada con QA, decisión repetida rechazada; unitarias de observaciones. |
 | RNF-07 (parte CU-03) | UI existente conectada a datos reales. | Escenarios CU-03 en Chrome y Firefox de Playwright. |
 
-RNF-04/05: pendientes mediciones de aceptación en entorno desplegado. La entrega por el responsable (CU-04) se prepara por RPC en las pruebas y aún no se conecta a la UI.
+RNF-04/05: pendientes mediciones de aceptación en entorno desplegado. En las pruebas individuales de CU-03 se prepararon entregas por RPC; la UI de CU-04 ya está conectada y validada en la integración conjunta.
 
 ## CU-04 implementado — 2026-10-19
 
@@ -103,6 +103,8 @@ RNF-04/05: pendientes mediciones en entorno desplegado. La asignación y revisi�
 
 
 ## Validación conjunta CU-01 a CU-04
+
+**Estado actual:** integrada en `dev` mediante `8fb64b4`, con ajuste de formato `f82ffd0`. Resultado local registrado: 50 unitarias, 20 de BD y 44 E2E en Chrome estable y Firefox.
 
 La integración conserva los requisitos y la ampliación de filtros aprobada para CU-03. [Registro conjunto](../equipo/integracion-cu02-cu03-cu04.md). Las referencias anteriores a CU-03/CU-04 sin interfaz pertenecen a las verificaciones individuales previas a la integración.
 

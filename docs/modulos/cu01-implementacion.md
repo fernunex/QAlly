@@ -32,7 +32,7 @@ Crear usa una única transacción y una solicitud estable por formulario. Ante u
 
 ## Alcance conservado
 
-El detalle muestra información general, participantes, conteos y configuración de actividades/métricas con datos reales; actividades paginadas y métricas sin recorrer sus historiales. Salud permanece Sin evaluar, sin cálculos nuevos. Los componentes de UI de los CU posteriores permanecen en el repositorio para reutilizarlos; sus rutas no presentan mocks ni guardados simulados como si fueran datos del proyecto real. Gestión de actividades, mediciones, evidencias y reportes se conectarán con sus respectivos CU.
+El detalle muestra información general, participantes, conteos y configuración de actividades/métricas con datos reales; actividades paginadas y métricas sin recorrer sus historiales. Salud permanece Sin evaluar, sin cálculos nuevos. CU-02/03/04 ya conectan gestión de métricas/mediciones, actividades SQA y entrega/revisión de evidencias; consultar la [integración conjunta](../equipo/integracion-cu02-cu03-cu04.md). CU-05/06 conservan componentes de prototipo para reutilizarlos; sus rutas no presentan guardados simulados como si fueran datos del proyecto real. Salud y reportes siguen pendientes.
 
 Dependencias añadidas del stack autorizado: `@supabase/ssr` 0.12.7, Zod 4.6.7 y `@playwright/test` 1.64.1, fijadas en package.json/lockfile. Next.js 16.4.2, TypeScript 5.9.3 y Supabase JS 2.118.0 se conservan.
 

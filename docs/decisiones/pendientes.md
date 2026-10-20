@@ -26,7 +26,7 @@ La salud es el único pendiente de producto de este cierre, por instrucción exp
 
 - Adaptadores de aplicación Next.js de CU-05 y CU-06; CU-01 a CU-04 y sesión real ya implementados. SQL, funciones/RLS, limpieza, tipos generados y pruebas de API/BD disponibles; consultar resultados del bootstrap.
 - Cuentas/planes/regiones remotos y configuración de despliegue. Sesión SSR local implementada en CU-01. Node/dependencias de datos y variables locales fijados tras el plan autorizado; workflow preparado, ejecución en GitHub pendiente.
-- Rendimiento desplegado y pruebas de los CU restantes. CU-01 ya tiene pruebas E2E en Chrome estable y Firefox; RLS, concurrencia y archivos tienen pruebas locales de BD. Dataset y resultados en el plan de bootstrap y la guía de CU-01. No afirmar todos los RNF superados.
+- Rendimiento desplegado y pruebas de los CU restantes. CU-01 a CU-04 ya tienen pruebas conjuntas en Chrome estable y Firefox; RLS, concurrencia y archivos tienen pruebas locales de BD. [Resultados y límites actuales](../equipo/integracion-cu02-cu03-cu04.md). No afirmar todos los RNF superados.
 - Revisar apartados y obligaciones del SRS académico con las fuentes originales disponibles; no presumir ratificación de la docente.
 
 Las propuestas se conservan como antecedentes históricos con enlaces a sus reemplazos; no son decisiones todavía pendientes. Para futuros cambios, registrar nueva aprobación y actualizar fuente canónica y trazabilidad CU–RF–RNF.

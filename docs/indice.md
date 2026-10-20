@@ -11,6 +11,7 @@
 | Preparar y usar la BD local | [Guía Supabase](datos/guia-supabase.md), [plan de bootstrap](datos/plan-bootstrap-supabase.md), migraciones/seed y contratos v1 |
 | Proponer estructura de código | `docs/arquitectura/estructura-repo-propuesta.md`, plan de diseño |
 | Consultar BD, permisos y evidencias | `docs/datos/invariantes-de-modelado.md` → `modelo-entidad-relacion.md`, `diccionario-datos.md`, `seguridad-integridad.md` en la misma carpeta; CU-01 a CU-04 según impacto |
+| Probar CU-02 implementado | [Implementación local y pruebas](modulos/cu02-implementacion.md) |
 | Probar CU-01 implementado | [Implementación local y pruebas](modulos/cu01-implementacion.md) |
 | Probar CU-03 implementado | [Implementación local y pruebas](modulos/cu03-implementacion.md) |
 | Probar CU-04 implementado | [Implementación local y pruebas](modulos/cu04-implementacion.md) |
@@ -25,6 +26,10 @@
 | Consultar decisiones | `docs/decisiones/registro.md`, `docs/decisiones/pendientes.md` |
 | Consultar cierre de diseño excepto salud | [ADR-002](decisiones/ADR-002-cierre-diseno-v1.md), [contratos v1](arquitectura/contratos-v1.md), [detalle técnico](datos/detalle-tecnico-v1.md), **APROBADOS**; bootstrap local en guía Supabase |
 | Onboarding de agentes (solo si se necesita) | `docs/equipo/guia-codex.md` |
+
+## Estado actual de implementación
+
+CU-01 a CU-04 están integrados en `dev` local (merge `8fb64b4`, ajuste de formato `f82ffd0`). Guía de entrada: [README](../README.md); resultados: [integración conjunta](equipo/integracion-cu02-cu03-cu04.md). CU-05/06, algoritmo de salud, paginación de CU-04 y rendimiento desplegado siguen pendientes. Los registros individuales conservan sus resultados históricos y no sustituyen el estado conjunto.
 
 ## Fuentes canónicas
 

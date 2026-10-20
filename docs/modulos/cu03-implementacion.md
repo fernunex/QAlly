@@ -1,12 +1,12 @@
 # CU-03 — Implementación y validación local
 
-**Fecha: 2026-10-19. Estado: implementado; validación local en `feat/cu-03-actividades`, pendiente de revisión e integración en `dev`.** Fuente de alcance: [CU-03](../requisitos/casos-uso/CU-03.md), RF-15 a RF-19/RF-33, RNF asociados y [contratos v1](../arquitectura/contratos-v1.md) §5. Sin nuevas migraciones ni cambios de reglas de negocio.
+**Fecha: 2026-10-19. Estado: implementado; validación local en `feat/cu-03-actividades`, integrado en `dev` mediante `8fb64b4`, con revisión de pares pendiente.** Fuente de alcance: [CU-03](../requisitos/casos-uso/CU-03.md), RF-15 a RF-19/RF-33, RNF asociados y [contratos v1](../arquitectura/contratos-v1.md) §5. Sin nuevas migraciones ni cambios de reglas de negocio.
 
 **Actualización de integración:** este registro conserva los resultados individuales de la rama. CU-02, CU-03 y CU-04 se reúnen posteriormente con CU-01; consultar [resoluciones, pruebas conjuntas y pendientes actuales](../equipo/integracion-cu02-cu03-cu04.md). Las referencias a otro CU sin interfaz describen el estado previo a esa integración.
 
 ## Uso local
 
-Igual que [CU-01](cu01-implementacion.md#uso-local). En el proyecto «QAlly demo A» (cuenta `qa1@qally.example.test`) el seed deja actividades Pendiente, En progreso, En revisión (A-05, con enlace), Aprobada y devuelta con observaciones; `miembro1` es su responsable. La entrega desde la cuenta de Miembro corresponde a CU-04 y aún no está conectada: para revisar nuevos intentos se preparan con los scripts locales o las RPC.
+Igual que [CU-01](cu01-implementacion.md#uso-local). En el proyecto «QAlly demo A» (cuenta `qa1@qally.example.test`) el seed deja actividades Pendiente, En progreso, En revisión (A-05, con enlace), Aprobada y devuelta con observaciones; `miembro1` es su responsable. La entrega desde la cuenta de Miembro corresponde a CU-04 y ya está conectada en `dev`: el responsable inicia y envía desde Mis actividades; QA revisa desde el tablero del proyecto. Las pruebas individuales de esta rama preparaban esos intentos mediante RPC.
 
 QA participante en un proyecto abierto puede, desde la pestaña **Actividades**:
 
@@ -38,7 +38,7 @@ npm run lint
 npm run e2e:test
 ```
 
-`tests/e2e/cu03.spec.ts` crea proyectos aislados por ejecución mediante RPC y prepara intentos En revisión como responsable (incluido un PDF por el adaptador local de servidor). Las E2E añaden decenas de proyectos ficticios a la BD local y relegan los proyectos del seed a las últimas páginas del listado; tras ejecutarlas, reconstruir para volver a probar manualmente: `npm run db:reset -- --confirm-local-reset && npm run db:seed`.
+`tests/e2e/cu03.spec.ts` crea proyectos aislados por ejecución mediante RPC y prepara intentos En revisión como responsable (incluido un PDF por el adaptador local de servidor). Las E2E añaden decenas de proyectos ficticios a la BD local y relegan los proyectos del seed a las últimas páginas del listado; se puede seguir probando manualmente sin reconstruir la base, usando la paginación del listado. Solo si se quiere borrar expresamente los datos locales y recrear el seed, ejecutar `npm run db:reset -- --confirm-local-reset` y después `npm run db:seed`.
 
 ## Resultado comprobado
 
@@ -48,6 +48,6 @@ npm run e2e:test
 - Se verifica alta con validación y tipo repetido, asignación persistente sin cambio de estado, devolución sin/con observaciones, aprobación con confirmación y revisión registrada con QA, decisión repetida/versión obsoleta con CONFLICTO, conflicto entre pestañas sin sobrescritura, paginación por columna (25 de 30 → 30, sin duplicados), filtros por URL y desconocidos ignorados, proyecto cerrado en solo lectura, llamadas directas como Miembro (PROHIBIDO), QA ajeno (NO_DISPONIBLE) y sin sesión (SIN_SESION), y descarga PDF con cabeceras privadas (404 ajeno/inexistente, 401 sin sesión).
 - Typecheck, lint y build de producción aprobados.
 
-Corrección incluida: el `aria-labelledby` de las columnas usaba ids con espacios («col-En revisión») y dejaba sin nombre accesible a «En progreso» y «En revisión»; ahora usa `useId`. `mis-actividades-lista.tsx` (CU-04) conserva el mismo patrón y debe corregirse al conectar ese CU.
+Corrección incluida: el `aria-labelledby` de las columnas usaba ids con espacios («col-En revisión») y dejaba sin nombre accesible a «En progreso» y «En revisión»; ahora usa `useId`. La integración posterior corrigió también `mis-actividades-lista.tsx` (CU-04) con `useId`; ese ajuste ya está en `dev`.
 
 **Entorno de esta validación:** Podman 6.1.3 sin privilegios en lugar de Docker, mediante su socket compatible (`DOCKER_HOST`). `npm run db:start` no funciona tal cual con Podman: netavark no admite la opción `host_binding_ipv4` y el formato de `network inspect` difiere, por lo que Supabase se inició con la CLI y `--network-id qally-local`; la prueba de bloqueo de BD necesitó un alias temporal `docker → podman`. Con Podman los puertos 54321–54324 quedan publicados en `0.0.0.0`, no solo en loopback: depender del firewall del equipo o usar Docker para conservar la restricción de la guía. Node 26 en lugar de 24 (aviso de engines, sin fallos). No se hizo push ni despliegue remoto.

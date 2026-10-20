@@ -14,6 +14,8 @@ La primera rama `chore/integrar-cu02-cu03-cu04` conservó los merges al cancelar
 
 Se actualizó `dev` por fast-forward a `4514e5a`. La nueva rama `chore/integrar-cu02-cu03-cu04-v2` reaplica la reversión con `bb27209` y recupera la primera integración mediante merge. Esto evita que Git considere CU-04 ya incorporado pero mantenga sus archivos eliminados por la reversión. Conserva el historial remoto y los commits de los compañeros; no hace reset ni reescribe ramas compartidas.
 
+La integración final se incorporó al `dev` local con `8fb64b4`; `f82ffd0` retira únicamente una línea vacía al final de un DTO. Las tres ramas están incluidas en el historial de `dev`. `main` no se modificó y esta ejecución no realizó push.
+
 ## Resolución de puntos compartidos
 
 - **Actividades:** se conserva el tablero paginado y los filtros de CU-03, con el aviso al Miembro para entregar desde Mis actividades. Se retiran mensajes que anuncian como pendientes la entrega o revisión ya conectadas.

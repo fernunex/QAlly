@@ -1,102 +1,122 @@
 # QAlly
 
-**QAlly** es una aplicación web para gestionar y monitorear actividades de aseguramiento de la calidad del software (SQA), sus evidencias, métricas de calidad y el estado de salud de proyectos de desarrollo.
+QAlly es una plataforma web académica para gestionar actividades de aseguramiento de la calidad del software (SQA), evidencias y métricas de proyectos. Utiliza un **monolito modular con Next.js y Supabase**, con permisos por rol y proyecto.
 
-Es un proyecto académico orientado principalmente a navegadores de escritorio (Chrome y Firefox).
+## Estado actual
 
-## Funcionalidades
+**CU-01 a CU-04 están implementados e integrados en `dev`**, con persistencia en Supabase local. La integración se registró en `8fb64b4`; el ajuste posterior de formato está en `f82ffd0`. `main` conserva una versión anterior y no contiene esta integración.
 
-- **Proyectos:** registro, integrantes, consulta, modificación y cierre con conservación de información.
-- **Actividades SQA:** elección desde catálogo, asignación y seguimiento desde Pendiente hasta Aprobada.
-- **Evidencias:** entrega de resultados mediante archivos PDF o enlaces y revisión por QA.
-- **Métricas:** objetivos/umbrales, nuevas mediciones, historial y correcciones trazables.
-- **Estado de salud:** indicadores generales y por etapa del proyecto.
-- **Reportes:** consulta del estado actual de calidad y exportación a PDF.
+| Caso de uso | Disponible actualmente | Estado |
+|---|---|---|
+| [CU-01 — Proyectos](docs/modulos/cu01-implementacion.md) | Alta con miembros y configuración inicial, consulta, edición y cierre conservando datos. | Implementado y probado localmente. |
+| [CU-02 — Métricas](docs/modulos/cu02-implementacion.md) | Agregar tipos del catálogo, configurar objetivos, registrar mediciones, consultar historial y corregir con trazabilidad. | Implementado y probado localmente. |
+| [CU-03 — Actividades SQA](docs/modulos/cu03-implementacion.md) | Tablero paginado con filtros, alta, asignación, consulta, aprobación y devolución con observaciones. | Implementado y probado localmente. |
+| [CU-04 — Entrega de evidencias](docs/modulos/cu04-implementacion.md) | Mis actividades, inicio, resultado, PDF/enlaces, envío a revisión y corrección en otro intento. | Implementado y probado; paginación de listas e intentos pendiente. |
+| [CU-05 — Salud del proyecto](docs/modulos/salud.md) | Entradas y consultas de BD preparadas; dashboard pendiente de conexión. | Algoritmo y clasificación pendientes de aprobación. |
+| [CU-06 — Reportes](docs/modulos/reportes.md) | Componentes de prototipo conservados; ruta muestra aviso de funcionalidad pendiente. | Generación y exportación de reportes pendientes. |
 
-> El algoritmo y las categorías definitivas de salud aún están pendientes de validación. El módulo y sus datos sí forman parte del alcance.
+La salud general y por etapa sigue siendo parte del alcance; no se calculan puntajes ni categorías sin un algoritmo aprobado. **Supabase Cloud y el despliegue aún no están configurados**; se puede desarrollar y probar localmente.
 
-## Estado de implementación local
+[Registro de integración y pruebas conjuntas](docs/equipo/integracion-cu02-cu03-cu04.md) · [Pendientes actuales](docs/decisiones/pendientes.md).
 
-La base de datos, Auth, Storage privado, migraciones y seeds están preparados para desarrollo local. CU-01 a CU-04 están conectados: proyectos, métricas/mediciones, gestión y revisión de actividades SQA, y entrega de evidencias. CU-05 y CU-06 siguen pendientes de conexión; salud permanece Sin evaluar. No se ha configurado Cloud ni desplegado la aplicación. [Integración conjunta y límites](docs/equipo/integracion-cu02-cu03-cu04.md).
+## Roles y flujo disponible
 
-[Alcance y pruebas de CU-01](docs/modulos/cu01-implementacion.md).
+- **QA:** crea y administra sus proyectos, configura métricas, registra/corrige mediciones, asigna actividades SQA y revisa entregas.
+- **Miembro del equipo:** consulta proyectos autorizados e inicia y entrega sus actividades asignadas desde **Mis actividades**.
 
-## Roles
-
-| Rol | Funciones principales |
-|---|---|
-| **QA** | Administra proyectos, métricas y actividades; revisa entregas y genera reportes. |
-| **Miembro del equipo** | Consulta proyectos autorizados y ejecuta/entrega actividades asignadas. |
+Flujo de actividad SQA: **Pendiente → En progreso → En revisión → Aprobada**. QA puede devolver una entrega de En revisión a En progreso con observaciones; la corrección conserva el intento anterior. Los proyectos cerrados siguen disponibles para consulta y descarga de evidencias, con escrituras de negocio bloqueadas.
 
 ## Stack tecnológico
 
-| Capa | Tecnología seleccionada |
+| Responsabilidad | Implementación actual |
 |---|---|
-| Lenguaje | TypeScript |
-| Aplicación web y lógica del servidor | Next.js (App Router) + React |
-| Estilos y componentes | Tailwind CSS + shadcn/ui |
-| Datos | PostgreSQL (Supabase), Supabase JS y tipos generados |
-| Autenticación y archivos | Supabase Auth + Supabase Storage (privado) |
-| Validación | Zod |
-| Reportes PDF | `@react-pdf/renderer` |
-| Pruebas | Vitest + Playwright |
-| Convenciones y CI | ESLint + Prettier + GitHub Actions |
-| Despliegue | Vercel + Supabase |
-| Paquetes | npm |
+| Aplicación y servidor | Next.js 16.4.2, React 19.3.0 y TypeScript 5.9.3. |
+| Interfaz | Tailwind CSS 4 y shadcn/ui. |
+| Datos | PostgreSQL 17 en Supabase local; Supabase JS y tipos generados, sin ORM. |
+| Identidad y archivos | Supabase Auth con sesiones SSR y Supabase Storage privado. |
+| Validación | Zod; autorización en servidor y RLS en PostgreSQL. |
+| Pruebas y calidad | Vitest, Playwright, ESLint y workflows de GitHub Actions. |
+| Herramientas locales | Node.js 24, npm y Docker; versiones reproducibles con package-lock.json. |
 
-Arquitectura: **monolito modular en un solo repositorio**. La lista de tecnologías está aprobada; versiones de UI y datos se fijan en package-lock.json.
+El [stack aprobado](docs/arquitectura/stack-aprobado.md) también contempla `@react-pdf/renderer` para CU-06 y Vercel para despliegue; siguen pendientes de implementación/configuración. Prettier está aprobado como herramienta de formato, sin configuración/dependencia propia incorporada al proyecto.
 
-## Entorno de base de datos local
+## Primera ejecución local
 
-Requisitos: Node.js 24 y Docker funcionando. Herramientas con versiones fijadas en package-lock.json; sin instalaciones globales.
+Requisitos: **Node.js 24 y Docker funcionando**. Desde un checkout de `dev`, ejecutar:
 
 ```sh
 npm ci
 npm run db:start
 npm run db:seed
-npm run db:types
-npm run db:lint
-npm run db:test
-npm run typecheck
-```
-
-Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 a CU-04 utilizan Supabase local con sesión real y permisos por proyecto; CU-05 y CU-06 se conectarán posteriormente.
-
-Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
-
-[Guía de Supabase](docs/datos/guia-supabase.md): conceptos, datos iniciales, seguridad, scripts, pruebas y conexión futura a Cloud. No versionar credenciales reales ni ejecutar seeds/reset de desarrollo contra un proyecto remoto.
-
-## Ejecutar la interfaz y trabajar en equipo
-
-```sh
 npm run dev -- --hostname 127.0.0.1
 ```
 
-Abrir http://127.0.0.1:3000. Iniciar sesión con `qa1@qally.example.test` (QA) o `miembro1@qally.example.test` (Miembro). Usar la contraseña local generada en `.env.local` (`QALLY_DEV_PASSWORD`); no publicarla. Las cuentas demo anteriores y el selector «Ver como» ya no conceden acceso. Los proyectos de CU-01 se guardan en PostgreSQL y se conservan al recargar o volver a iniciar sesión.
+| Servicio | Dirección |
+|---|---|
+| Aplicación | http://127.0.0.1:3000 |
+| Supabase Studio | http://127.0.0.1:54323 |
+| API Supabase local | http://127.0.0.1:54321 |
 
-Validar la aplicación con `npm run lint`, `npm run typecheck` y `npm run build`; validar la base con los comandos anteriores. `typecheck` genera primero los tipos de rutas Next.js para funcionar desde una instalación limpia.
+`db:start` inicia los servicios locales y genera `.env.local` sin imprimir credenciales. `db:seed` prepara **dos cuentas QA, cuatro de Miembro del equipo y tres proyectos ficticios**. Los catálogos se instalan mediante las migraciones. No se requiere una cuenta ni un proyecto de Supabase Cloud.
 
-Pruebas nuevas: `npm run unit:test` y `npm run e2e:test`. Antes de E2E instalar los navegadores con `npx playwright install chromium firefox`; la suite construye la aplicación y usa el puerto 3100, que debe estar libre. Usa exclusivamente Supabase local y añade fixtures de prueba. Para comprobar Chrome estable puede indicarse `QALLY_CHROME_PATH` con la ruta de su ejecutable. [Implementación y validación de CU-01](docs/modulos/cu01-implementacion.md).
+Entrar con `qa1@qally.example.test` o `miembro1@qally.example.test`. La contraseña es el valor de `QALLY_DEV_PASSWORD` de `.env.local`. El acceso utiliza Supabase Auth real; no hay registro público ni selector de rol. El archivo de entorno está ignorado por Git: no compartir contraseñas, sesiones ni claves privilegiadas.
 
-`dev` reúne la base de UI y BD; desarrollar funcionalidades en ramas creadas desde `dev`, revisar mediante PR hacia `dev` y promover versiones verificadas a `main`. [Flujo y registro de integración](docs/equipo/integracion-ui-bd.md).
+Para recorrer ambos roles, abrir sesiones separadas: QA administra desde **Proyectos → Métricas / Actividades**; el Miembro entrega desde **Mis actividades**. Las cuentas y asignaciones iniciales se describen en la [guía de Supabase](docs/datos/guia-supabase.md#qué-contiene-el-seed).
 
-## Documentación
+En los arranques siguientes basta con `npm run db:start` y `npm run dev -- --hostname 127.0.0.1`. No se necesita reconstruir la BD para iniciar o probar la aplicación.
 
-- [Índice de documentación](docs/indice.md)
-- [Requerimientos funcionales](docs/requisitos/funcionales.md)
-- [Requerimientos no funcionales](docs/requisitos/no-funcionales.md)
-- [Casos de uso](docs/requisitos/casos-uso/)
-- [Reglas de negocio](docs/producto/reglas-globales.md)
-- [Catálogo de actividades v1 aprobado](docs/producto/catalogo-actividades.md)
-- [Catálogo de métricas v1 aprobado](docs/producto/catalogo-metricas.md)
-- [Tecnologías seleccionadas](docs/arquitectura/stack-aprobado.md)
-- [Diseño arquitectural y C4](docs/arquitectura/diseno-arquitectural.md)
-- [Modelo de datos](docs/datos/modelo-entidad-relacion.md)
-- [Decisión de diseño aprobada](docs/decisiones/ADR-001-diseno-tecnico-v1.md)
-- [Cierre de diseño aprobado — ADR-002](docs/decisiones/ADR-002-cierre-diseno-v1.md)
-- [Contratos internos v1](docs/arquitectura/contratos-v1.md)
-- [Decisiones pendientes](docs/decisiones/pendientes.md)
+## Operación de la base local
 
-## Contribución y calidad
+| Comando | Uso |
+|---|---|
+| `npm run db:status` | Consultar direcciones de servicios sin mostrar claves. |
+| `npm run db:stop` | Detener Supabase conservando datos. |
+| `npm run db:types` | Regenerar tipos TypeScript desde la BD local. |
+| `npm run db:seed:large` | Ampliar el dataset de desarrollo para pruebas con volumen. |
+| `npm run db:cleanup` | Limpiar archivos elegibles sin referencias conforme al protocolo aprobado. |
 
-Los cambios se trabajarán mediante ramas y pull requests con revisión de pares. El equipo documentará verificaciones y evidencias SQA de acuerdo con su [estrategia de aseguramiento de calidad](docs/equipo/sqa-en-el-desarrollo.md).
+`npm run db:reset -- --confirm-local-reset` **borra la base local** y aplica de nuevo las migraciones; después requiere `npm run db:seed`. Usarlo solo cuando se quiera reconstruir expresamente el entorno. Los cambios de esquema se realizan con nuevas migraciones versionadas, no editando manualmente Studio como fuente de verdad.
+
+[Guía de datos, seguridad, seeds y futura conexión a Cloud](docs/datos/guia-supabase.md).
+
+## Verificaciones
+
+Con Supabase local iniciado:
+
+```sh
+npm run unit:test
+npm run db:lint
+npm run db:test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Para las pruebas de navegador:
+
+```sh
+npx playwright install chromium firefox
+npm run e2e:test
+```
+
+E2E compila y sirve la aplicación de producción en el **puerto 3100**, que debe estar libre. Añade datos ficticios locales y no borra los existentes. Para utilizar un Chrome estable instalado, definir `QALLY_CHROME_PATH` con la ruta de su ejecutable; el navegador predeterminado de Playwright no se considera automáticamente el canal estable.
+
+La integración de CU-01 a CU-04 verificó **50 pruebas unitarias, 20 de BD y 44 escenarios E2E** en Chrome for Testing Stable 155.0.8059.84 y Firefox de Playwright 157.0. También pasaron lint, TypeScript y build, sin cambios de migraciones ni tipos generados. Son resultados locales registrados, no una nueva ejecución ni una certificación completa de todos los RNF. [Entorno, resultados y límites](docs/equipo/integracion-cu02-cu03-cu04.md#resultados-de-la-integración).
+
+## Pendientes relevantes
+
+- Paginar **Mis actividades** y los intentos de CU-04: hoy carga listas completas, con riesgo de respuestas grandes o truncadas por el límite de PostgREST.
+- Definir el algoritmo de salud e implementar CU-05 y CU-06.
+- Medir los tiempos de aceptación RNF en un entorno desplegado y representativo.
+- Preparar Cloud/despliegue y automatizar la limpieza diaria cuando corresponda. La ejecución remota de GitHub Actions no está acreditada por las pruebas locales.
+- Dar seguimiento a los avisos de dependencias registrados durante la integración, sin aplicar actualizaciones forzadas de versiones principales.
+
+## Trabajo en equipo y documentación
+
+Crear ramas de funcionalidad desde `dev`, revisar mediante PR hacia `dev` y promover versiones verificadas a `main`. [Flujo de colaboración](docs/equipo/integracion-ui-bd.md#flujo-para-el-equipo).
+
+- [Índice y fuentes canónicas](docs/indice.md).
+- [Requisitos funcionales](docs/requisitos/funcionales.md), [RNF](docs/requisitos/no-funcionales.md) y [trazabilidad](docs/requisitos/trazabilidad.md).
+- [Reglas del producto](docs/producto/reglas-globales.md) y catálogos aprobados de [actividades](docs/producto/catalogo-actividades.md) y [métricas](docs/producto/catalogo-metricas.md).
+- [Arquitectura C4](docs/arquitectura/diseno-arquitectural.md), [modelo de datos](docs/datos/modelo-entidad-relacion.md) y [contratos internos](docs/arquitectura/contratos-v1.md).
+- [Decisiones aprobadas](docs/decisiones/registro.md), [pendientes](docs/decisiones/pendientes.md) y [estrategia SQA](docs/equipo/sqa-en-el-desarrollo.md).

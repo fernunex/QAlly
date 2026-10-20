@@ -1,6 +1,6 @@
 # Stack y estilo arquitectónico aprobados — 2026-10-18
 
-**Estado: APROBADO por el PM tras revisar la propuesta técnica.** Esta es la fuente canónica del stack. El bootstrap de datos autorizado posteriormente se registra al final; no implica que la aplicación Next.js esté implementada.
+**Estado: APROBADO por el PM tras revisar la propuesta técnica.** Esta es la fuente canónica del stack. Las secciones fechadas registran su adopción progresiva. Actualmente CU-01 a CU-04 están implementados e integrados en `dev`; [estado y evidencia conjunta](../equipo/integracion-cu02-cu03-cu04.md). La aprobación de una tecnología no implica que todas sus funciones estén disponibles.
 
 | Responsabilidad | Selección aprobada | Razón aplicada a QAlly |
 |---|---|---|
@@ -29,20 +29,20 @@
 ## Qué NO se eligió
 
 - No usar **Prisma**, Auth.js, Firebase, API/backend independiente, microservicios o un proveedor separado de archivos como segunda solución predeterminada.
-- No requerir Redis, colas de trabajo, WebSockets, monorepo multiaplicación ni Docker obligatorio para esta primera versión.
+- No requerir Redis, colas de trabajo, WebSockets ni monorepo multiaplicación. Docker se utiliza para el entorno Supabase local aprobado; no es una dependencia del navegador del usuario.
 - GitHub Issues puede utilizarse para defectos; **no** se ha aprobado una integración automatizada GitHub–QAlly.
 
 ## Estado del diseño y aspectos pendientes
 
-El diseño inicial C4, ER, diccionario y controles está documentado en [diseño arquitectural](diseno-arquitectural.md) tras [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md), sin cambiar este stack. Los puntos siguientes se refieren al detalle o implementación aún pendiente.
+El diseño C4, ER, diccionario y controles sigue los acuerdos de ADR-001/002. La realización de CU-01 a CU-04 mantiene el stack y las responsabilidades de C3.
 
-- Versiones de Next.js y dependencias de interfaz. Las herramientas de datos y sus comandos ya están fijados y comprobados localmente.
-- Promoción futura a Cloud de las migraciones, catálogos, funciones y políticas RLS ya implementados y probados localmente conforme a ADR-002.
-- Ciclo de sesión de Next.js con Supabase Auth y endpoints de evidencias. Auth, políticas Storage y protocolo local de reserva/confirmación/limpieza ya cuentan con pruebas de integración; falta la aplicación web.
-- Cuentas/planes y despliegue remoto. Variables locales y workflow de BD preparados; CI remoto aún no ejecutado.
-- Implementación de [contratos v1](contratos-v1.md) aprobados y estructura concreta de `src/`; responsabilidades en C3 y archivos/credenciales en seguridad e integridad.
+- Versiones de aplicación y datos fijadas en package.json/lockfile: Next.js 16.4.2, React 19.3.0, TypeScript 5.9.3, Supabase JS 2.118.0 y adaptador SSR 0.12.7; Node 24.
+- Sesión Auth SSR, autorización en servidor, endpoints privados de PDF y protocolos de BD/Storage ya implementados para CU-01 a CU-04. La subida administrativa de CU-04 se limita al servidor; lecturas y descargas usan identidad de usuario y RLS.
+- Estructura de `src/` existente por funcionalidades; no crear capas vacías por seguir el árbol de referencia. [Realización física](estructura-repo-propuesta.md).
+- Pendientes: paginación de listas/intentos de CU-04, conexión de CU-05/06, algoritmo de salud, promoción a Cloud y despliegue. GitHub Actions está configurado, sin ejecución remota acreditada en el registro local.
+- `@react-pdf/renderer`, Vercel y Prettier siguen siendo selecciones aprobadas; el generador de reportes y despliegue no están implementados, ni existe configuración/dependencia propia de Prettier incorporada al proyecto.
 
-**No confundir:** stack/diseño aprobados ≠ código ya implementado; catálogos v1 aprobados por usuario ≠ ratificación académica independiente. Registrar decisiones técnicas posteriores en `docs/decisiones/registro.md`.
+Los catálogos v1 están aprobados por el usuario; no se presume ratificación académica independiente. Los apartados siguientes son registros históricos de versiones/implementación, no listas de trabajo actual pendientes.
 
 ## Versiones del bootstrap de datos — 2026-10-18
 

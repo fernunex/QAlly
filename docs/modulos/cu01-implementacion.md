@@ -2,7 +2,7 @@
 
 **Fecha: 2026-10-19. Estado: implementado y validado localmente.** El usuario aprobó ejecutar el plan completo. Fuente de alcance: [CU-01](../requisitos/casos-uso/CU-01.md), RF-01 a RF-07/RF-33, RNF asociados y [contratos v1](../arquitectura/contratos-v1.md). Sin nuevas migraciones ni cambios de reglas de negocio.
 
-Implementación registrada en el commit `15731f1` de `feat/cu01-gestion-proyectos`; pendiente de revisión e integración en `dev`. La documentación se mantiene en un commit separado.
+Implementación registrada en el commit `15731f1` de `feat/cu01-gestion-proyectos`; integrado en `dev` mediante `47ddd3a`. La documentación se mantiene en un commit separado.
 
 ## Uso local
 

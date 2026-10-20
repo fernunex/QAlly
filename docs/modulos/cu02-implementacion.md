@@ -2,6 +2,8 @@
 
 **Fecha: 2026-10-19. Estado: implementado y validado localmente.** El usuario solicitó implementar CU-02 en su propia rama desde `dev` (`feat/cu-02-metricas`), probarlo y abrir PR hacia `dev`. Fuente de alcance: [CU-02](../requisitos/casos-uso/CU-02.md), RF-08 a RF-14/RF-33, RNF asociados, [catálogo de métricas v1](../producto/catalogo-metricas.md) y [contratos v1 §4](../arquitectura/contratos-v1.md). Sin migraciones, sin cambios de RLS, contratos ni reglas de negocio.
 
+**Actualización de integración:** este registro conserva los resultados individuales de la rama. CU-02, CU-03 y CU-04 se reúnen posteriormente con CU-01; consultar [resoluciones, pruebas conjuntas y pendientes actuales](../equipo/integracion-cu02-cu03-cu04.md). Las referencias a otro CU sin interfaz describen el estado previo a esa integración.
+
 ## Uso local
 
 Misma preparación que [CU-01](cu01-implementacion.md#uso-local). Abrir un proyecto y la pestaña **Métricas**. QA participante en proyecto abierto puede agregar métricas del catálogo no configuradas, registrar mediciones, corregirlas y editar objetivos. Miembro del equipo y QA en proyecto cerrado consultan métricas, historial y correcciones sin controles de gestión.

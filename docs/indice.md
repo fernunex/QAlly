@@ -6,6 +6,7 @@
 | Conocer el stack oficial | `docs/arquitectura/stack-aprobado.md` |
 | Consultar el diseño arquitectónico | `docs/arquitectura/diseno-arquitectural.md` → `C4-01-contexto.md`, `C4-02-contenedores.md`, `C4-03-componentes.md` en la misma carpeta |
 | Integrar UI/BD y colaborar con Git | [Flujo de integración](equipo/integracion-ui-bd.md) |
+| Consultar integración de CU-02/03/04 | [Ramas, resoluciones y validación conjunta](equipo/integracion-cu02-cu03-cu04.md) |
 | Preparar bootstrap | `docs/arquitectura/plan-de-diseno.md`, `docs/arquitectura/stack-aprobado.md`, `docs/decisiones/pendientes.md` |
 | Preparar y usar la BD local | [Guía Supabase](datos/guia-supabase.md), [plan de bootstrap](datos/plan-bootstrap-supabase.md), migraciones/seed y contratos v1 |
 | Proponer estructura de código | `docs/arquitectura/estructura-repo-propuesta.md`, plan de diseño |

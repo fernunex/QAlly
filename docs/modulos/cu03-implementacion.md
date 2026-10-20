@@ -2,6 +2,8 @@
 
 **Fecha: 2026-10-19. Estado: implementado; validación local en `feat/cu-03-actividades`, pendiente de revisión e integración en `dev`.** Fuente de alcance: [CU-03](../requisitos/casos-uso/CU-03.md), RF-15 a RF-19/RF-33, RNF asociados y [contratos v1](../arquitectura/contratos-v1.md) §5. Sin nuevas migraciones ni cambios de reglas de negocio.
 
+**Actualización de integración:** este registro conserva los resultados individuales de la rama. CU-02, CU-03 y CU-04 se reúnen posteriormente con CU-01; consultar [resoluciones, pruebas conjuntas y pendientes actuales](../equipo/integracion-cu02-cu03-cu04.md). Las referencias a otro CU sin interfaz describen el estado previo a esa integración.
+
 ## Uso local
 
 Igual que [CU-01](cu01-implementacion.md#uso-local). En el proyecto «QAlly demo A» (cuenta `qa1@qally.example.test`) el seed deja actividades Pendiente, En progreso, En revisión (A-05, con enlace), Aprobada y devuelta con observaciones; `miembro1` es su responsable. La entrega desde la cuenta de Miembro corresponde a CU-04 y aún no está conectada: para revisar nuevos intentos se preparan con los scripts locales o las RPC.

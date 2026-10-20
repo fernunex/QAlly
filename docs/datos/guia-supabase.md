@@ -16,7 +16,7 @@ npm run db:test
 npm run typecheck
 ```
 
-`db:start` prepara una red Docker con puertos publicados solo en 127.0.0.1, inicia PostgreSQL/Auth/Storage/Studio y genera `.env.local` sin mostrar claves. El registro público queda deshabilitado en `[auth].enable_signup`; `[auth.email].enable_signup` mantiene activo el proveedor para permitir iniciar sesión a las cuentas existentes. No inicia Next.js: la UI se inicia aparte con `npm run dev -- --hostname 127.0.0.1` y ya conecta CU-01 con estas cuentas y datos locales. Las herramientas son locales y no requieren login ni cuenta Supabase Cloud.
+`db:start` prepara una red Docker con puertos publicados solo en 127.0.0.1, inicia PostgreSQL/Auth/Storage/Studio y genera `.env.local` sin mostrar claves. El registro público queda deshabilitado en `[auth].enable_signup`; `[auth.email].enable_signup` mantiene activo el proveedor para permitir iniciar sesión a las cuentas existentes. No inicia Next.js: la UI se inicia aparte con `npm run dev -- --hostname 127.0.0.1` y ya conecta CU-01 a CU-04 con estas cuentas y datos locales. Las herramientas son locales y no requieren login ni cuenta Supabase Cloud.
 
 Abrir **http://127.0.0.1:54323** para Studio. Allí se pueden inspeccionar tablas, usuarios de Auth y objetos Storage. API local: http://127.0.0.1:54321. No editar allí el esquema como fuente de verdad: los cambios se hacen en migraciones versionadas.
 
@@ -65,7 +65,7 @@ Para añadir cambios de BD después de compartir estas migraciones, crear otra m
 
 ## Archivos y operación
 
-Bucket `evidencias`, privado, máximo 3 MiB y MIME application/pdf. Usuarios normales no escriben directamente en Storage; un adaptador de servidor valida bytes, identidad y actividad, reserva un objeto único y confirma su referencia. Las RPC técnicas son exclusivas del servidor. El adaptador local ejecutable está en `scripts/lib/files.server.mjs`; no es un endpoint Next.js ni debe importarse desde una interfaz cliente.
+Bucket `evidencias`, privado, máximo 3 MiB y MIME application/pdf. Usuarios normales no escriben directamente en Storage; un adaptador de servidor valida bytes, identidad y actividad, reserva un objeto único y confirma su referencia. Las RPC técnicas son exclusivas del servidor. El adaptador para scripts está en `scripts/lib/files.server.mjs`; CU-04 dispone además de `src/features/evidences/server/archivos.ts` y handlers Next.js para subida/descarga. Ambos son de servidor; nunca importar el adaptador privilegiado desde una interfaz cliente.
 
 ```sh
 npm run db:cleanup
@@ -83,7 +83,7 @@ Para el dataset de aceptación grande:
 npm run db:seed:large
 ```
 
-Amplía el proyecto A a 1000 actividades y 1000 mediciones por cada una de las cuatro métricas, conservando el historial de ejemplo. Es una carga opcional repetible, no parte de cada arranque. No representa una prueba de tiempos de interfaz, PDF de reportes o navegadores: faltan esos componentes.
+Amplía el proyecto A a 1000 actividades y 1000 mediciones por cada una de las cuatro métricas, conservando el historial de ejemplo. Es una carga opcional repetible, no parte de cada arranque. No representa una prueba de tiempos de interfaz ni PDF de reportes. Las pruebas de navegador de CU-01 a CU-04 y sus límites se registran en la guía de integración conjunta.
 
 El workflow `.github/workflows/database.yml` reproduce inicio, seeds, lint, pruebas, generación de tipos en CI; el workflow `application.yml` verifica lint, tipos de rutas/TypeScript y build de la aplicación, sin secretos de Cloud. Su ejecución en GitHub requiere push/PR y no se presume realizada localmente.
 
@@ -98,7 +98,7 @@ Todavía no se ha creado ni enlazado un proyecto remoto. Cuando el equipo lo sol
 5. Configurar los secretos del servidor y la clave pública del cliente en el entorno correspondiente. No copiar la contraseña ni las cuentas de desarrollo local a producción.
 6. Repetir pruebas de acceso e integridad en un proyecto de pruebas autorizado antes de usar datos reales. Invitar al equipo a la organización/proyecto mediante el panel, sin compartir claves privilegiadas.
 
-Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js ya está integrada y CU-01 utiliza sesiones reales y operaciones de servidor con RLS. [Estado y pruebas de CU-01](../modulos/cu01-implementacion.md). Reportes y demás casos siguen pendientes.
+Los comandos de enlace/publicación anteriores están preparados para ese momento; no se han ejecutado contra Cloud. La UI Next.js ya está integrada y CU-01 utiliza sesiones reales y operaciones de servidor con RLS. [Estado y pruebas de CU-01](../modulos/cu01-implementacion.md). CU-02/03/04 se integran posteriormente: [estado conjunto](../equipo/integracion-cu02-cu03-cu04.md). Salud y reportes siguen pendientes.
 
 ## Usar las cuentas desde la aplicación
 

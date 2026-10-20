@@ -17,7 +17,7 @@ Es un proyecto académico orientado principalmente a navegadores de escritorio (
 
 ## Estado de implementación local
 
-La base de datos, Auth, Storage privado, migraciones y seeds están preparados para desarrollo local. CU-01 está conectado y probado: inicio de sesión, alta, consulta, edición y cierre de proyectos. La UI de los demás casos se conserva para reutilizarla; su presencia no implica operaciones persistentes implementadas. Salud sigue Sin evaluar. No se ha configurado Cloud ni desplegado la aplicación.
+La base de datos, Auth, Storage privado, migraciones y seeds están preparados para desarrollo local. CU-01 a CU-04 están conectados: proyectos, métricas/mediciones, gestión y revisión de actividades SQA, y entrega de evidencias. CU-05 y CU-06 siguen pendientes de conexión; salud permanece Sin evaluar. No se ha configurado Cloud ni desplegado la aplicación. [Integración conjunta y límites](docs/equipo/integracion-cu02-cu03-cu04.md).
 
 [Alcance y pruebas de CU-01](docs/modulos/cu01-implementacion.md).
 
@@ -60,7 +60,7 @@ npm run db:test
 npm run typecheck
 ```
 
-Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 ya utiliza Supabase local: autenticación, alta, consulta, edición y cierre de proyectos. CU-02 gestiona métricas, mediciones, correcciones y objetivos. Los demás casos se conectarán progresivamente.
+Supabase Studio: **http://127.0.0.1:54323**. El arranque genera `.env.local` sin mostrar credenciales. Los seeds crean seis cuentas ficticias y tres proyectos; contraseña aleatoria únicamente en ese archivo local. No hay cuenta/proyecto de Cloud enlazado. CU-01 a CU-04 utilizan Supabase local con sesión real y permisos por proyecto; CU-05 y CU-06 se conectarán posteriormente.
 
 Para parar conservando datos: `npm run db:stop`. Reconstruir la base borra datos locales y exige `npm run db:reset -- --confirm-local-reset`; después ejecutar el seed. Dataset grande opcional: `npm run db:seed:large`. Limpieza administrativa de archivos: `npm run db:cleanup`.
 

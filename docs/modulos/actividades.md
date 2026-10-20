@@ -14,7 +14,7 @@ Un tipo se repite en un proyecto; actividades nuevas en Pendiente; solo QA aprue
 Catálogo de actividades, membresía y flujo de CU-04.
 
 ## Pendientes relevantes
-CU-03 implementado localmente (2026-10-19): tablero paginado por estado con filtros de etapa/responsable, alta, asignación, aprobación y devolución conectadas a las RPC, y descarga autorizada de PDF. [Implementación y pruebas](cu03-implementacion.md). La preparación y el envío de intentos (CU-04) siguen pendientes de conectar a la UI.
+CU-03 implementado localmente (2026-10-19): tablero paginado por estado con filtros de etapa/responsable, alta, asignación, aprobación y devolución conectadas a las RPC, y descarga autorizada de PDF. [Implementación y pruebas](cu03-implementacion.md). La preparación y el envío de intentos de CU-04 ya están conectados en la integración conjunta. [Estado y pruebas entre roles](../equipo/integracion-cu02-cu03-cu04.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-03.md` enlazado.

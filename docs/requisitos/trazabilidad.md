@@ -100,3 +100,15 @@ Se conservan RF, RNF y reglas aprobadas. [Realización, ejecución y límites](.
 | RNF-07 (parte CU-04) | UI existente con datos reales. | Escenarios CU-04 aprobados en Chrome for Testing y Firefox. |
 
 RNF-04/05: pendientes mediciones en entorno desplegado. La asignación y revisión por QA siguen en CU-03.
+
+
+## Validación conjunta CU-01 a CU-04
+
+La integración conserva los requisitos y la ampliación de filtros aprobada para CU-03. [Registro conjunto](../equipo/integracion-cu02-cu03-cu04.md). Las referencias anteriores a CU-03/CU-04 sin interfaz pertenecen a las verificaciones individuales previas a la integración.
+
+| Flujo / requisito | Verificación integrada |
+|---|---|
+| RF-07, RF-15–25 y RF-33; RNF-01/02/03/07/08/09 | Recorrido UI con sesiones separadas: QA crea/asigna; Miembro inicia, adjunta PDF y envía; QA devuelve; Miembro corrige en otro intento; QA aprueba y cierra el proyecto; ambos conservan descarga privada y consulta. El intento original permanece intacto. |
+| RF-22/24/25; RNF-08/09 | Respuesta de subida perdida después de persistir: recargar recupera una única evidencia; pruebas de fallos del adaptador comprueban compensación de rechazos conocidos y conservación ante confirmación ambigua. |
+
+Los resultados y límites se registran en la guía conjunta. No equivalen a aceptación de CU-05/06 ni a mediciones de rendimiento desplegado.

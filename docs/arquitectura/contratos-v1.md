@@ -2,7 +2,7 @@
 
 **Estado: APROBADO, 2026-10-18**, por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md). Especificación documental sin código ni SQL ejecutable. Usa el [detalle de datos](../datos/detalle-tecnico-v1.md). Salud permanece Sin evaluar.
 
-**Implementación posterior:** CU-01 y su precondición de sesión ya se conectan a las funciones de servidor y RPC existentes, conforme a estos contratos. [Guía y validación](../modulos/cu01-implementacion.md). CU-03 conecta también sus operaciones de QA y la descarga de PDF ([guía](../modulos/cu03-implementacion.md)). Esto no implica que las operaciones de CU-02, CU-04, CU-05 y CU-06 estén implementadas en la aplicación.
+**Implementación posterior:** CU-01 a CU-04 están conectados a la sesión real y las RPC/RLS existentes. Guías: [CU-01](../modulos/cu01-implementacion.md), [CU-02](../modulos/cu02-implementacion.md), [CU-03](../modulos/cu03-implementacion.md), [CU-04](../modulos/cu04-implementacion.md). [Integración conjunta y límites de cobertura](../equipo/integracion-cu02-cu03-cu04.md). CU-05 y CU-06 siguen pendientes; los contratos aprobados permanecen vigentes.
 
 ## 1. Convenciones del contrato
 

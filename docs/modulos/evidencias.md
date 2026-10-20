@@ -14,7 +14,7 @@ Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisi�
 Estados/permiso de actividades (CU-03); almacenamiento de PDFs y protección de evidencias.
 
 ## Pendientes relevantes
-CU-04 implementado y validado localmente: Server Actions, Route Handlers de PDF, adaptador privilegiado en servidor y UI conectada; ver [implementación y pruebas](cu04-implementacion.md). Pendiente: programar la limpieza diaria al preparar el despliegue, mediciones RNF en entorno desplegado y la asignación/revisión por QA (CU-03). [Guía Supabase](../datos/guia-supabase.md) y [seguridad](../datos/seguridad-integridad.md).
+CU-04 implementado y validado localmente: Server Actions, Route Handlers de PDF, adaptador privilegiado en servidor y UI conectada; ver [implementación y pruebas](cu04-implementacion.md). Pendiente: programar la limpieza diaria al preparar el despliegue, mediciones RNF en entorno desplegado y paginación de Mis actividades e intentos (prevista en el contrato), necesaria para listas/historiales extensos. La asignación/revisión de CU-03 ya está conectada en la [integración conjunta](../equipo/integracion-cu02-cu03-cu04.md). [Guía Supabase](../datos/guia-supabase.md) y [seguridad](../datos/seguridad-integridad.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-04.md` enlazado.

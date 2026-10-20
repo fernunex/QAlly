@@ -2,7 +2,7 @@
 
 **Estado: APROBADO para documentación, 2026-10-18.** La aprobación del usuario comprende la propuesta arquitectónica y conceptual de datos, rol global con participación por proyecto, entregas enviadas inmutables, orden temporal de mediciones, campos generales y cierre en solo lectura. No autoriza código, migraciones ejecutables, cambios en Supabase, dependencias o despliegue. [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md) y [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md), que aprueba el cierre de diseño salvo salud.
 
-**Actualización de ejecución — 2026-10-19:** las autorizaciones posteriores permitieron implementar el [bootstrap local de BD](../datos/guia-supabase.md), integrar la UI y completar [CU-01 con sesión real](../modulos/cu01-implementacion.md). Las restricciones del párrafo anterior describen el alcance de la aprobación inicial. Se mantiene este diseño; los CU restantes, Cloud y despliegue no están implementados.
+**Actualización de ejecución — 2026-10-19:** las autorizaciones posteriores permitieron implementar el [bootstrap local de BD](../datos/guia-supabase.md), integrar la UI y completar [CU-01 con sesión real](../modulos/cu01-implementacion.md). Las restricciones del párrafo anterior describen el alcance de la aprobación inicial. Se mantiene este diseño; CU-02/03/04 se incorporan en la [integración conjunta](../equipo/integracion-cu02-cu03-cu04.md). CU-05/06, Cloud y despliegue siguen pendientes.
 
 ## Objetivo y decisiones
 

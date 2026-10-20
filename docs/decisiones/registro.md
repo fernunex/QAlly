@@ -56,3 +56,8 @@ Tras revisar el plan, el usuario solicitó «ejecuta el plan completamente». Se
 ## Ejecución de CU-03 y ampliación de contrato — 2026-10-19
 
 El usuario solicitó implementar CU-03 en una rama nueva desde `dev`, coherente con el diseño de frontend y de BD. Ante la diferencia entre los filtros del tablero diseñado (etapa y responsable) y el contrato de listarActividades (solo estado y soloMias), el usuario eligió **ampliar el contrato** con filtros opcionales aplicados en servidor, en lugar de filtrar solo lo cargado o quitar los filtros: con 1000 actividades el tablero pagina y el filtrado en cliente daría resultados incompletos. Sin migraciones ni cambios de RLS o reglas de negocio. La descarga autorizada de PDF del contrato §5 se implementa porque la revisión de SF-04 la requiere. [Implementación](../modulos/cu03-implementacion.md). No incluye push ni despliegue remoto.
+
+
+## Integración autorizada de CU-02/03/04 — 2026-10-19
+
+El usuario aprobó integrar las tres ramas, canceló la ejecución y después solicitó retomarla tras un nuevo fetch. Se conserva la primera integración y se parte del `dev` remoto actualizado, que contiene el alta y la reversión de CU-04. Se reaplica esa reversión para integrar expresamente CU-04 junto con CU-02/03, sin reescribir el historial remoto. Una ruta compartida de PDF conserva autorización de usuario/RLS; la subida privilegiada permanece solo en servidor. No se modifican esquema, contratos ni requisitos; se mantienen los filtros previamente aprobados de CU-03. [Resoluciones, resultados y pendientes](../equipo/integracion-cu02-cu03-cu04.md). No incluye push ni despliegue.

@@ -2,6 +2,8 @@
 
 **Fecha: 2026-10-19. Estado: implementado y validado localmente** en la rama `feat/cu04-entrega-evidencias`, pendiente de revisión e integración en `dev`. Fuente de alcance: [CU-04](../requisitos/casos-uso/CU-04.md), RF-20 a RF-25/RF-33, RNF asociados, [contratos v1](../arquitectura/contratos-v1.md) §5 y [seguridad e integridad](../datos/seguridad-integridad.md). Sin nuevas migraciones, dependencias ni cambios de reglas de negocio: se reutilizan las RPC, RLS, bucket privado y protocolo de reserva aprobados.
 
+**Actualización de integración:** este registro conserva los resultados individuales de la rama. CU-02, CU-03 y CU-04 se reúnen posteriormente con CU-01; consultar [resoluciones, pruebas conjuntas y pendientes actuales](../equipo/integracion-cu02-cu03-cu04.md). Las referencias a otro CU sin interfaz describen el estado previo a esa integración.
+
 ## Uso local
 
 Igual que [CU-01](cu01-implementacion.md). Con el seed, `miembro1@qally.example.test` tiene actividades Pendiente, En progreso (con PDF y enlace), En revisión, Aprobada y devuelta en el proyecto «QAlly demo A». Abrir **Mis actividades**.

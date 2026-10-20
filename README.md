@@ -4,7 +4,7 @@ QAlly es una plataforma web académica para gestionar actividades de aseguramien
 
 ## Estado actual
 
-**CU-01 a CU-04 están implementados e integrados en `dev`**, con persistencia en Supabase local. La consulta de CU-05 está implementada en la rama `feat/cu05-salud-proyecto` y CU-06 en `feat/cu06-reportes` (creada sobre la anterior), ambas pendientes de revisión e integración. La integración se registró en `8fb64b4`; el ajuste posterior de formato está en `f82ffd0`. `main` conserva una versión anterior y no contiene esta integración.
+**CU-01 a CU-06 están implementados e integrados en `dev`**, con persistencia en Supabase local. CU-02 a CU-04 se integraron en `8fb64b4` (ajuste de formato en `f82ffd0`); CU-05 en el PR #6 (`c70177c`) y CU-06 en el PR #7 (`7e03f57`). `main` conserva una versión anterior y no contiene esta integración.
 
 | Caso de uso | Disponible actualmente | Estado |
 |---|---|---|

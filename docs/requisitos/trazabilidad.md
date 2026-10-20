@@ -52,7 +52,7 @@ El [plan autorizado](../datos/plan-bootstrap-supabase.md) implementó la parte d
 | CU-03 | Instancias repetibles, responsable, inicio y estados ligados a entregas/revisiones. | Integrado en `dev`: [CU-03](../modulos/cu03-implementacion.md). |
 | CU-04 | Intentos, evidencias, reserva/confirmación/limpieza; adaptador local de servidor y Storage privado. | Integrado en `dev`: [CU-04](../modulos/cu04-implementacion.md); paginación pendiente. |
 | CU-05 | Resumen consistente general/por etapa y entradas reales de métricas/actividades. | Consulta implementada en `feat/cu05-salud-proyecto`: [CU-05](../modulos/cu05-implementacion.md); algoritmo aprobado de salud pendiente. |
-| CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Captura cifrada, exportación PDF y correspondencia visual. |
+| CU-06 | Resumen reutilizable y consulta de proyectos cerrados. | Implementado en `feat/cu06-reportes`: [CU-06](../modulos/cu06-implementacion.md); captura cifrada, exportación PDF y misma información en vista y PDF, con salud «Sin evaluar». |
 
 Las pruebas de API/BD no sustituyen las pruebas de tiempos extremo a extremo, usabilidad, compatibilidad Chrome/Firefox ni reportes exigidas por los RNF. Este resultado del bootstrap no cambia ningún RF ni acredita por sí mismo los flujos de la aplicación; el avance de CU-01 a CU-04 y su validación conjunta se detallan a continuación.
 
@@ -127,3 +127,16 @@ Se conservan RF, RNF y reglas aprobadas; salud general y por etapa siguen «Sin 
 | SF-01, FE-01; RF-28/29 | Valor actual, objetivo, cumplimiento, estado de medición y fecha; Sin medición ≠ 0. | E2E Sin medición, medida y No evaluable. |
 | SF-02; RF-28 | Conteos por estado y actividades por etapa con responsable. | E2E conteos y listas por etapa. |
 | FE-03; RNF-04 | Error de carga con reintento, sin datos parciales. | Sin E2E (no provocable desde el navegador); RNF-04 pendiente en despliegue. |
+
+## CU-06 implementado — 2026-10-20
+
+Se conservan RF, RNF y reglas aprobadas; la salud del reporte sigue «Sin evaluar» porque RF-26 y la clasificación final de RF-27 permanecen pendientes de diseño. `generarReporte` expone además `emitidaEn` (campo aditivo, pendiente de visto bueno). [Realización, ejecución y límites](../modulos/cu06-implementacion.md).
+
+| Subflujo / requisito | Implementación | Evidencia automatizada |
+|---|---|---|
+| RF-33; RNF-01/02/03 | Acción `generarReporte` y `POST /api/reportes/pdf` con sesión, rol QA y participación verificados en el servidor; `consultar_resumen` con RLS. | Unitarias de la acción; E2E Miembro (pantalla y POST directo), QA ajeno y sin sesión. |
+| Flujo principal; RF-30/31; RNF-07 | Pestaña Reportes: Generar/Regenerar y vista con identificación, fecha, métricas, actividades por etapa y salud. | E2E en Chromium y Firefox de Playwright; unitarias del modelo. |
+| FA-01; RF-31/32 | «Sin medición» explícito y salud «Sin evaluar» sin categorías. | E2E y unitarias. |
+| SF-01; RF-32; RNF-06 | PDF con `@react-pdf/renderer` desde la captura AES-256-GCM de 15 minutos; 1/2/3 MiB; adjunto privado. | Unitarias de captura (tamper, expiración, usuario/proyecto, límite) y de PDF con 1000 actividades; E2E descarga `%PDF`, token alterado/ajeno, origen inválido y cuerpo excesivo. RNF-06 pendiente en despliegue. |
+| FE-01, FE-02; captura expirada | Mensajes con reintento; 410 pide regenerar vista y PDF. | E2E con fallos simulados. |
+| Regla de proyectos cerrados | Genera y exporta sin modificar datos. | E2E proyecto cerrado. |

@@ -13,8 +13,11 @@ Solo QA genera/exporta; mismo origen de información que CU-05; no mostrar clasi
 ## Interfaces y dependencias
 Consultas de proyectos, métricas y actividades, y consulta compartida de indicadores y salud Sin evaluar.
 
+## Estado de implementación
+Generación, vista, captura cifrada de 15 minutos y exportación PDF implementadas en `feat/cu06-reportes` según [contratos v1](../arquitectura/contratos-v1.md): [registro de implementación y pruebas](cu06-implementacion.md).
+
 ## Pendientes relevantes
-Clasificación de salud pendiente. Reporte, captura cifrada de 15 minutos y exportación definidos en [contratos v1](../arquitectura/contratos-v1.md), aún sin implementación.
+Algoritmo y clasificación de salud pendientes: el reporte muestra «Sin evaluar» desde el resumen de CU-05. Medición de RNF-06 en entorno desplegado.
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-06.md` enlazado.
@@ -24,4 +27,4 @@ Clasificación de salud pendiente. Reporte, captura cifrada de 15 minutos y expo
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-La implementación usará `@react-pdf/renderer`; reutilizar los datos actuales de CU-05 sin inventar clasificación de salud.
+La implementación usa `@react-pdf/renderer` 4.9.0 y reutiliza `consultarResumen`/`ResumenProyecto` de CU-05 sin inventar clasificación de salud.

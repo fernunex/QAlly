@@ -2,7 +2,7 @@
 
 **Estado: APROBADO, 2026-10-18**, por [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md). Especificación documental sin código ni SQL ejecutable. Usa el [detalle de datos](../datos/detalle-tecnico-v1.md). Salud permanece Sin evaluar.
 
-**Implementación posterior:** CU-01 a CU-04 están conectados a la sesión real y las RPC/RLS existentes. Guías: [CU-01](../modulos/cu01-implementacion.md), [CU-02](../modulos/cu02-implementacion.md), [CU-03](../modulos/cu03-implementacion.md), [CU-04](../modulos/cu04-implementacion.md). [Integración conjunta y límites de cobertura](../equipo/integracion-cu02-cu03-cu04.md). CU-05 y CU-06 siguen pendientes; los contratos aprobados permanecen vigentes.
+**Implementación posterior:** CU-01 a CU-04 están conectados a la sesión real y las RPC/RLS existentes. Guías: [CU-01](../modulos/cu01-implementacion.md), [CU-02](../modulos/cu02-implementacion.md), [CU-03](../modulos/cu03-implementacion.md), [CU-04](../modulos/cu04-implementacion.md). [Integración conjunta y límites de cobertura](../equipo/integracion-cu02-cu03-cu04.md). CU-05 ([registro](../modulos/cu05-implementacion.md)) y CU-06 ([registro](../modulos/cu06-implementacion.md)) están implementados en ramas pendientes de integración; los contratos aprobados permanecen vigentes (CU-06 añade `emitidaEn` al resultado de `generarReporte`, pendiente de visto bueno).
 
 ## 1. Convenciones del contrato
 

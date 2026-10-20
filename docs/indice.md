@@ -16,12 +16,13 @@
 | Probar CU-03 implementado | [Implementación local y pruebas](modulos/cu03-implementacion.md) |
 | Probar CU-04 implementado | [Implementación local y pruebas](modulos/cu04-implementacion.md) |
 | Probar CU-05 implementado | [Implementación local y pruebas](modulos/cu05-implementacion.md) |
+| Probar CU-06 implementado | [Implementación local y pruebas](modulos/cu06-implementacion.md) |
 | Implementar proyectos | `docs/modulos/proyectos.md` → CU-01 |
 | Implementar o probar métricas | `docs/modulos/metricas.md` → CU-02; [implementación local y pruebas](modulos/cu02-implementacion.md) |
 | Implementar actividades SQA | `docs/modulos/actividades.md` → CU-03 |
 | Implementar entrega de evidencias | `docs/modulos/evidencias.md` → CU-04 |
 | Implementar salud/dashboard | `docs/modulos/salud.md` → CU-05 y pendientes |
-| Implementar reportes PDF | `docs/modulos/reportes.md` → CU-06 y CU-05 |
+| Implementar o probar reportes PDF | `docs/modulos/reportes.md` → CU-06 y CU-05; [implementación local y pruebas](modulos/cu06-implementacion.md) |
 | Preparar SRS y casos de prueba | `docs/requisitos/trazabilidad.md`, CU y RF/RNF afectados |
 | Consultar catálogos | `docs/producto/catalogo-actividades.md`, `docs/producto/catalogo-metricas.md` |
 | Consultar decisiones | `docs/decisiones/registro.md`, `docs/decisiones/pendientes.md` |
@@ -30,7 +31,7 @@
 
 ## Estado actual de implementación
 
-CU-01 a CU-04 están integrados en `dev` local (merge `8fb64b4`, ajuste de formato `f82ffd0`). Guía de entrada: [README](../README.md); resultados: [integración conjunta](equipo/integracion-cu02-cu03-cu04.md). La consulta de CU-05 está implementada en `feat/cu05-salud-proyecto` ([registro](modulos/cu05-implementacion.md)); CU-06, algoritmo de salud, paginación de CU-04 y rendimiento desplegado siguen pendientes. Los registros individuales conservan sus resultados históricos y no sustituyen el estado conjunto.
+CU-01 a CU-04 están integrados en `dev` local (merge `8fb64b4`, ajuste de formato `f82ffd0`). Guía de entrada: [README](../README.md); resultados: [integración conjunta](equipo/integracion-cu02-cu03-cu04.md). La consulta de CU-05 está implementada en `feat/cu05-salud-proyecto` ([registro](modulos/cu05-implementacion.md)) y CU-06 en `feat/cu06-reportes`, creada sobre ella ([registro](modulos/cu06-implementacion.md)); algoritmo de salud, paginación de CU-04 y rendimiento desplegado siguen pendientes. Los registros individuales conservan sus resultados históricos y no sustituyen el estado conjunto.
 
 ## Fuentes canónicas
 

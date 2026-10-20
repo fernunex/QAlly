@@ -110,6 +110,17 @@ export type Actividad = {
   eventos: EventoActividad[];
 };
 
+/** Fila del tablero (CU-03): sin intentos completos; el detalle se consulta aparte. */
+export type ActividadResumen = Omit<Actividad, "entregas" | "eventos"> & {
+  /** Último intento enviado y su decisión, si existe. */
+  ultimoEnvio: {
+    numeroIntento: number;
+    enviadaEn: string;
+    decision: DecisionRevision | null;
+    revisadaEn: string | null;
+  } | null;
+};
+
 export type Comparador = "≥" | "≤";
 
 export type TipoMetrica = {

@@ -411,7 +411,8 @@ test("paginación de proyectos y actividades conserva alcance y recupera todas l
       .eq("nombre", "Actividades paginadas CU-01")
       .single(),
   );
-  await page.goto(`/proyectos/${a.id}/actividades`);
+  // La tabla paginada de CU-01 está en el resumen; la pestaña Actividades es el tablero de CU-03.
+  await page.goto(`/proyectos/${a.id}`);
   const first = await page.locator("table tbody tr").first().innerText();
   await expect(page.locator("table tbody tr")).toHaveCount(25);
   await page.getByRole("link", { name: "Siguientes actividades" }).click();

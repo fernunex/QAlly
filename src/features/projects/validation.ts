@@ -13,13 +13,13 @@ export const version = z
       v.length <= 19 &&
       BigInt(v) <= 9223372036854775807n,
   );
-const texto = (max: number) =>
+export const texto = (max: number) =>
   z
     .string()
     .trim()
     .min(1, "Este campo es obligatorio.")
     .refine((v) => [...v].length <= max, `Máximo ${max} caracteres.`);
-const opcional = (max: number) =>
+export const opcional = (max: number) =>
   z
     .string()
     .trim()

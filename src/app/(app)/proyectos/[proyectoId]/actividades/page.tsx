@@ -61,8 +61,7 @@ export default async function Page({
       />
       {!esQA ? (
         <NotaPendiente>
-          La entrega de actividades (iniciar, registrar resultado y evidencias)
-          estará disponible en una próxima versión.
+          Puedes iniciar y entregar tus actividades asignadas desde Mis actividades.
         </NotaPendiente>
       ) : null}
     </PageContainer>

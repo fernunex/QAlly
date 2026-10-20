@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLinkIcon, FileTextIcon, LinkIcon, XIcon } from "lucide-react";
+import { DownloadIcon, ExternalLinkIcon, FileTextIcon, LinkIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Evidencia } from "@/lib/domain";
 import { formatBytes } from "@/lib/format";
@@ -43,9 +43,10 @@ export function EvidenciaItem({
         </Button>
       ) : esPdf ? (
         <Button variant="outline" size="sm" asChild>
-          {/* Descarga autorizada en servidor con la identidad del usuario (contratos-v1 §5). */}
+          {/* Descarga autorizada en cada solicitud; sin rutas de Storage en el cliente. */}
           <a href={`/api/evidencias/${evidencia.id}/archivo`} download>
             Descargar
+            <DownloadIcon />
           </a>
         </Button>
       ) : (

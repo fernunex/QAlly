@@ -44,7 +44,7 @@ export const config = {
   matcher: [
     "/proyectos/:path*",
     "/mis-actividades/:path*",
-    "/api/evidencias/:path*",
+    "/api/:path*",
     "/login",
   ],
 };

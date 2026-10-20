@@ -45,7 +45,10 @@ export function ConteoEstadosTiles({
   if (compacto) {
     // Variante para tarjetas angostas (salud por etapa): filas etiqueta–conteo, sin truncar.
     return (
-      <ul className={cn("grid grid-cols-2 gap-x-4 gap-y-1.5 rounded-lg border bg-muted/30 px-3 py-2.5", className)}>
+      <ul
+        aria-label="Actividades SQA por estado"
+        className={cn("grid grid-cols-2 gap-x-4 gap-y-1.5 rounded-lg border bg-muted/30 px-3 py-2.5", className)}
+      >
         {ESTADOS_ACTIVIDAD.map((e) => (
           <li key={e} className="flex min-w-0 items-center justify-between gap-2 text-sm">
             <span className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
@@ -59,7 +62,7 @@ export function ConteoEstadosTiles({
     );
   }
   return (
-    <ul className={cn("grid grid-cols-2 gap-2 sm:grid-cols-4", className)}>
+    <ul aria-label="Actividades SQA por estado" className={cn("grid grid-cols-2 gap-2 sm:grid-cols-4", className)}>
       {ESTADOS_ACTIVIDAD.map((e) => (
         <li key={e} className="min-w-0">
           <Tile
@@ -82,7 +85,7 @@ export function CumplimientoTiles({
   className?: string;
 }) {
   return (
-    <ul className={cn("grid grid-cols-2 gap-2 sm:grid-cols-4", className)}>
+    <ul aria-label="Métricas por cumplimiento" className={cn("grid grid-cols-2 gap-2 sm:grid-cols-4", className)}>
       {ESTADOS_CUMPLIMIENTO.map((e) => (
         <li key={e} className="min-w-0">
           <Tile

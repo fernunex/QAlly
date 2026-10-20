@@ -65,4 +65,3 @@ export function metricaDTO(raw: unknown): MetricaProyecto {
     medidaEn: m.medidaEn,
   };
 }
-

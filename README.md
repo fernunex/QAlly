@@ -12,10 +12,10 @@ QAlly es una plataforma web académica para gestionar actividades de aseguramien
 | [CU-02 — Métricas](docs/modulos/cu02-implementacion.md) | Agregar tipos del catálogo, configurar objetivos, registrar mediciones, consultar historial y corregir con trazabilidad. | Implementado y probado localmente. |
 | [CU-03 — Actividades SQA](docs/modulos/cu03-implementacion.md) | Tablero paginado con filtros, alta, asignación, consulta, aprobación y devolución con observaciones. | Implementado y probado localmente. |
 | [CU-04 — Entrega de evidencias](docs/modulos/cu04-implementacion.md) | Mis actividades, inicio, resultado, PDF/enlaces, envío a revisión y corrección en otro intento. | Implementado y probado; paginación de listas e intentos pendiente. |
-| [CU-05 — Salud del proyecto](docs/modulos/cu05-implementacion.md) | Pestaña Salud: salud general y por etapa «Sin evaluar», tres etapas con conteos y actividades, métricas con valor, objetivo, cumplimiento y «Sin medición». | Consulta implementada y probada localmente; algoritmo y clasificación pendientes de aprobación. |
-| [CU-06 — Reportes](docs/modulos/cu06-implementacion.md) | Pestaña Reportes (solo QA): generar y regenerar el reporte con métricas, actividades SQA por etapa y salud «Sin evaluar»; exportar a PDF desde una captura cifrada de 15 minutos. | Implementado y probado localmente; salud pendiente de algoritmo. |
+| [CU-05 — Salud del proyecto](docs/modulos/cu05-implementacion.md) | Pestaña Salud: salud general y por etapa «Sin evaluar», tres etapas con conteos y actividades, métricas con valor, objetivo, cumplimiento y «Sin medición». | Consulta implementada y probada localmente; adecuación al algoritmo aprobado el 2026-10-30 pendiente. |
+| [CU-06 — Reportes](docs/modulos/cu06-implementacion.md) | Pestaña Reportes (solo QA): generar y regenerar el reporte con métricas, actividades SQA por etapa y salud «Sin evaluar»; exportar a PDF desde una captura cifrada de 15 minutos. | Implementado y probado localmente; adecuación de salud y contenido al cierre funcional pendiente. |
 
-La salud general y por etapa sigue siendo parte del alcance; no se calculan puntajes ni categorías sin un algoritmo aprobado. **Supabase Cloud y el despliegue aún no están configurados**; se puede desarrollar y probar localmente.
+La salud general y por etapa tiene [algoritmo y clasificación aprobados](docs/producto/reglas-globales.md#salud-aprobada) desde el 2026-10-30. La implementación actual aún muestra «Sin evaluar»; [pendientes y brechas](docs/requisitos/pendientes-y-brechas.md) distingue requisitos aprobados de integración y pruebas pendientes. **Supabase Cloud y el despliegue aún no están configurados**; se puede desarrollar y probar localmente.
 
 [Registro de integración y pruebas conjuntas](docs/equipo/integracion-cu02-cu03-cu04.md) · [Pendientes actuales](docs/decisiones/pendientes.md).
 
@@ -107,7 +107,7 @@ La integración de CU-01 a CU-04 verificó **50 pruebas unitarias, 20 de BD y 44
 ## Pendientes relevantes
 
 - Paginar **Mis actividades** y los intentos de CU-04: hoy carga listas completas, con riesgo de respuestas grandes o truncadas por el límite de PostgREST.
-- Definir el algoritmo de salud (CU-05 y el reporte de CU-06 muestran «Sin evaluar» mientras tanto).
+- Adecuar CU-01/02/05/06 a los [requisitos aprobados el 2026-10-30](docs/requisitos/pendientes-y-brechas.md): preselección de diez, fuente opcional, criterio crítico independiente, salud y reporte.
 - Medir los tiempos de aceptación RNF en un entorno desplegado y representativo.
 - Preparar Cloud/despliegue y automatizar la limpieza diaria cuando corresponda. La ejecución remota de GitHub Actions no está acreditada por las pruebas locales.
 - Dar seguimiento a los avisos de dependencias registrados durante la integración, sin aplicar actualizaciones forzadas de versiones principales.
@@ -117,6 +117,7 @@ La integración de CU-01 a CU-04 verificó **50 pruebas unitarias, 20 de BD y 44
 Crear ramas de funcionalidad desde `dev`, revisar mediante PR hacia `dev` y promover versiones verificadas a `main`. [Flujo de colaboración](docs/equipo/integracion-ui-bd.md#flujo-para-el-equipo).
 
 - [Índice y fuentes canónicas](docs/indice.md).
+- [Diagramas Mermaid: arquitectura, secuencias CU-01 a CU-04 y ER Chen](docs/diagramas/README.md).
 - [Requisitos funcionales](docs/requisitos/funcionales.md), [RNF](docs/requisitos/no-funcionales.md) y [trazabilidad](docs/requisitos/trazabilidad.md).
 - [Reglas del producto](docs/producto/reglas-globales.md) y catálogos aprobados de [actividades](docs/producto/catalogo-actividades.md) y [métricas](docs/producto/catalogo-metricas.md).
 - [Arquitectura C4](docs/arquitectura/diseno-arquitectural.md), [modelo de datos](docs/datos/modelo-entidad-relacion.md) y [contratos internos](docs/arquitectura/contratos-v1.md).

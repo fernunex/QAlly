@@ -8,7 +8,7 @@
 Consulta, alta de actividad del catálogo con descripción específica, asignación a miembro, aprobación o devolución con observaciones.
 
 ## Reglas esenciales acordadas
-Un tipo se repite en un proyecto; actividades nuevas en Pendiente; solo QA aprueba/devuelve En revisión; devolución retorna a En progreso.
+Un tipo se repite en un proyecto; actividades nuevas en Pendiente; solo QA aprueba/devuelve En revisión; devolución retorna a En progreso. Solo Aprobada aporta como realizada a salud. Cada tipo conserva objetivo, descripción y evidencia sugerida según el [catálogo ratificado](../producto/catalogo-actividades.md); los formatos son recomendaciones y la decisión siempre es de QA.
 
 ## Interfaces y dependencias
 Catálogo de actividades, membresía y flujo de CU-04.

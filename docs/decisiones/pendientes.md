@@ -1,14 +1,18 @@
-# Decisiones pendientes — corte 2026-10-19
+# Decisiones pendientes — actualización 2026-10-30
 
 Stack, monolito modular y diseño v1 aprobados por [ADR-001](ADR-001-diseno-tecnico-v1.md) y [ADR-002](ADR-002-cierre-diseno-v1.md). ADR-001/002 aprobaron documentación. El usuario autorizó posteriormente ejecutar el [bootstrap local](../datos/plan-bootstrap-supabase.md); la conexión a Cloud se pospone expresamente hasta que disponga de proyecto. No se autoriza push ni despliegue.
 
-## Pendiente de diseño del producto
+## Pendientes vigentes — 2026-10-30
 
-| Prioridad | Por resolver | Puede avanzar mientras tanto |
-|---|---|---|
-| Alta | Algoritmo de salud general/por etapa: pesos, categorías, rangos, tratamiento de datos ausentes y actividades pendientes. | Consultas, indicadores, resumen general y tres etapas con Sin evaluar; reporte sin puntajes inventados. |
+**RESUELTO:** fórmula, pesos, rangos y ausencias de salud por DEC-27; preselección de diez por DEC-25; fuente opcional y criterio crítico independiente por DEC-26; contenido del reporte por DEC-28. [Registro de acuerdos](registro.md#cierre-funcional--2026-10-30).
 
-La salud es el único pendiente de producto de este cierre, por instrucción expresa del usuario. No se elimina RF-26/27.
+Los únicos pendientes funcionales residuales identificados son objetivo porcentual cero, nulos técnicos inesperados y política histórica ante modificación de objetivos. Sus decisiones requeridas y responsables están en el [registro vivo de pendientes y brechas](../requisitos/pendientes-y-brechas.md#pendientes-de-requisitos); ese archivo es la fuente de seguimiento detallado para este cierre, sin duplicar aquí sus filas.
+
+**Implementación pendiente de adecuación:** preselección, validación de fuente, evaluación M-01, SQL/contratos/DTO de salud y contenido del reporte. El algoritmo ya está aprobado; modificar diseño, contratos o BD requiere evaluación/aprobación técnica independiente. Paginación CU-04, despliegue y aceptación RNF conservan su seguimiento previo. Ninguna aprobación documental equivale a implementación ni prueba.
+
+## Notas históricas
+
+Todo el contenido siguiente conserva los cortes de 2026-10-18 a 2026-10-20. Las menciones a salud pendiente, cinco preselecciones, fuente obligatoria o cumplimiento conjunto describen esos antecedentes, **SUPERADOS** en lo funcional por DEC-25–28. No deben usarse como requisitos vigentes. Las notas de ejecución y resultados históricos no se eliminan.
 
 ## Resueltos en diseño — ADR-002
 

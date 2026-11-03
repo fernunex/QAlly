@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { checked, rpc } from "../../scripts/lib/local.mjs";
-import { actividad, contexto, detalle, EQUIPO, ETAPAS, login, preparar, proyecto, saludEnDashboard, type Contexto } from "./apoyo";
+import { actividad, contexto, detalle, EQUIPO, ETAPAS, evidencia, login, preparar, proyecto, saludEnDashboard, type Contexto } from "./apoyo";
 
 let c: Contexto;
 test.beforeAll(async () => {
@@ -31,6 +31,7 @@ test(
       await page.getByRole("checkbox", { name: "Miembro 1", exact: true }).check();
       await page.getByRole("button", { name: "Continuar", exact: true }).click();
       await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(10);
+      await evidencia(page, "Paso 1a: diez actividades preseleccionadas");
       // Quedan A-01 (Requerimientos) y A-05/A-06/A-09 (Desarrollo); Diseño sin elementos.
       for (const codigo of ["A-02", "A-03", "A-04", "A-07", "A-08", "A-10"])
         await page.getByRole("checkbox", { name: new RegExp(codigo) }).uncheck();
@@ -42,6 +43,7 @@ test(
       pid = page.url().split("/").at(-1)!;
       await expect(page.getByText("Actividades SQA configuradas (4)", { exact: true })).toBeVisible();
       await expect(page.getByText("Métricas configuradas (2)", { exact: true })).toBeVisible();
+      await evidencia(page, "Paso 1b: proyecto registrado con 4 actividades y 2 métricas");
     });
 
     await test.step("CU-03/CU-04: Miembro entrega A-01 y A-05; QA aprueba A-01 (A-05 queda En revisión)", async () => {
@@ -76,6 +78,7 @@ test(
         await dialogo.getByRole("button", { name: "Guardar medición" }).click();
         await expect(dialogo).toBeHidden();
       }
+      await evidencia(page, "Paso 3: M-02 y M-03 medidas");
     });
 
     // 4 actividades (1 Aprobada) + 2 métricas (aportes 1 y 0.8): 100 × 2.8 / 6 = 46.67 %.
@@ -90,16 +93,19 @@ test(
       await page.goto(`/proyectos/${pid}/salud`);
       expect(await saludEnDashboard(page, "Salud general")).toBe(esperado.General);
       for (const e of ETAPAS) expect(await saludEnDashboard(page, e)).toBe(esperado[e]);
+      await evidencia(page, "Paso 4a: dashboard de salud");
       // Encabezado del proyecto y listado usan la misma función de salud.
       await expect(page.getByText(`Salud general: ${esperado.General}`)).toBeVisible();
       await page.goto("/proyectos");
       await expect(page.getByRole("row").filter({ hasText: nombre })).toContainText(esperado.General);
+      await evidencia(page, "Paso 4b: listado de proyectos con salud");
     });
 
     await test.step("CU-05: Miembro participante consulta la misma salud", async () => {
       const miembro = await contexto(browser, "miembro1@qally.example.test");
       await miembro.page.goto(`/proyectos/${pid}/salud`);
       expect(await saludEnDashboard(miembro.page, "Salud general")).toBe(esperado.General);
+      await evidencia(miembro.page, "Paso 5: vista del Miembro del equipo");
       await miembro.ctx.close();
     });
 
@@ -113,6 +119,7 @@ test(
       await expect(doc.getByRole("row").filter({ hasText: "M-03" })).toContainText("0.80 de 1");
       // Evidencias como enlaces del último intento enviado, sin incrustar.
       await expect(doc.getByRole("link", { name: "https://example.test/A-01" })).toBeVisible();
+      await evidencia(page, "Paso 6: vista del reporte");
       const [descarga] = await Promise.all([
         page.waitForEvent("download"),
         page.getByRole("button", { name: "Exportar a PDF" }).click(),
@@ -135,6 +142,7 @@ test(
     await page.getByRole("button", { name: "Generar reporte" }).click();
     const fila = page.getByRole("article", { name: "Reporte de calidad" }).getByRole("table").first().getByRole("row").filter({ hasText: "General" });
     await expect(fila).toContainText("25.00 % · Malo");
+    await evidencia(page, "Paso 1: reporte generado con 25 %");
 
     // Se aprueba otra instancia: la vista ya generada es una captura y no cambia sola.
     await actividad(c, pid, "A-09", "Aprobada");
@@ -142,6 +150,7 @@ test(
     await page.getByRole("button", { name: "Regenerar reporte" }).click();
     // 2 Aprobadas de 5 instancias.
     await expect(fila).toContainText("40.00 % · Malo");
+    await evidencia(page, "Paso 3: reporte regenerado con 40 %");
     await page.goto(`/proyectos/${pid}/salud`);
     expect(await saludEnDashboard(page, "Salud general")).toBe("40.00 % · Malo");
   },

@@ -11,6 +11,7 @@ import {
   detalle,
   EQUIPO,
   ETAPAS,
+  evidencia,
   login,
   medir,
   preparar,
@@ -36,6 +37,7 @@ test(
     await page.getByRole("button", { name: "Continuar", exact: true }).click();
     const marcadas = page.getByRole("checkbox", { checked: true });
     await expect(marcadas).toHaveCount(10);
+    await evidencia(page, "Paso 2: diez actividades preseleccionadas");
     while ((await marcadas.count()) > 0) await marcadas.first().uncheck();
     await page.getByRole("button", { name: "Continuar", exact: true }).click();
     for (const codigo of ["M-01", "M-02", "M-03", "M-04"]) await page.getByRole("checkbox", { name: new RegExp(codigo) }).uncheck();
@@ -63,6 +65,7 @@ test(
     await dialogo.getByLabel("Objetivo", { exact: true }).fill("0");
     await dialogo.getByRole("button", { name: "Agregar métrica" }).click();
     await expect(dialogo).toContainText("El objetivo debe ser mayor que 0.");
+    await evidencia(page, "Paso 1: objetivo 0 % rechazado");
     await dialogo.getByLabel("Objetivo", { exact: true }).fill("0.5");
     await dialogo.getByRole("button", { name: "Agregar métrica" }).click();
     await expect(dialogo).toBeHidden();
@@ -158,6 +161,7 @@ test(
     await page.goto(`/proyectos/${defectos}/salud`);
     expect(await saludEnDashboard(page, "Salud general")).toBe("95.00 % · Excelente");
     await expect(page.getByRole("region", { name: "Salud general" })).toContainText("Defectos graves abiertos");
+    await evidencia(page, "Paso 1: Excelente con defectos graves");
     await page.goto(`/proyectos/${borde}/salud`);
     expect(await saludEnDashboard(page, "Salud general")).toBe("90.00 % · Bueno");
   },
@@ -182,6 +186,7 @@ test(
     await page.goto(`/proyectos/${pid}/salud`);
     // (1 + 0.5) / 2 = 75 %.
     expect(await saludEnDashboard(page, "Salud general")).toBe("75.00 % · Bueno");
+    await evidencia(page, "Paso 2: dashboard de proyecto cerrado");
     await page.goto(`/proyectos/${pid}/reportes`);
     await page.getByRole("button", { name: "Generar reporte" }).click();
     const fila = page.getByRole("article", { name: "Reporte de calidad" }).getByRole("table").first().getByRole("row").filter({ hasText: "General" });

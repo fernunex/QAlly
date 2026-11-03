@@ -3,7 +3,7 @@
  * Las specs por CU (cuNN.spec.ts) conservan sus propios helpers. Plan y responsables:
  * docs/equipo/plan-pruebas-dec25-28.md.
  */
-import { expect, type Browser, type Page, type TestDetails } from "@playwright/test";
+import { expect, test, type Browser, type Page, type TestDetails } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { loadEnvFile } from "node:process";
 import { checked, provisionUsers, rpc } from "../../scripts/lib/local.mjs";
@@ -117,6 +117,11 @@ export async function medir(c: Contexto, pid: string, codigo: string, datos: Rec
     p_medida_en: `${fecha}T00:00:00Z`,
     p_datos_fuente: datos,
   });
+}
+
+/** Adjunta una captura de página completa al reporte de la prueba (evidencia para la bitácora). */
+export async function evidencia(page: Page, titulo: string) {
+  await test.info().attach(titulo, { body: await page.screenshot({ fullPage: true }), contentType: "image/png" });
 }
 
 /** Texto «NN.NN % · Clase» o «Sin evaluar» de la región de salud indicada en CU-05. */

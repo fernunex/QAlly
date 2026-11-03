@@ -17,7 +17,7 @@ Consultas de proyectos, métricas y actividades, y consulta compartida de indica
 Generación, vista, captura cifrada de 15 minutos y exportación PDF implementadas en `feat/cu06-reportes` según [contratos v1](../arquitectura/contratos-v1.md): [registro de implementación y pruebas](cu06-implementacion.md).
 
 ## Pendientes relevantes
-**Diferencia respecto al requisito aprobado:** el reporte actual conserva «Sin evaluar» y no incluye referencias de evidencia, aportes ni advertencias nuevas. Algoritmo y contenido ya aprobados; [brechas de integración y pruebas](../requisitos/pendientes-y-brechas.md). Medición RNF-06 en entorno desplegado pendiente.
+**2026-11-02, `feat/salud-dec27`:** vista y PDF incluyen salud general y por etapa con porcentaje, clasificación, puntos y advertencias; sección de advertencias; aporte y criterio crítico por métrica; instancia y evidencias (enlaces o PDF referenciado por la ruta autorizada) del último intento enviado. Orden: salud, advertencias, métricas, actividades. [ADR-003](../decisiones/ADR-003-salud-y-reporte.md). Medición RNF-06 en entorno desplegado pendiente.
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-06.md` enlazado.
@@ -27,4 +27,4 @@ Generación, vista, captura cifrada de 15 minutos y exportación PDF implementad
 **Nota:** este archivo orienta el trabajo; el caso de uso y el registro de decisiones son las fuentes de detalle.
 
 ## Consideración técnica de implementación
-La implementación usa `@react-pdf/renderer` 4.9.0 y reutiliza `consultarResumen`/`ResumenProyecto` de CU-05 con salud literal Sin evaluar en el código actual. Este estado histórico no satisface por sí mismo DEC-27/28.
+La implementación usa `@react-pdf/renderer` 4.9.0 y reutiliza `consultarResumen`/`ResumenProyecto` de CU-05 con la salud calculada por la BD (ADR-003); el PDF recibe el mismo modelo que la vista.

@@ -72,7 +72,7 @@ Semillas definitivas: `requerimientos` → Especificación de requerimientos; `d
 | descripcion | varchar(5000) | No | Alcance y resultado del catálogo v1; fuente de descripción inicial de instancia. |
 | etapa_codigo | varchar(16) | No | FK etapa. |
 | activa | boolean | No | Habilita nuevas selecciones; no elimina instancias previas. |
-| preseleccionada | boolean | No | Valor inicial modificable en selección de CU-01; Sí para A-01, A-03, A-05, A-06 y A-09; No para las demás. |
+| preseleccionada | boolean | No | Valor inicial modificable en selección de CU-01; Sí para las diez A-01…A-10 (DEC-25, migración `20261102000100`). Antes: solo A-01, A-03, A-05, A-06 y A-09. |
 
 Resultado, PDF/enlace admisible y criterios QA están en el [catálogo aprobado](../producto/catalogo-actividades.md); la revisión es decisión QA, no aprobación automática.
 
@@ -176,7 +176,7 @@ Solo se inserta para la entrega enviada vigente y actividad En revisión; no se 
 | proyecto_id | uuid | No | FK proyecto. |
 | tipo_metrica_id | uuid | No | FK tipo_metrica; único junto con proyecto_id. |
 | operador | text | No | Fijo por tipo: >= para M-01/02/03; <= para M-04, no editable. |
-| objetivo | numeric(20,8) | No | M-01/02/03: porcentaje [0,100], hasta cuatro decimales; M-04: entero [0,2 000 000 000]. |
+| objetivo | numeric(20,8) | No | M-01/02/03: porcentaje (0,100], hasta cuatro decimales (DEC-29; antes [0,100]); M-04: entero [0,2 000 000 000]. |
 | objetivo_critico | numeric(20,8) | Sí | Obligatorio para M-01, porcentaje [0,100], hasta cuatro decimales; nulo para las demás. |
 | configurada_por | uuid | No | FK perfil; QA que realizó la configuración vigente. |
 | configurada_en | timestamptz | No | Fecha/token de configuración vigente, estrictamente posterior al anterior al actualizar; la RPC exige `configuradaEnEsperada`. |

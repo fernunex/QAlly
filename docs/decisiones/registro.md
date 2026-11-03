@@ -30,6 +30,9 @@
 | DEC-26 | **APROBADO (2026-10-30)** | Ratificar M-01…M-04 en Desarrollo, captura manual y fuente opcional; M-01 general separado del criterio 100% crítico; revisión previa por otra persona en M-02 y prueba ejecutada en M-03. | [Catálogo de métricas](../producto/catalogo-metricas.md); CU-01/02/05/06, RF-03/08–14/28–32. Sustituye fuente obligatoria y cumplimiento conjunto de ADR-002. |
 | DEC-27 | **APROBADO (2026-10-30)** | Salud con igual peso por instancia/métrica, aporte normalizado, ausencias en denominador y cuatro rangos; advertencias sin tope de puntuación. | [Reglas de salud](../producto/reglas-globales.md#salud-aprobada); CU-05/06, RF-26/27/29. Resuelve DEC-12/18. |
 | DEC-28 | **APROBADO (2026-10-30)** | Reporte QA actual: salud general/tres etapas, métricas, actividades/evidencias y advertencias; misma definición/resultados en dashboard, vista y PDF; sin incrustar evidencias ni histórico de PDFs. | [Contenido del reporte](../producto/reglas-globales.md#contenido-del-reporte); CU-06, RF-30/31/32/33; conserva CDMX (DEC-24) y seguridad. |
+| DEC-29 | **APROBADO (2026-11-02)** | RQ-01: objetivos porcentuales de M-01/02/03 en (0,100]; una meta 0 % previa cuenta como No evaluable para salud. El objetivo crítico de M-01 admite 0. | [ADR-003](ADR-003-salud-y-reporte.md); CU-01/02/05, RF-10/26/29. |
+| DEC-30 | **APROBADO (2026-11-02)** | RQ-02: un nulo técnico en una medición Evaluable o en su objetivo es error de integridad (FE-03 con reintento), no evaluación parcial ni cero. | [ADR-003](ADR-003-salud-y-reporte.md); CU-05/06, RF-26/29. |
+| DEC-31 | **APROBADO (2026-11-02)** | RQ-03: el aporte de salud usa el objetivo vigente; sin historial de objetivos. | [ADR-003](ADR-003-salud-y-reporte.md); CU-02/05/06. |
 
 Estos identificadores `DEC-xx` son **solo para consulta en esta memoria** y **no** forman parte de la numeración formal de RF/RNF/CU.
 
@@ -82,3 +85,8 @@ DEC-25/26 ratifican los catálogos y sustituyen las alternativas históricas de 
 Fuentes vigentes: [reglas globales](../producto/reglas-globales.md), [actividades](../producto/catalogo-actividades.md), [métricas](../producto/catalogo-metricas.md), [RF](../requisitos/funcionales.md), [trazabilidad](../requisitos/trazabilidad.md). No se atribuyen estos acuerdos a ADR-002 ni se presume ratificación académica independiente. Las secciones fechadas anteriores conservan el estado histórico de implementación de su fecha, incluida la salud Sin evaluar; no describen los nuevos requisitos.
 
 **Requisito aprobado ≠ implementación aprobada o probada:** [pendientes y brechas](../requisitos/pendientes-y-brechas.md) distingue las ambigüedades residuales de producto y las tareas derivadas para diseño, BD, implementación y pruebas. Esta decisión no aprueba cambios a contratos, esquema ni arquitectura.
+
+## Integración técnica de DEC-25–31 — 2026-11-02
+
+Encargo del equipo: «refactor de diseño y de implementación con los nuevos cambios» de requisitos, cálculo de salud y exportación del reporte en PDF. Emiliano (emidsm) aprobó en esta sesión las opciones recomendadas para RQ-01/02/03 (DEC-29/30/31) y la entrega en rama local `feat/salud-dec27` con commits, sin push. El diseño técnico está en [ADR-003](ADR-003-salud-y-reporte.md): cálculo en PostgreSQL dentro de `consultar_resumen`, nueva RPC `consultar_salud`, migración de funciones y datos de referencia sin cambios de tablas. Si el responsable del proyecto no ratifica DEC-29–31, revertir solo esa parte de la migración y del DTO. [Plan de pruebas](../equipo/plan-pruebas-dec25-28.md).
+

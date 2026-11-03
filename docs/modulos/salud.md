@@ -14,7 +14,7 @@ Consulta de datos actuales, métricas/umbrales/actividades por tres etapas, indi
 Métricas y actividades; CU-06 debe utilizar los mismos resultados de cálculo.
 
 ## Pendientes relevantes
-Adecuación del contrato, SQL/DTO y presentación al algoritmo ya aprobado. Objetivo porcentual cero y precisiones residuales: [pendientes y brechas](../requisitos/pendientes-y-brechas.md). No confundir integración técnica con decisión funcional.
+Integración técnica realizada (ADR-003). Pendiente: medir rendimiento desplegado y registrar la ejecución E2E en Firefox. [Pendientes y brechas](../requisitos/pendientes-y-brechas.md).
 
 ## Lectura mínima para Codex
 1. Este archivo y `CU-05.md` enlazado.
@@ -26,6 +26,10 @@ Adecuación del contrato, SQL/DTO y presentación al algoritmo ya aprobado. Obje
 ## Consideración técnica de implementación
 Usar consulta/contrato de indicadores v1 aprobado y compartido con reportes; evaluar su adecuación al requisito aprobado y coordinar las modificaciones técnicas antes de implementarlas.
 
-## Estado de implementación — 2026-10-20
+## Estado de implementación — 2026-11-02
+
+Salud general y por etapa **calculada** según DEC-27 en `feat/salud-dec27` ([ADR-003](../decisiones/ADR-003-salud-y-reporte.md)): `private.salud_json` dentro de `consultar_resumen`; la pestaña Salud muestra porcentaje, clasificación, puntos, aporte por métrica y advertencias; el listado y el encabezado del proyecto usan `consultar_salud`. Objetivo 0 %, nulos y objetivos históricos resueltos por DEC-29–31. Pruebas: `tests/database/salud.test.mjs`, `tests/unit/salud.test.ts`, `tests/e2e/cu05.spec.ts` y el [plan de pruebas](../equipo/plan-pruebas-dec25-28.md).
+
+## Estado de implementación — 2026-10-20 (histórico)
 
 Consulta de CU-05 implementada en `feat/cu05-salud-proyecto`: adaptador `consultarResumen` y DTO `ResumenProyecto` (`src/features/health/`), reutilizables por CU-06, y pestaña **Salud** con datos reales. El código existente conserva salud general y por etapa «Sin evaluar». **Diferencia respecto al requisito aprobado:** algoritmo, pesos y clasificación ya están aprobados por DEC-27; su implementación y pruebas quedan pendientes. [Realización, pruebas y trazabilidad](cu05-implementacion.md).

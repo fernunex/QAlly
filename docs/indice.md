@@ -28,16 +28,18 @@
 | Consultar catálogos | `docs/producto/catalogo-actividades.md`, `docs/producto/catalogo-metricas.md` |
 | Cierre funcional y brechas del 30/10/2026 | [Acuerdos](decisiones/registro.md#cierre-funcional--2026-10-30), [pendientes y brechas](requisitos/pendientes-y-brechas.md) |
 | Consultar decisiones | `docs/decisiones/registro.md`, `docs/decisiones/pendientes.md` |
+| Salud calculada y contenido del reporte (DEC-25–31) | [ADR-003](decisiones/ADR-003-salud-y-reporte.md), migración `20261102000100` |
+| Planear o ejecutar pruebas por técnica de revisión | [Plan de pruebas DEC-25–28](equipo/plan-pruebas-dec25-28.md) |
 | Consultar cierre de diseño excepto salud | [ADR-002](decisiones/ADR-002-cierre-diseno-v1.md), [contratos v1](arquitectura/contratos-v1.md), [detalle técnico](datos/detalle-tecnico-v1.md), **APROBADOS**; bootstrap local en guía Supabase |
 | Onboarding de agentes (solo si se necesita) | `docs/equipo/guia-codex.md` |
 
 ## Estado actual de implementación
 
-CU-01 a CU-06 están integrados en `dev`, según el [registro de integración de CU-05/06](decisiones/registro.md#integración-de-cu-05cu-06-y-recorrido-de-demo--2026-10-20). Los registros individuales conservan los resultados de su fecha y no acreditan el cumplimiento de cambios posteriores.
+CU-01 a CU-06 están integrados en `dev`, según el [registro de integración de CU-05/06](decisiones/registro.md#integración-de-cu-05cu-06-y-recorrido-de-demo--2026-10-20). Los registros individuales conservan los resultados de su fecha y no acreditan el cumplimiento de cambios posteriores. **2026-11-02:** la rama `feat/salud-dec27` implementa DEC-25–31 (salud calculada, reporte ampliado, diez actividades preseleccionadas, fuente opcional) según [ADR-003](decisiones/ADR-003-salud-y-reporte.md).
 
 **Requisitos APROBADOS, 2026-10-30:** catálogos ratificados, diez actividades preseleccionadas, fuente opcional, criterio crítico independiente de M-01, fórmula/clasificación de salud y contenido de reporte. [Decisiones DEC-25–28](decisiones/registro.md#cierre-funcional--2026-10-30); [reglas de salud](producto/reglas-globales.md#salud-aprobada).
 
-**Diferencia respecto a la implementación actual:** el código conserva reglas anteriores (incluida salud Sin evaluar). [Pendientes y brechas](requisitos/pendientes-y-brechas.md) es la entrada para ambigüedades reales, incompatibilidades y validación pendiente. Paginación CU-04 y rendimiento desplegado conservan seguimiento independiente.
+**Diferencia respecto a la implementación actual:** en `dev` el código conserva reglas anteriores (incluida salud Sin evaluar); `feat/salud-dec27` las cierra (ADR-003) a la espera de revisión e integración. [Pendientes y brechas](requisitos/pendientes-y-brechas.md) es la entrada para ambigüedades reales, incompatibilidades y validación pendiente. Paginación CU-04 y rendimiento desplegado conservan seguimiento independiente.
 
 ## Fuentes canónicas
 

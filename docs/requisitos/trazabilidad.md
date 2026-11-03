@@ -24,6 +24,17 @@ La matriz CU–RF–RNF anterior conserva las asociaciones y los 33 RF/diez RNF;
 
 **Requisito aprobado ≠ comportamiento implementado/probado.** [Pendientes y brechas](pendientes-y-brechas.md) vincula ubicaciones reales con incompatibilidades, responsables y escenarios de validación todavía no ejecutados. RQ-01/02/03 son precisiones residuales; el algoritmo no sigue pendiente de aprobación.
 
+## Implementación DEC-25–31 — 2026-11-02
+
+Rama `feat/salud-dec27`, diseño [ADR-003](../decisiones/ADR-003-salud-y-reporte.md); casos y responsables en el [plan de pruebas](../equipo/plan-pruebas-dec25-28.md).
+
+| Decisión / CU | RF / RNF | Realización | Pruebas |
+|---|---|---|---|
+| DEC-25 · CU-01 | RF-02/04 | Migración marca A-01…A-10 preseleccionadas; catálogo TS con nombres y objetivos ratificados. | RP-01, CW-01, PR-01; BD «catálogos exactos». |
+| DEC-26 · CU-02 | RF-11/13/14 | Fuente opcional en Zod, UI y `private.calcular`; M-01 cumple con el valor general y `cumplimientoCritico` aparte. | IA-02, IA-05, PR-02, CW-01. |
+| DEC-27/29/30/31 · CU-05 | RF-26–29, 33; RNF-01–04, 07 | `private.salud_json` en `consultar_resumen`; `consultar_salud` para listado/encabezado; aporte por métrica; meta 0 % rechazada; DTO verifica coherencia. | IA-01–06, RP-05, CW-01/02, PR-03, PR-05. |
+| DEC-28 · CU-06 | RF-30–33; RNF-01–03, 06–07 | Modelo único vista/PDF con salud, advertencias, aportes, instancia y evidencias del último intento (rutas autorizadas). | IA-07, RP-06, CW-01/02, PR-04, PR-06. |
+
 ## Antecedentes históricos de diseño e implementación
 
 Las secciones siguientes conservan los acuerdos y resultados de sus fechas (2026-10-18 a 2026-10-20). Sus menciones a salud pendiente/Sin evaluar, preselección anterior y cumplimiento conjunto son históricas y quedan superadas funcionalmente por el cierre anterior. Los contratos/datos técnicos enlazados conservan brechas por evaluar; las pruebas anteriores no acreditan los requisitos nuevos.

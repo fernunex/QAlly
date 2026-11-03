@@ -68,6 +68,8 @@ Las funciones de edición/cierre comprueban versión bajo bloqueo. No se necesit
 
 ## 4. Métricas y mediciones
 
+> **Ampliado por [ADR-003](../decisiones/ADR-003-salud-y-reporte.md), 2026-11-02:** `fuenteReferencia` es opcional (DEC-26); objetivos porcentuales en (0,100] (DEC-29); M-01 cumple con su valor general y expone `cumplimientoCritico` aparte; toda métrica expone `aporte` a la salud.
+
 | Función interna → RPC | Entrada | Salida / autorización |
 |---|---|---|
 | listarMetricas / consultarMetrica → lecturas protegidas | proyectoId o metricaProyectoId | DTO Metrica; participantes autorizados, incluido cerrado. |
@@ -121,6 +123,8 @@ El POST usa el adaptador privilegiado aislado solo después de verificación de 
 RPC técnicas: `reservar_archivo(actorVerificadoId, entregaId, versionEsperada, metadataValidada)` devuelve archivo/reserva; `confirmar_archivo(actorVerificadoId, archivoId, versionEsperada)` devuelve evidencia/versión; `marcar_limpieza(limite<=100, archivoCompensacionId?)` devuelve candidatos ya marcados; `confirmar_eliminacion(archivoId)` confirma ausencia física. Solo backend/administración con rol de servicio. Parámetros de metadata son nombre, bytes, MIME y SHA-256 calculados a partir del cuerpo validado. Sin archivoCompensacionId, aplica el margen ordinario de 24 horas. Con ese ID, admite únicamente compensación de una transferencia conocida como terminada y asociación fallida, invalidando la reserva y comprobando cero referencias bajo bloqueo; no se usa frente a resultados ambiguos. La excepción concreta el camino de compensación inmediata de ADR-002, sin debilitar la protección de archivos referenciados.
 
 ## 6. Resumen y reporte sin historial persistente
+
+> **Ampliado por [ADR-003](../decisiones/ADR-003-salud-y-reporte.md), 2026-11-02.** La salud ya no es el literal `{estado: "Sin evaluar", motivo}`: es `EstadoSalud` con porcentaje, clasificación, puntos, conteos y advertencias calculados por `private.salud_json`. Cada actividad agrega `instancia` y `evidencias` del último intento enviado; cada métrica agrega `aporte` y `cumplimientoCritico`. Nueva lectura `consultar_salud(uuid[])` para listado y encabezado. El resto de esta sección sigue vigente.
 
 `consultarResumen(contexto, {proyectoId})` usa `consultar_resumen(proyectoId)`, una lectura autorizada consistente. Devuelve:
 

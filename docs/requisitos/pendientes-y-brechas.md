@@ -4,6 +4,8 @@
 
 ## Pendientes de requisitos
 
+**Actualización 2026-11-02:** RQ-01, RQ-02 y RQ-03 quedaron resueltas por [DEC-29, DEC-30 y DEC-31](../decisiones/registro.md) con las opciones recomendadas: objetivo porcentual en (0,100], nulo técnico = error de integridad y objetivo vigente. Diseño técnico en [ADR-003](../decisiones/ADR-003-salud-y-reporte.md). La tabla conserva la redacción original como antecedente.
+
 Corresponde al **responsable del proyecto**, con propuesta del equipo de diseño/implementación, confirmar estas precisiones. No reabren la fórmula ni las decisiones ya aprobadas.
 
 | ID | Ambigüedad verificada | Decisión adicional requerida / opciones no aprobadas |
@@ -13,6 +15,8 @@ Corresponde al **responsable del proyecto**, con propuesta del equipo de diseño
 | RQ-03 | CU-02 recalcula evaluación actual al cambiar objetivo; los objetivos de `metrica_proyecto` se actualizan y las revisiones conservan mediciones, sin historial de objetivos equivalente. | Precisar si se necesita reconstruir evaluación histórica con objetivo de su fecha o solo con el objetivo vigente, y qué trazabilidad de metas exigir. El reporte sigue siendo del estado actual y la captura consistente de 15 minutos se conserva; esto no autoriza histórico de PDFs ni cambios de BD. |
 
 ## Brechas requisitos aprobados ↔ documentación/código existente
+
+**Actualización 2026-11-02 — rama `feat/salud-dec27`:** BR-01 a BR-07 están **implementadas** según [ADR-003](../decisiones/ADR-003-salud-y-reporte.md) y cubiertas por pruebas de BD, unitarias y E2E ([plan de pruebas](../equipo/plan-pruebas-dec25-28.md)). Resumen: BR-01 diez preseleccionadas (migración de datos y catálogo TS); BR-02 nombres y objetivos ratificados en el catálogo de código, sin columna nueva; BR-03 M-01 cumple solo con el valor general y `cumplimientoCritico` aparte (se conserva `objetivo_critico`); BR-04 fuente opcional en Zod, UI y `private.calcular`; BR-05 salud calculada en `consultar_resumen`; BR-06 reporte con salud, aportes, advertencias, instancia y evidencias del último intento enviado; BR-07 resuelta por DEC-29–31. Las filas siguientes se conservan como antecedente de la verificación del 2026-10-30. Pendiente: RNF de rendimiento desplegado (RNF-06) y ejecución completa en Firefox registrada por el equipo.
 
 Responsable sugerido en todas las filas: **equipo de diseño/implementación**. Los contratos, el diccionario, modelo de datos y diagramas conservan su versión técnica; las reglas funcionales nuevas prevalecen y no deben inferirse de esos artefactos todavía incompatibles.
 

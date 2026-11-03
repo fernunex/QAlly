@@ -24,7 +24,10 @@
     "typecheck": "next typegen && tsc --noEmit",
     "db:lint": "node scripts/db.mjs lint",
     "unit:test": "vitest run tests/unit",
-    "e2e:test": "playwright test"
+    "e2e:test": "playwright test",
+    "e2e:personal": "playwright test tests/e2e/cu0",
+    "e2e:caminata": "playwright test --grep @caminata",
+    "e2e:pares": "playwright test --grep @pares"
   },
   "dependencies": {
     "@react-pdf/renderer": "4.9.0",

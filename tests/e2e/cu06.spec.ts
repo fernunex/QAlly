@@ -110,7 +110,7 @@ async function esPdf(ruta: string) {
   expect(bytes.byteLength).toBeLessThan(3 * 1024 * 1024);
 }
 
-test("QA genera el reporte con Sin medición y Sin evaluar, lo regenera y descarga un PDF válido", async ({
+test("QA genera el reporte con la salud de CU-05, advertencias y Sin medición, lo regenera y descarga un PDF válido", async ({
   page,
 }) => {
   const { id: pid, nombre } = await proyecto();
@@ -136,6 +136,8 @@ test("QA genera el reporte con Sin medición y Sin evaluar, lo regenera y descar
   await expect(m02).toContainText("95.00 %");
   await expect(m02).toContainText("Cumple");
   await expect(m02).toContainText("10 oct 2026");
+  await expect(m02).toContainText("1.00 de 1");
+  await expect(m01).toContainText("0 (sin datos)");
   // Actividades SQA por las tres etapas.
   for (const etapa of ETAPAS) await expect(doc.getByRole("group", { name: `Actividades de ${etapa}` })).toBeVisible();
   const req = doc.getByRole("group", { name: `Actividades de ${ETAPAS[0]}` });
@@ -145,14 +147,20 @@ test("QA genera el reporte con Sin medición y Sin evaluar, lo regenera y descar
     "Sin actividades SQA en esta etapa.",
   );
   await expect(doc.getByRole("group", { name: `Actividades de ${ETAPAS[2]}` })).toContainText("Miembro 2");
-  // Salud general y por etapa: Sin evaluar, sin categorías ni porcentajes.
-  const salud = doc.getByRole("table").last();
-  for (const ambito of ["General", ...ETAPAS]) {
-    const fila = salud.getByRole("row").filter({ hasText: ambito }).first();
-    await expect(fila).toContainText("Sin evaluar");
-    await expect(fila).toContainText("Algoritmo pendiente");
-  }
-  await expect(doc.getByText(/\b(Malo|Regular|Bueno|Excelente)\b/)).toHaveCount(0);
+  // Salud general y por etapa (DEC-27/28): misma definición y resultados que CU-05.
+  const esperado: Record<string, string> = {
+    General: "25.00 % · Malo",
+    [ETAPAS[0]!]: "0.00 % · Malo",
+    [ETAPAS[1]!]: "Sin evaluar",
+    [ETAPAS[2]!]: "33.33 % · Malo",
+  };
+  const salud = doc.getByRole("table").first();
+  for (const [ambito, texto] of Object.entries(esperado))
+    await expect(salud.getByRole("row").filter({ hasText: ambito }).first()).toContainText(texto);
+  const advertencias = doc.getByRole("list", { name: "Advertencias del reporte" });
+  await expect(advertencias).toContainText("General: Evaluación parcial");
+  await expect(advertencias).toContainText(`${ETAPAS[1]}: Sin actividades SQA ni métricas`);
+  await expect(advertencias).toContainText(`${ETAPAS[0]}: 0 % evaluado`);
 
   // Regenerar actualiza la vista y su fecha de generación.
   const fecha = doc.getByTestId("fecha-generacion");

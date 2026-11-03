@@ -25,6 +25,8 @@ const metricaJson = z.object({
   valorCritico: decimal.nullable(),
   condicionCritica: condicion,
   causaCritica: z.string().nullable(),
+  cumplimientoCritico: z.enum(["Cumple", "Incumple", "No evaluable", "Sin medición"]).nullable(),
+  aporte: z.string().regex(/^\d+(\.\d+)?$/).nullable(),
   medidaEn: z.string().nullable(),
   configuradaEn: z.string(),
 });
@@ -60,6 +62,8 @@ export function metricaDTO(raw: unknown): MetricaProyecto {
     valorCritico: m.valorCritico,
     condicionCritica: m.condicionCritica,
     causaCritica: m.causaCritica,
+    cumplimientoCritico: m.cumplimientoCritico,
+    aporte: m.aporte,
     cumplimiento:
       m.condicionPrincipal === "Sin medición" ? "Sin medición" : m.cumplimiento,
     medidaEn: m.medidaEn,

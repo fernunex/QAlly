@@ -8,7 +8,7 @@
 Miembro consulta sus actividades, inicia una Pendiente, registra resultado, adjunta PDF/enlace, envía a revisión y corrige entregas devueltas.
 
 ## Reglas esenciales acordadas
-Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisión y Aprobada sin edición ordinaria.
+Solo inicia/elabora el asignado; no enviar sin resultado y evidencia; En revisión y Aprobada sin edición ordinaria. Los formatos del [catálogo](../producto/catalogo-actividades.md) son sugeridos; solo la aprobación QA cuenta como realizada para salud. CU-06 referencia evidencias con autorización, sin incrustar sus PDF.
 
 ## Interfaces y dependencias
 Estados/permiso de actividades (CU-03); almacenamiento de PDFs y protección de evidencias.

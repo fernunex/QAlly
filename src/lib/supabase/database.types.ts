@@ -402,6 +402,9 @@ isOneToOne: false
 "consultar_resumen":
 { Args: { "p_proyecto_id": string }; Returns: Json
                            },
+"consultar_salud":
+{ Args: { "p_proyecto_ids": (string)[] }; Returns: Json
+                           },
 "corregir_medicion":
 { Args: { "p_datos_fuente": Json,"p_medicion_id": string,"p_revision_esperada": number }; Returns: Json
                            },

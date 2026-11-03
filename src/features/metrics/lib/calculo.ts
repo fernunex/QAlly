@@ -67,9 +67,9 @@ export function validarDatosFuente(codigo: string, campos: TipoMetrica["campos"]
   return errores;
 }
 
+/** Fuente opcional (DEC-26): vacía es válida; si se indica, 1–2048 caracteres. */
 export function validarFuente(fuente: string): string | null {
   const t = fuente.trim();
-  if (t.length < 1) return "Indica la fuente (texto breve o URL).";
   if (t.length > MAX_FUENTE) return `Máximo ${MAX_FUENTE} caracteres.`;
   return null;
 }
@@ -107,13 +107,14 @@ export function calcularVistaPrevia(tipo: TipoMetrica, datos: DatosTexto): Vista
   }
 }
 
-/** Valida un objetivo (porcentaje con ≤4 decimales en [0,100] o entero para M-04). */
-export function validarObjetivo(unidad: TipoMetrica["unidad"], valor: string): string | null {
+/** Valida un objetivo (porcentaje con ≤4 decimales en (0,100] —DEC-29— o entero para M-04). */
+export function validarObjetivo(unidad: TipoMetrica["unidad"], valor: string, permitirCero = false): string | null {
   const t = valor.trim();
   if (t === "") return "Ingresa un objetivo.";
   if (unidad === "%") {
     if (!/^\d+(\.\d{1,4})?$/.test(t)) return "Usa un número con hasta 4 decimales (por ejemplo 90 o 97.5).";
     if (Number(t) > 100) return "El objetivo debe estar entre 0 y 100.";
+    if (!permitirCero && Number(t) === 0) return "El objetivo debe ser mayor que 0.";
     return null;
   }
   if (!/^\d+$/.test(t)) return "Debe ser un entero.";

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, TriangleAlertIcon } from "lucide-react";
 import {
   CumplimientoBadge,
+  cumplimientoEtiqueta,
   EstadoActividadBadge,
   SaludBadge,
 } from "@/components/status/status-badges";
@@ -13,10 +14,13 @@ import { TIPOS_METRICA } from "@/lib/catalogs";
 import type { EstadoSalud } from "@/lib/domain";
 import { formatDia, formatFechaHora, ROTULO_ZONA } from "@/lib/format";
 import {
+  advertenciasTexto,
+  aporteTexto,
   conteoGeneral,
   contarCumplimiento,
   metricasDeEtapa,
   NOTA_SALUD,
+  puntosTexto,
   resumenCumplimiento,
 } from "@/features/health/lib";
 import {
@@ -28,13 +32,44 @@ import { objetivoLineas, valorActualTexto } from "@/features/metrics/lib/formato
 import type { MetricaProyecto } from "@/features/metrics/types";
 import type { EtapaResumen, ResumenProyecto } from "@/features/health/types";
 
-/** Estado y motivo tal como los entrega el resumen (hoy siempre «Sin evaluar»). */
-function Salud({ salud, prefijo }: { salud: EstadoSalud; prefijo?: string }) {
+/** Porcentaje y clasificación calculados por la BD (DEC-27), con sus puntos. */
+function Salud({ salud, grande }: { salud: EstadoSalud; grande?: boolean }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <SaludBadge prefijo={prefijo} />
-      <span className="text-xs text-muted-foreground">Motivo: {salud.motivo}</span>
+    <div className="space-y-1.5">
+      {grande && salud.estado === "Evaluada" ? (
+        <p className="text-4xl font-bold tracking-tight tabular-nums" data-testid="salud-porcentaje">
+          {salud.porcentaje} %
+        </p>
+      ) : null}
+      <div className="flex flex-wrap items-center gap-2">
+        <SaludBadge salud={salud} />
+        {salud.estado === "Evaluada" ? (
+          <span className="text-xs text-muted-foreground tabular-nums">{puntosTexto(salud)}</span>
+        ) : null}
+      </div>
+      {salud.estado === "Evaluada" ? (
+        <p className="text-xs text-muted-foreground tabular-nums">
+          {salud.actividades.aprobadas} de {salud.actividades.total} actividades Aprobadas · {salud.metricas.total}{" "}
+          {salud.metricas.total === 1 ? "métrica" : "métricas"}
+        </p>
+      ) : null}
     </div>
+  );
+}
+
+/** Advertencias del ámbito (evaluación parcial, falta de datos, defectos graves…). */
+function Advertencias({ salud }: { salud: EstadoSalud }) {
+  const textos = advertenciasTexto(salud);
+  if (textos.length === 0) return null;
+  return (
+    <ul aria-label="Advertencias de salud" className="space-y-1">
+      {textos.map((t) => (
+        <li key={t} className="flex gap-1.5 text-xs text-review">
+          <TriangleAlertIcon aria-hidden className="mt-px size-3.5 shrink-0" />
+          <span>{t}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -57,6 +92,7 @@ function ActividadesEtapa({ etapa, total }: { etapa: EtapaResumen; total: number
             <p className="min-w-0">
               <span className="font-mono text-xs text-muted-foreground">{a.tipoCodigo}</span>{" "}
               {a.tipoNombre}
+              {a.instancia > 1 ? <span className="text-muted-foreground"> · instancia {a.instancia}</span> : null}
             </p>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs text-muted-foreground">
@@ -121,6 +157,10 @@ function MetricaTarjeta({ m, urlMetricas }: { m: MetricaProyecto; urlMetricas: s
             </p>
             <EstadoMedicion m={m} />
             <p>{m.medidaEn ? `Medido el ${formatDia(m.medidaEn)}` : "Sin fecha de medición"}</p>
+            <p className="font-medium text-foreground tabular-nums">Aporte a la salud: {aporteTexto(m.aporte)}</p>
+            {m.cumplimientoCritico && m.cumplimientoCritico !== "Sin medición" ? (
+              <p>Pruebas críticas (criterio independiente): {cumplimientoEtiqueta(m.cumplimientoCritico)}</p>
+            ) : null}
             <Link href={urlMetricas} className="inline-block pt-1 font-medium text-foreground underline-offset-4 hover:underline">
               Ver historial en Métricas
             </Link>
@@ -147,8 +187,8 @@ export function SaludProyecto({ resumen }: { resumen: ResumenProyecto }) {
 
       {total === 0 && resumen.metricas.length === 0 ? (
         <NotaPendiente>
-          Este proyecto todavía no tiene actividades SQA ni métricas configuradas. La salud seguirá «Sin evaluar»
-          mientras el algoritmo esté pendiente.
+          Este proyecto todavía no tiene actividades SQA ni métricas configuradas: la salud queda «Sin evaluar» hasta
+          que existan elementos.
         </NotaPendiente>
       ) : null}
 
@@ -158,10 +198,11 @@ export function SaludProyecto({ resumen }: { resumen: ResumenProyecto }) {
             <CardTitle>Salud general</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Salud salud={resumen.salud} />
-            <NotaPendiente>
+            <Salud salud={resumen.salud} grande />
+            <Advertencias salud={resumen.salud} />
+            <p className="text-xs text-muted-foreground">
               {NOTA_SALUD} Cumplir una métrica no es lo mismo que tener buena salud.
-            </NotaPendiente>
+            </p>
             <div>
               <p className="mb-2 text-sm font-medium">
                 Actividades SQA · <span className="tabular-nums">{total}</span> en total
@@ -198,6 +239,7 @@ export function SaludProyecto({ resumen }: { resumen: ResumenProyecto }) {
                 <CardHeader className="gap-2">
                   <CardTitle className="text-base">{etapa.nombre}</CardTitle>
                   <Salud salud={etapa.salud} />
+                  <Advertencias salud={etapa.salud} />
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
                   <ConteoEstadosTiles conteos={etapa.conteos} compacto />

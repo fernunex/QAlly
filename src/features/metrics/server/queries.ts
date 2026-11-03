@@ -91,7 +91,7 @@ function revisionDTO(raw: unknown): RevisionMedicion {
   return {
     numero: r.numero_revision,
     datosFuente: z.record(z.string(), z.number()).parse(conteos),
-    fuenteReferencia: z.string().parse(fuente_referencia),
+    fuenteReferencia: z.string().nullable().parse(fuente_referencia ?? null),
     valor: r.valor,
     causa: r.causa_no_evaluable,
     // Un autor siempre participa del proyecto; el respaldo solo evita romper la vista.

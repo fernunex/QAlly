@@ -2,7 +2,9 @@ import "server-only";
 import { obtenerSesion } from "@/lib/session";
 import { comprobarError, ErrorOperacion } from "@/lib/resultados";
 import { uuid } from "@/features/projects/validation";
-import { resumenDTO } from "../dto";
+import { z } from "zod";
+import type { EstadoSalud } from "@/lib/domain";
+import { resumenDTO, saludSchema } from "../dto";
 import type { ResumenProyecto } from "../types";
 
 /**
@@ -25,4 +27,24 @@ export async function consultarResumen(
   comprobarError(r.error);
   if (r.data === null) throw new ErrorOperacion("NO_DISPONIBLE");
   return resumenDTO(r.data);
+}
+
+/**
+ * Salud general de varios proyectos (listado, encabezado y ficha). Misma función SQL que el
+ * resumen (`private.salud_json`). Los no autorizados se omiten; un fallo devuelve un mapa vacío
+ * para que la página principal siga disponible y muestre «Sin evaluar» en lugar de cifras.
+ */
+export async function consultarSaludProyectos(
+  proyectoIds: string[],
+): Promise<Record<string, EstadoSalud>> {
+  const ids = proyectoIds.filter((id) => uuid.safeParse(id).success).slice(0, 100);
+  if (ids.length === 0) return {};
+  try {
+    const { supabase } = await obtenerSesion();
+    const r = await supabase.rpc("consultar_salud", { p_proyecto_ids: ids });
+    comprobarError(r.error);
+    return z.record(z.string(), saludSchema).parse(r.data ?? {});
+  } catch {
+    return {};
+  }
 }

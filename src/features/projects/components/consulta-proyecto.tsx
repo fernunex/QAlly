@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SaludBadge } from "@/components/status/status-badges";
+import type { EstadoSalud } from "@/lib/domain";
 import { nombreEtapa } from "@/lib/catalogs";
 import { ROL_ETIQUETA, type EtapaCodigo } from "@/lib/domain";
 import { formatRango } from "@/lib/format";
@@ -28,7 +29,13 @@ function etapa(codigo: string) {
   );
 }
 
-export function DatosProyecto({ proyecto: p }: { proyecto: ProyectoListado }) {
+export function DatosProyecto({
+  proyecto: p,
+  salud,
+}: {
+  proyecto: ProyectoListado;
+  salud: EstadoSalud | null;
+}) {
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       <Card>
@@ -59,12 +66,12 @@ export function DatosProyecto({ proyecto: p }: { proyecto: ProyectoListado }) {
             </div>
             <div>
               <dt className="mb-1 text-sm text-muted-foreground">
-                Salud general y por etapa
+                Salud general
               </dt>
               <dd>
-                <SaludBadge />
+                <SaludBadge salud={salud} />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Algoritmo pendiente de aprobación.
+                  El detalle por etapa y sus advertencias están en la pestaña Salud.
                 </p>
               </dd>
             </div>

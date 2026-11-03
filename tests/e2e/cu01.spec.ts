@@ -38,7 +38,7 @@ async function prepararAlta(page: Page, nombre: string, miembro = true) {
       .check();
   }
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
-  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(5);
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(10);
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
   await page.getByRole("button", { name: "Continuar", exact: true }).click();
 }
@@ -138,12 +138,13 @@ test("alta, configuración seleccionada, consulta persistente, edición y cierre
   const nombre = `Proyecto completo ${randomUUID()}`;
   const { id, accion } = await alta(page, nombre);
   await expect(
-    page.getByText("Actividades SQA configuradas (5)", { exact: true }),
+    // DEC-25: las diez actividades del catálogo vienen preseleccionadas.
+    page.getByText("Actividades SQA configuradas (10)", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("Métricas configuradas (4)", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Sin asignar", { exact: true })).toHaveCount(5);
+  await expect(page.getByText("Sin asignar", { exact: true })).toHaveCount(10);
   await page.reload();
   await expect(
     page.getByText("Alcance persistente de CU-01", { exact: true }),
@@ -155,7 +156,7 @@ test("alta, configuración seleccionada, consulta persistente, edición y cierre
       .select("estado,tipo:tipo_actividad(etapa_codigo)")
       .eq("proyecto_id", id),
   );
-  expect(rows).toHaveLength(5);
+  expect(rows).toHaveLength(10);
   expect(rows.every((a: { estado: string }) => a.estado === "Pendiente")).toBe(
     true,
   );
@@ -170,6 +171,15 @@ test("alta, configuración seleccionada, consulta persistente, edición y cierre
       ...payload,
       metricas: payload.metricas.map((m: { objetivo: string }, i: number) =>
         i === 0 ? { ...m, objetivo: "101" } : m,
+      ),
+    }),
+  ).toContain('"codigo":"DATOS_INVALIDOS"');
+  // DEC-29 (RQ-01): objetivo porcentual 0 rechazado también en el servidor.
+  expect(
+    await invalida({
+      ...payload,
+      metricas: payload.metricas.map((m: { objetivo: string }, i: number) =>
+        i === 0 ? { ...m, objetivo: "0" } : m,
       ),
     }),
   ).toContain('"codigo":"DATOS_INVALIDOS"');
@@ -352,7 +362,7 @@ test("validación de formulario, selecciones editables y búsqueda paginada de m
     .click();
   await expect(page).toHaveURL(/\/proyectos\/[0-9a-f-]{36}$/);
   await expect(
-    page.getByText("Actividades SQA configuradas (4)", { exact: true }),
+    page.getByText("Actividades SQA configuradas (9)", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("Métricas configuradas (3)", { exact: true }),

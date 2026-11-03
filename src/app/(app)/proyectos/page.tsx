@@ -17,6 +17,7 @@ import {
 import { ProyectoAcciones } from "@/features/projects/components/proyecto-acciones";
 import { formatRango } from "@/lib/format";
 import { listarProyectos } from "@/features/projects/server/queries";
+import { consultarSaludProyectos } from "@/features/health/server/queries";
 import { obtenerUsuarioActual } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Proyectos" };
@@ -41,6 +42,7 @@ export default async function ProyectosPage({
   const { cursor } = await searchParams;
   const pagina = await listarProyectos({ cursor });
   const proyectos = pagina.items;
+  const salud = await consultarSaludProyectos(proyectos.map((p) => p.id));
 
   return (
     <PageContainer>
@@ -148,7 +150,7 @@ export default async function ProyectosPage({
                           </span>
                         </TableCell>
                         <TableCell>
-                          <SaludBadge />
+                          <SaludBadge salud={salud[p.id] ?? null} />
                         </TableCell>
                         {esQA ? (
                           <TableCell className="pr-4 text-right">
@@ -191,7 +193,7 @@ export default async function ProyectosPage({
                         ) : null}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <SaludBadge />
+                        <SaludBadge salud={salud[p.id] ?? null} />
                         {p.cerradoEn ? <CerradoBadge /> : null}
                       </div>
                       <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">

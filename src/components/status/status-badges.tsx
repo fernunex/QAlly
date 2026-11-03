@@ -1,5 +1,8 @@
 import {
   CheckIcon,
+  CircleAlertIcon,
+  CircleXIcon,
+  ThumbsUpIcon,
   CircleCheckIcon,
   CircleDashedIcon,
   CircleDotIcon,
@@ -11,11 +14,17 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { DecisionRevision, EstadoActividad, EstadoCumplimiento } from "@/lib/domain";
+import type {
+  ClasificacionSalud,
+  DecisionRevision,
+  EstadoActividad,
+  EstadoCumplimiento,
+  EstadoSalud,
+} from "@/lib/domain";
 
 /*
  * Regla del design system: el color nunca va solo; cada estado lleva icono y texto.
- * No existen colores de salud (semáforo) porque la clasificación está pendiente.
+ * La salud usa la clasificación aprobada (DEC-27) con icono, porcentaje y nombre.
  */
 
 const base =
@@ -103,15 +112,43 @@ export function cumplimientoEtiqueta(estado: EstadoCumplimiento) {
   return CUMPLIMIENTO_DEF[estado].label;
 }
 
-/** Salud general o por etapa. Algoritmo pendiente: siempre «Sin evaluar», sin puntaje. */
-export function SaludBadge({ prefijo, className }: { prefijo?: string; className?: string }) {
+const SALUD_DEF: Record<ClasificacionSalud, Def> = {
+  Excelente: { icon: CircleCheckIcon, label: "Excelente", className: "border-success/25 bg-success/10 text-success" },
+  Bueno: { icon: ThumbsUpIcon, label: "Bueno", className: "border-progress/25 bg-progress/10 text-progress" },
+  Regular: { icon: CircleAlertIcon, label: "Regular", className: "border-review/25 bg-review/10 text-review" },
+  Malo: { icon: CircleXIcon, label: "Malo", className: "border-destructive/25 bg-destructive/10 text-destructive" },
+};
+
+/**
+ * Salud general o por etapa: «68.57 % · Regular». «Sin evaluar» (borde discontinuo) solo cuando
+ * el ámbito no tiene elementos o el dato no está disponible; 0 % con elementos sí es evaluación.
+ */
+export function SaludBadge({
+  salud,
+  prefijo,
+  className,
+}: {
+  salud: EstadoSalud | null;
+  prefijo?: string;
+  className?: string;
+}) {
+  const p = prefijo ? `${prefijo}: ` : "";
+  if (!salud || salud.estado === "Sin evaluar" || !salud.clasificacion)
+    return (
+      <span
+        className={cn(base, "border-dashed border-border text-muted-foreground", className)}
+        title="Sin actividades SQA ni métricas que evaluar."
+      >
+        <InfoIcon aria-hidden />
+        {p}Sin evaluar
+      </span>
+    );
+  const { icon: Icon, label, className: tone } = SALUD_DEF[salud.clasificacion];
   return (
-    <span
-      className={cn(base, "border-dashed border-border text-muted-foreground", className)}
-      title="El algoritmo y la clasificación de salud están pendientes de aprobación."
-    >
-      <InfoIcon aria-hidden />
-      {prefijo ? `${prefijo}: Sin evaluar` : "Sin evaluar"}
+    <span className={cn(base, tone, className)}>
+      <Icon aria-hidden />
+      {p}
+      <span className="tabular-nums">{salud.porcentaje} %</span> · {label}
     </span>
   );
 }

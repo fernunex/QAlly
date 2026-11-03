@@ -43,11 +43,12 @@ export function datosLegibles(codigo: string, d: Record<string, number>): string
   }
 }
 
-export function esUrl(fuente: string) {
-  return /^https?:\/\//i.test(fuente.trim());
+export function esUrl(fuente: string | null) {
+  return fuente !== null && /^https?:\/\//i.test(fuente.trim());
 }
 
-/** Etiqueta breve de la fuente: «enlace» para URL, texto tal cual en otro caso. */
-export function fuenteCorta(fuente: string) {
+/** Etiqueta breve de la fuente: «enlace» para URL, texto tal cual, o «Sin fuente» (opcional, DEC-26). */
+export function fuenteCorta(fuente: string | null) {
+  if (fuente === null) return "Sin fuente";
   return esUrl(fuente) ? "enlace" : fuente;
 }

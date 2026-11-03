@@ -4,6 +4,7 @@
 |---|---|
 | Entender qué hace QAlly | `README.md`, `docs/producto/reglas-globales.md` |
 | Conocer el stack oficial | `docs/arquitectura/stack-aprobado.md` |
+| Ver diagramas generales, secuencias y ER Chen | [Índice de diagramas Mermaid](diagramas/README.md) |
 | Consultar el diseño arquitectónico | `docs/arquitectura/diseno-arquitectural.md` → `C4-01-contexto.md`, `C4-02-contenedores.md`, `C4-03-componentes.md` en la misma carpeta |
 | Integrar UI/BD y colaborar con Git | [Flujo de integración](equipo/integracion-ui-bd.md) |
 | Consultar integración de CU-02/03/04 | [Ramas, resoluciones y validación conjunta](equipo/integracion-cu02-cu03-cu04.md) |
@@ -25,20 +26,27 @@
 | Implementar o probar reportes PDF | `docs/modulos/reportes.md` → CU-06 y CU-05; [implementación local y pruebas](modulos/cu06-implementacion.md) |
 | Preparar SRS y casos de prueba | `docs/requisitos/trazabilidad.md`, CU y RF/RNF afectados |
 | Consultar catálogos | `docs/producto/catalogo-actividades.md`, `docs/producto/catalogo-metricas.md` |
+| Cierre funcional y brechas del 30/10/2026 | [Acuerdos](decisiones/registro.md#cierre-funcional--2026-10-30), [pendientes y brechas](requisitos/pendientes-y-brechas.md) |
 | Consultar decisiones | `docs/decisiones/registro.md`, `docs/decisiones/pendientes.md` |
+| Salud calculada y contenido del reporte (DEC-25–31) | [ADR-003](decisiones/ADR-003-salud-y-reporte.md), migración `20261102000100` |
+| Planear o ejecutar pruebas por técnica de revisión | [Plan de pruebas DEC-25–28](equipo/plan-pruebas-dec25-28.md) |
 | Consultar cierre de diseño excepto salud | [ADR-002](decisiones/ADR-002-cierre-diseno-v1.md), [contratos v1](arquitectura/contratos-v1.md), [detalle técnico](datos/detalle-tecnico-v1.md), **APROBADOS**; bootstrap local en guía Supabase |
 | Onboarding de agentes (solo si se necesita) | `docs/equipo/guia-codex.md` |
 
 ## Estado actual de implementación
 
-CU-01 a CU-04 están integrados en `dev` local (merge `8fb64b4`, ajuste de formato `f82ffd0`). Guía de entrada: [README](../README.md); resultados: [integración conjunta](equipo/integracion-cu02-cu03-cu04.md). La consulta de CU-05 está implementada en `feat/cu05-salud-proyecto` ([registro](modulos/cu05-implementacion.md)) y CU-06 en `feat/cu06-reportes`, creada sobre ella ([registro](modulos/cu06-implementacion.md)); algoritmo de salud, paginación de CU-04 y rendimiento desplegado siguen pendientes. Los registros individuales conservan sus resultados históricos y no sustituyen el estado conjunto.
+CU-01 a CU-06 están integrados en `dev`, según el [registro de integración de CU-05/06](decisiones/registro.md#integración-de-cu-05cu-06-y-recorrido-de-demo--2026-10-20). Los registros individuales conservan los resultados de su fecha y no acreditan el cumplimiento de cambios posteriores. **2026-11-02:** la rama `feat/salud-dec27` implementa DEC-25–31 (salud calculada, reporte ampliado, diez actividades preseleccionadas, fuente opcional) según [ADR-003](decisiones/ADR-003-salud-y-reporte.md).
+
+**Requisitos APROBADOS, 2026-10-30:** catálogos ratificados, diez actividades preseleccionadas, fuente opcional, criterio crítico independiente de M-01, fórmula/clasificación de salud y contenido de reporte. [Decisiones DEC-25–28](decisiones/registro.md#cierre-funcional--2026-10-30); [reglas de salud](producto/reglas-globales.md#salud-aprobada).
+
+**Diferencia respecto a la implementación actual:** en `dev` el código conserva reglas anteriores (incluida salud Sin evaluar); `feat/salud-dec27` las cierra (ADR-003) a la espera de revisión e integración. [Pendientes y brechas](requisitos/pendientes-y-brechas.md) es la entrada para ambigüedades reales, incompatibilidades y validación pendiente. Paginación CU-04 y rendimiento desplegado conservan seguimiento independiente.
 
 ## Fuentes canónicas
 
-- **Producto:** `docs/producto/reglas-globales.md` y catálogos v1 aprobados por el usuario (ratificación académica no presumida).
+- **Producto:** `docs/producto/reglas-globales.md` y catálogos v1 ratificados por el responsable del proyecto el 2026-10-30 (DEC-25–28) (ratificación académica no presumida).
 - **Requisitos:** `docs/requisitos/funcionales.md` (33 RF), `docs/requisitos/no-funcionales.md` (10 RNF) y seis CU de 12 apartados en `docs/requisitos/casos-uso/`.
 - **Tecnologías/estilo:** `docs/arquitectura/stack-aprobado.md` (**APROBADO**).
 - **Diseño:** [arquitectura](arquitectura/diseno-arquitectural.md), [modelo ER](datos/modelo-entidad-relacion.md), [diccionario](datos/diccionario-datos.md) y [seguridad/integridad](datos/seguridad-integridad.md), documentados tras [ADR-001](decisiones/ADR-001-diseno-tecnico-v1.md) y [ADR-002](decisiones/ADR-002-cierre-diseno-v1.md). [Contratos](arquitectura/contratos-v1.md), límites y ajustes aprobados; SQL, seeds, RLS y tipos implementados en el bootstrap local; UI integrada; CU-01 a CU-04 conectados al backend local; consultar el estado de los demás casos en sus módulos.
-- **Decisiones:** `docs/decisiones/registro.md`; **pendientes:** `docs/decisiones/pendientes.md`.
+- **Decisiones:** `docs/decisiones/registro.md`; **pendientes vigentes y brechas del cierre:** [registro vivo](requisitos/pendientes-y-brechas.md); **seguimiento y notas históricas:** `docs/decisiones/pendientes.md`.
 
 `docs/modulos/` son mapas de lectura; **no** reemplazan los CU ni autorizan decisiones nuevas. No cargar los seis CU para una tarea aislada. `AGENTS.md` define pautas permanentes, el README presenta el producto.

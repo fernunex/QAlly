@@ -1,5 +1,7 @@
 # CU-05 — Implementación y validación local
 
+> Registro histórico de implementación anterior al 2026-10-30. Las referencias a algoritmo pendiente y salud Sin evaluar describen ese código y sus pruebas; el algoritmo y contenido funcional están ahora aprobados por [DEC-27/28](../decisiones/registro.md#cierre-funcional--2026-10-30). Ver [pendientes y brechas](../requisitos/pendientes-y-brechas.md) para la adecuación pendiente. Los resultados históricos no validan el cálculo nuevo.
+
 **Fecha: 2026-10-20. Estado: consulta implementada y validada localmente; algoritmo y clasificación de salud siguen PENDIENTES.** Rama `feat/cu05-salud-proyecto` desde `dev`. Fuente de alcance: [CU-05](../requisitos/casos-uso/CU-05.md), RF-26 a RF-29 y RF-33, RNF-01/02/03/04/07, [contratos v1 §6](../arquitectura/contratos-v1.md) y [ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md). Sin migraciones ni cambios de RLS, contratos, reglas de negocio o requisitos.
 
 ## Uso local

@@ -22,7 +22,7 @@ beforeAll(async()=>{
 describe('Supabase local: identidad, esquema y RLS',()=>{
  test('catálogos exactos y bucket privado de 3 MiB',async()=>{
   expect(seed.tiposA).toHaveLength(10);expect(seed.tiposM).toHaveLength(4);
-  expect(seed.tiposA.filter(t=>t.preseleccionada).map(t=>t.codigo)).toEqual(['A-01','A-03','A-05','A-06','A-09']);
+  expect(seed.tiposA.filter(t=>t.preseleccionada).map(t=>t.codigo)).toEqual(['A-01','A-02','A-03','A-04','A-05','A-06','A-07','A-08','A-09','A-10']);
   expect(seed.tiposM.every(t=>t.etapa_codigo==='desarrollo')).toBe(true);
   const bucket=checked(await admin.storage.getBucket('evidencias'));expect(bucket.public).toBe(false);expect(Number(bucket.file_size_limit)).toBe(3145728);
  });
@@ -102,13 +102,13 @@ describe('Métricas e historial',()=>{
   await rejected(qa.client.from('revision_medicion').update({valor:999}).eq('medicion_id',old));
   await rejected(stranger.client.rpc('consultar_metrica',{p_metrica_proyecto_id:m.id}),'NO_DISPONIBLE');
  });
- test('tasas con cero denominador no son cero; M-01 requiere muestra crítica',async()=>{
+ test('tasas con cero denominador no son cero; M-01 general se evalúa sin muestra crítica (DEC-26)',async()=>{
   const p=await project();const m=await rpc(qa.client,'agregar_metrica',{p_proyecto_id:p.id,p_tipo_id:seed.tiposM[0].id,p_objetivo:'90',p_objetivo_critico:'100'});
   const datos={aprobadas:0,ejecutadas:0,criticas_aprobadas:0,criticas_ejecutadas:0,fuente_referencia:'Pruebas'};
   const id=randomUUID();await rpc(qa.client,'registrar_medicion',{p_medicion_id:id,p_metrica_proyecto_id:m.id,p_medida_en:'2026-10-01T00:00:00Z',p_datos_fuente:datos});
   let cur=await rpc(qa.client,'consultar_metrica',{p_metrica_proyecto_id:m.id});expect(cur.valorActual).toBeNull();expect(cur.condicionPrincipal).toBe('No evaluable');
   await rpc(qa.client,'corregir_medicion',{p_medicion_id:id,p_revision_esperada:1,p_datos_fuente:{...datos,aprobadas:10,ejecutadas:10}});
-  cur=await rpc(qa.client,'consultar_metrica',{p_metrica_proyecto_id:m.id});expect(cur.condicionPrincipal).toBe('Evaluable');expect(cur.cumplimiento).toBe('No evaluable');expect(cur.causaCritica).toBe('Sin muestra crítica');
+  cur=await rpc(qa.client,'consultar_metrica',{p_metrica_proyecto_id:m.id});expect(cur.condicionPrincipal).toBe('Evaluable');expect(cur.cumplimiento).toBe('Cumple');expect(cur.cumplimientoCritico).toBe('No evaluable');expect(cur.causaCritica).toBe('Sin muestra crítica');expect(cur.aporte).toBe('1.00000000');
   await rejected(qa.client.rpc('corregir_medicion',{p_medicion_id:id,p_revision_esperada:2,p_datos_fuente:{...datos,aprobadas:1,ejecutadas:2,criticas_aprobadas:2,criticas_ejecutadas:2}}),'DATOS_INVALIDOS');
   await rejected(qa.client.rpc('configurar_objetivo',{p_metrica_proyecto_id:m.id,p_configurada_en_esperada:m.configuradaEn,p_objetivo:'101',p_objetivo_critico:'100'}),'DATOS_INVALIDOS');
  });
@@ -183,9 +183,11 @@ describe('Actividades y archivos privados',()=>{
   expect(checked(await member.client.from('evidencia').select('id').eq('entrega_id',e.id))).toEqual([]);
   expect(await cleanupFiles({fileId:reserved.id})).toBe(1);
  });
- test('resumen consistente: tres etapas, datos actuales y salud Sin evaluar',async()=>{
+ test('resumen consistente: tres etapas, datos actuales y salud calculada (DEC-27)',async()=>{
   const result=await rpc(member.client,'consultar_resumen',{p_proyecto_id:seed.projects.a});
   expect(result.etapas.map(x=>x.codigo)).toEqual(['requerimientos','diseno','desarrollo']);expect(result.metricas).toHaveLength(4);
-  expect(result.salud).toEqual({estado:'Sin evaluar',motivo:'Algoritmo pendiente'});expect(result.etapas.every(x=>x.salud.estado==='Sin evaluar')).toBe(true);
+  const total=result.etapas.reduce((n,e)=>n+e.actividades.length,0);
+  expect(result.salud).toMatchObject({estado:'Evaluada',posibles:total+4,actividades:{total},metricas:{total:4}});
+  expect(['Malo','Regular','Bueno','Excelente']).toContain(result.salud.clasificacion);
  });
 });

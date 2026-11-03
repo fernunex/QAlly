@@ -11,6 +11,34 @@
 
 **Uso:** ajustar referencias cuando se modifique un RF, RNF o CU. Consultar documentos canónicos para detalles.
 
+## Cierre funcional aprobado — 2026-10-30
+
+La matriz CU–RF–RNF anterior conserva las asociaciones y los 33 RF/diez RNF; no se alteran umbrales de calidad. [DEC-25–28](../decisiones/registro.md#cierre-funcional--2026-10-30) sustituyen únicamente las reglas funcionales anteriores en conflicto; no aprueban cambios a contratos o BD.
+
+| Acuerdo y fuente vigente | CU / RF afectados | RNF y validación derivada |
+|---|---|---|
+| DEC-25: [catálogo A-01…A-10](../producto/catalogo-actividades.md), diez preseleccionadas, objetivo/descripción/evidencia sugerida; QA decide aprobación. | CU-01/03/04; RF-02/04/15–25, RF-33. | RNF-01–05, 07–09 según CU; solo seleccionadas crean instancias y solo Aprobada aporta a salud. |
+| DEC-26: [catálogo M-01…M-04](../producto/catalogo-metricas.md), Desarrollo/manual, fuente opcional y crítico independiente. | CU-01/02/05/06; RF-03/08–14/28–32, RF-33. | RNF-08–10 y seguridad según matriz; fuente ausente no bloquea, correcciones y vigencia se conservan. |
+| DEC-27: [fórmula, normalizaciones, ausencias y cuatro rangos](../producto/reglas-globales.md#salud-aprobada). | CU-05/06; RF-26/27/29 y consumidores RF-28/30–32, RF-33. | RNF-01–04, 07 en CU-05; RNF-01–03, 06–07 en CU-06. Ejemplo 68.57% Regular, bordes sin redondeo y advertencias sin tope. |
+| DEC-28: [contenido de reporte](../producto/reglas-globales.md#contenido-del-reporte), misma salud/cifras, CDMX y evidencias autorizadas sin incrustar PDF. | CU-06; RF-30/31/32/33, dependencia CU-05 RF-26–29. | RNF-01/02/03/06/07; coherencia captura/vista/PDF y enlaces privados. |
+
+**Requisito aprobado ≠ comportamiento implementado/probado.** [Pendientes y brechas](pendientes-y-brechas.md) vincula ubicaciones reales con incompatibilidades, responsables y escenarios de validación todavía no ejecutados. RQ-01/02/03 son precisiones residuales; el algoritmo no sigue pendiente de aprobación.
+
+## Implementación DEC-25–31 — 2026-11-02
+
+Rama `feat/salud-dec27`, diseño [ADR-003](../decisiones/ADR-003-salud-y-reporte.md); casos y responsables en el [plan de pruebas](../equipo/plan-pruebas-dec25-28.md).
+
+| Decisión / CU | RF / RNF | Realización | Pruebas |
+|---|---|---|---|
+| DEC-25 · CU-01 | RF-02/04 | Migración marca A-01…A-10 preseleccionadas; catálogo TS con nombres y objetivos ratificados. | RP-01, CW-01, PR-01; BD «catálogos exactos». |
+| DEC-26 · CU-02 | RF-11/13/14 | Fuente opcional en Zod, UI y `private.calcular`; M-01 cumple con el valor general y `cumplimientoCritico` aparte. | IA-02, IA-05, PR-02, CW-01. |
+| DEC-27/29/30/31 · CU-05 | RF-26–29, 33; RNF-01–04, 07 | `private.salud_json` en `consultar_resumen`; `consultar_salud` para listado/encabezado; aporte por métrica; meta 0 % rechazada; DTO verifica coherencia. | IA-01–06, RP-05, CW-01/02, PR-03, PR-05. |
+| DEC-28 · CU-06 | RF-30–33; RNF-01–03, 06–07 | Modelo único vista/PDF con salud, advertencias, aportes, instancia y evidencias del último intento (rutas autorizadas). | IA-07, RP-06, CW-01/02, PR-04, PR-06. |
+
+## Antecedentes históricos de diseño e implementación
+
+Las secciones siguientes conservan los acuerdos y resultados de sus fechas (2026-10-18 a 2026-10-20). Sus menciones a salud pendiente/Sin evaluar, preselección anterior y cumplimiento conjunto son históricas y quedan superadas funcionalmente por el cierre anterior. Los contratos/datos técnicos enlazados conservan brechas por evaluar; las pruebas anteriores no acreditan los requisitos nuevos.
+
 ## Trazabilidad con diseño aprobado — 2026-10-18
 
 Se conservan los 33 RF, diez RNF y sus identificadores. [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md) precisa campos/cierre, rol global con acceso por proyecto, intentos y correcciones; no incorpora módulos nuevos. [C3](../arquitectura/C4-03-componentes.md) incluye la matriz componentes–CU y [diseño arquitectural](../arquitectura/diseno-arquitectural.md) valida la coherencia C4–datos–CU–RNF.
@@ -28,7 +56,7 @@ Entidades/llaves: [modelo ER](../datos/modelo-entidad-relacion.md) y [diccionari
 
 ## Cierre aprobado — ADR-002
 
-[ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md) incorpora reglas y ajustes concretos al esquema; [contratos v1](../arquitectura/contratos-v1.md), [catálogos](../producto/catalogo-actividades.md), [diccionario](../datos/diccionario-datos.md) y [seguridad](../datos/seguridad-integridad.md) son fuentes vigentes.
+[ADR-002](../decisiones/ADR-002-cierre-diseno-v1.md) incorpora reglas y ajustes concretos al esquema; [contratos v1](../arquitectura/contratos-v1.md), [catálogos](../producto/catalogo-actividades.md), [diccionario](../datos/diccionario-datos.md) y [seguridad](../datos/seguridad-integridad.md) fueron las fuentes de ese cierre técnico; ver el cierre funcional posterior y sus brechas para la vigencia actual.
 
 | Acuerdo | CU / RF | RNF y control |
 |---|---|---|

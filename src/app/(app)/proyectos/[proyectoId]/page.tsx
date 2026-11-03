@@ -14,6 +14,7 @@ import {
   consultarProyecto,
 } from "@/features/projects/server/queries";
 import { obtenerUsuarioActual } from "@/lib/session";
+import { consultarSaludProyectos } from "@/features/health/server/queries";
 
 export default async function Page({
   params,
@@ -32,14 +33,15 @@ export default async function Page({
       </PageContainer>
     );
   const { cursor } = await searchParams;
-  const [actividades, metricas] = await Promise.all([
+  const [actividades, metricas, salud] = await Promise.all([
     listarActividadesIniciales(proyectoId, { cursor }),
     listarMetricasIniciales(proyectoId),
+    consultarSaludProyectos([proyectoId]),
   ]);
   return (
     <PageContainer className="space-y-6">
       {proyecto.cerradoEn ? <AvisoSoloLectura /> : null}
-      <DatosProyecto proyecto={proyecto} />
+      <DatosProyecto proyecto={proyecto} salud={salud[proyectoId] ?? null} />
       <ActividadesConfiguradas
         pagina={actividades}
         proyecto={proyecto}

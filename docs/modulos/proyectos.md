@@ -8,12 +8,16 @@
 Alta de proyecto y miembros, selector de actividades iniciales preseleccionadas/editables, selección de métricas y umbrales, consultas, edición y cierre conservando datos.
 
 ## Reglas esenciales acordadas
-QA registra/modifica/cierra; QA y miembro autorizado consultan. Solo se crean actividades iniciales seleccionadas; etapas provienen del catálogo.
+QA registra/modifica/cierra; QA y miembro autorizado consultan. Las diez A-01…A-10 aparecen preseleccionadas y desmarcables; solo las elegidas crean instancias Pendiente; etapas provienen del [catálogo](../producto/catalogo-actividades.md), DEC-25.
 
 Campos generales y cierre en solo lectura aprobados en [ADR-001](../decisiones/ADR-001-diseno-tecnico-v1.md): nombre, descripción e inicio obligatorios; periodo y fin previsto opcionales. Rol global con participación por proyecto.
 
 ## Interfaces y dependencias
 Catálogos, membresía/roles, consulta de actividades/métricas.
+
+## Requisito aprobado y brecha
+
+La preselección de diez está aprobada el 2026-10-30. La implementación existente conserva cinco; ver [brechas](../requisitos/pendientes-y-brechas.md). No se modificó el código.
 
 ## Estado de implementación — 2026-10-19
 CU-01 implementado y validado localmente: sesión real, alta atómica con reintentos idempotentes, consulta autorizada/paginada, edición y cierre con control de versión. Reutiliza UI y RPC/RLS existentes, sin nuevas migraciones. [Guía de implementación, alcance y pruebas](cu01-implementacion.md).

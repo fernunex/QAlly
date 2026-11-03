@@ -22,7 +22,11 @@ export type MetricaProyecto = {
   valorCritico: string | null;
   condicionCritica: CondicionMedicion;
   causaCritica: string | null;
-  /** «Sin medición» cuando no hay mediciones; si no, el cumplimiento calculado por la BD. */
+  /** Solo M-01: criterio independiente de pruebas críticas (DEC-26); no afecta cumplimiento ni salud. */
+  cumplimientoCritico: EstadoCumplimiento | null;
+  /** Aporte C_i a la salud en [0,1] (DEC-27); null = Sin medición / No evaluable, aporta 0. */
+  aporte: string | null;
+  /** «Sin medición» cuando no hay mediciones; si no, el cumplimiento del valor general. */
   cumplimiento: EstadoCumplimiento;
   /** Fecha de la medición vigente (ISO); null = Sin medición. */
   medidaEn: string | null;
@@ -31,7 +35,8 @@ export type MetricaProyecto = {
 export type RevisionMedicion = {
   numero: number;
   datosFuente: Record<string, number>;
-  fuenteReferencia: string;
+  /** Opcional (DEC-26). */
+  fuenteReferencia: string | null;
   valor: string | null;
   causa: string | null;
   autorNombre: string;

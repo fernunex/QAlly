@@ -120,13 +120,14 @@ const conteo = (region: Locator, estado: string) =>
 const metrica = (page: Page, codigo: string) =>
   page.getByRole("list", { name: "Métricas del proyecto" }).getByRole("listitem").filter({ hasText: codigo });
 
-async function sinCategorias(page: Page) {
-  // Sin algoritmo aprobado no se muestran puntajes ni categorías de salud.
-  await expect(page.getByText(/\b(Malo|Regular|Bueno|Excelente)\b/)).toHaveCount(0);
-  await expect(page.getByRole("region", { name: "Salud general" })).not.toContainText("%");
+/** Ámbito sin elementos: «Sin evaluar», sin porcentaje ni clasificación (DEC-27). */
+async function sinEvaluar(region: Locator) {
+  await expect(region).toContainText("Sin evaluar");
+  // La nota explicativa menciona las clasificaciones; lo que no debe aparecer es un resultado.
+  await expect(region).not.toContainText(/\d+\.\d{2} % · (Malo|Regular|Bueno|Excelente)/);
 }
 
-test("QA consulta salud Sin evaluar, tres etapas con conteos y actividades y métricas con Sin medición", async ({
+test("QA consulta salud calculada general y por etapa, conteos, actividades, aportes y Sin medición", async ({
   page,
 }) => {
   const { id: pid, nombre } = await proyecto([
@@ -145,23 +146,26 @@ test("QA consulta salud Sin evaluar, tres etapas con conteos y actividades y mé
   await page.getByRole("navigation", { name: "Secciones del proyecto" }).getByRole("link", { name: "Salud" }).click();
   await expect(page).toHaveURL(new RegExp(`/proyectos/${pid}/salud$`));
 
-  // Salud general y por etapa: Sin evaluar con su motivo.
+  // DEC-27: 100 × (1 Aprobada + aporte 1 de M-02) / (4 actividades + 3 métricas) = 28.57 %.
   const general = page.getByRole("region", { name: "Salud general" });
-  await expect(general).toContainText("Sin evaluar");
-  await expect(general).toContainText("Motivo: Algoritmo pendiente");
+  await expect(general.getByTestId("salud-porcentaje")).toHaveText("28.57 %");
+  await expect(general).toContainText("28.57 % · Malo");
+  await expect(general).toContainText("2 de 7 puntos");
+  await expect(general).toContainText("1 de 4 actividades Aprobadas · 3 métricas");
+  await expect(general.getByRole("list", { name: "Advertencias de salud" })).toContainText("Evaluación parcial: 2 métricas");
   await expect(conteo(general, "Pendiente")).toHaveText(/Pendiente\s*1$/);
   await expect(conteo(general, "En progreso")).toHaveText(/En progreso\s*1$/);
   await expect(conteo(general, "En revisión")).toHaveText(/En revisión\s*1$/);
   await expect(conteo(general, "Aprobada")).toHaveText(/Aprobada\s*1$/);
-  await sinCategorias(page);
 
   // Tres etapas en orden fijo.
   const regiones = await page.getByRole("region").evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")));
   expect(regiones.filter((n) => ETAPAS.includes(n ?? ""))).toEqual(ETAPAS);
-  for (const nombreEtapa of ETAPAS) {
-    await expect(etapa(page, nombreEtapa)).toContainText("Sin evaluar");
-    await expect(etapa(page, nombreEtapa)).toContainText("Motivo: Algoritmo pendiente");
-  }
+  await expect(etapa(page, ETAPAS[0]!)).toContainText("50.00 % · Regular");
+  await expect(etapa(page, ETAPAS[1]!)).toContainText("0.00 % · Malo");
+  await expect(etapa(page, ETAPAS[1]!)).toContainText("0 % evaluado");
+  await expect(etapa(page, ETAPAS[2]!)).toContainText("25.00 % · Malo");
+  await expect(etapa(page, ETAPAS[2]!)).toContainText("Evaluación parcial");
   const req = etapa(page, ETAPAS[0]!);
   await expect(conteo(req, "Pendiente")).toHaveText(/Pendiente\s*1$/);
   await expect(conteo(req, "Aprobada")).toHaveText(/Aprobada\s*1$/);
@@ -195,10 +199,12 @@ test("QA consulta salud Sin evaluar, tres etapas con conteos y actividades y mé
   await expect(metrica(page, "M-02")).toContainText("Objetivo: ≥ 90 %");
   await expect(metrica(page, "M-02")).toContainText("Estado de medición: Evaluable");
   await expect(metrica(page, "M-02")).toContainText("Medido el 10 oct 2026");
+  await expect(metrica(page, "M-02")).toContainText("Aporte a la salud: 1.00 de 1");
   for (const codigo of ["M-01", "M-04"]) {
     await expect(metrica(page, codigo)).toContainText("Sin medición (no equivale a 0)");
     await expect(metrica(page, codigo)).toContainText("Sin fecha de medición");
     await expect(metrica(page, codigo)).not.toContainText("Medido el");
+    await expect(metrica(page, codigo)).toContainText("Aporte a la salud: 0 (sin datos)");
   }
   await expect(metrica(page, "M-01")).toContainText("Objetivo: general ≥ 90 % · críticas ≥ 100 %");
   await expect(metrica(page, "M-04")).not.toContainText(/Valor actual\s*0/);
@@ -214,15 +220,16 @@ test("Miembro participante consulta la salud; sin acceso o inexistente no muestr
   const tabs = page.getByRole("navigation", { name: "Secciones del proyecto" });
   await expect(tabs.getByRole("link", { name: "Salud" })).toHaveAttribute("aria-current", "page");
   await expect(tabs.getByRole("link", { name: "Reportes" })).toHaveCount(0);
-  await expect(page.getByRole("region", { name: "Salud general" })).toContainText("Sin evaluar");
+  await sinEvaluar(page.getByRole("region", { name: "Salud general" }));
   await expect(page.getByText("todavía no tiene actividades SQA ni métricas configuradas")).toBeVisible();
-  for (const nombreEtapa of ETAPAS)
+  for (const nombreEtapa of ETAPAS) {
     await expect(etapa(page, nombreEtapa)).toContainText("Sin actividades SQA en esta etapa.");
+    await sinEvaluar(etapa(page, nombreEtapa));
+  }
   await expect(page.getByText("Este proyecto aún no tiene métricas configuradas.")).toBeVisible();
   await expect(page.getByRole("region", { name: "Resumen de métricas" })).toContainText(
     "0 de las 4 métricas del catálogo",
   );
-  await sinCategorias(page);
 
   // FE-02: QA ajeno, Miembro sin participación, inexistente y malformado se tratan igual.
   for (const email of ["qa2@qally.example.test", "miembro3@qally.example.test"]) {
@@ -261,14 +268,16 @@ test("medición No evaluable y proyecto cerrado consultable por QA y Miembro", a
   for (const p of [page, miembro.page]) {
     await p.goto(`/proyectos/${pid}/salud`);
     await expect(p.getByRole("note")).toContainText("Proyecto cerrado");
-    await expect(p.getByRole("region", { name: "Salud general" })).toContainText("Sin evaluar");
+    // (1 Aprobada + 0 de M-03 No evaluable) / 2 = 50 %, con evaluación parcial.
+    await expect(p.getByRole("region", { name: "Salud general" })).toContainText("50.00 % · Regular");
+    await expect(p.getByRole("region", { name: "Salud general" })).toContainText("Evaluación parcial");
     await expect(conteo(etapa(p, "Desarrollo"), "Aprobada")).toHaveText(/Aprobada\s*1$/);
     await expect(metrica(p, "M-03")).toContainText("No disponible");
     await expect(metrica(p, "M-03")).toContainText("No evaluable");
     await expect(metrica(p, "M-03")).toContainText("Estado de medición: No evaluable");
     await expect(metrica(p, "M-03")).toContainText("Medido el 05 oct 2026");
     await expect(metrica(p, "M-03")).not.toContainText("Sin medición");
-    await sinCategorias(p);
+    await expect(metrica(p, "M-03")).toContainText("Aporte a la salud: 0 (sin datos)");
   }
   await miembro.ctx.close();
 });

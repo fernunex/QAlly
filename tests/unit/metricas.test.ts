@@ -49,7 +49,7 @@ describe("CU-02: entradas de métricas y mediciones", () => {
       expect(campos(() => objetivosDeTipo(tipo("M-04"), malo, null))).toHaveProperty("objetivo");
   });
 
-  test("datos fuente: claves exactas del catálogo, enteros y fuente recortada", () => {
+  test("datos fuente: claves exactas del catálogo, enteros y fuente opcional recortada (DEC-26)", () => {
     expect(
       datosFuenteDeTipo(
         tipo("M-02"),
@@ -77,9 +77,11 @@ describe("CU-02: entradas de métricas y mediciones", () => {
         datosFuenteDeTipo(tipo("M-04"), { criticos_abiertos: "1.5", altos_abiertos: "1000000001" }, "x"),
       ),
     ).toMatchObject({ criticos_abiertos: expect.any(String), altos_abiertos: expect.any(String) });
-    expect(
-      campos(() => datosFuenteDeTipo(tipo("M-04"), { criticos_abiertos: "0", altos_abiertos: "0" }, "   ")),
-    ).toHaveProperty("fuenteReferencia");
+    // Fuente vacía o solo espacios: se omite la clave, no se rechaza.
+    expect(datosFuenteDeTipo(tipo("M-04"), { criticos_abiertos: "0", altos_abiertos: "0" }, "   ")).toEqual({
+      criticos_abiertos: 0,
+      altos_abiertos: 0,
+    });
     expect(
       campos(() =>
         datosFuenteDeTipo(tipo("M-04"), { criticos_abiertos: "0", altos_abiertos: "0" }, "x".repeat(2049)),
@@ -159,6 +161,8 @@ describe("CU-02: lectura de la métrica", () => {
     valorCritico: null,
     condicionCritica: "Sin medición",
     causaCritica: null,
+    cumplimientoCritico: "Sin medición",
+    aporte: null,
     medidaEn: null,
     configuradaEn: "2026-10-19T20:39:33.117978+00:00",
   };
@@ -180,12 +184,28 @@ describe("CU-02: lectura de la métrica", () => {
       medidaEn: "2026-10-05T00:00:00+00:00",
     });
     expect(m.cumplimiento).toBe("No evaluable");
+    expect(m.aporte).toBeNull();
     expect(valorActualTexto(m)).toBe("No disponible");
     expect(seraVigente(m, "2026-10-05")).toBe(true);
     expect(seraVigente(m, "2026-10-04")).toBe(false);
   });
+  test("M-01: cumplimiento general separado del criterio crítico y aporte a salud (DEC-26/27)", () => {
+    const m = metricaDTO({
+      ...json,
+      valorActual: "95.00000000",
+      condicionPrincipal: "Evaluable",
+      cumplimiento: "Cumple",
+      condicionCritica: "No evaluable",
+      causaCritica: "Sin muestra crítica",
+      cumplimientoCritico: "No evaluable",
+      aporte: "1.00000000",
+      medidaEn: "2026-10-05T00:00:00+00:00",
+    });
+    expect(m).toMatchObject({ cumplimiento: "Cumple", cumplimientoCritico: "No evaluable", aporte: "1.00000000" });
+  });
   test("rechaza respuestas con forma inesperada", () => {
     expect(() => metricaDTO({ ...json, cumplimiento: "Parcial" })).toThrow();
+    expect(() => metricaDTO({ ...json, aporte: "-0.5" })).toThrow();
     expect(() => metricaDTO({ ...json, tipo: { ...json.tipo, codigo: "M-99" } })).toThrow();
   });
 });

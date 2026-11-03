@@ -65,7 +65,9 @@ export async function POST(request: NextRequest) {
     comprobarVigencia(captura);
 
     fase = "pdf";
-    const pdf = await renderizarReportePdf(modeloReporte(captura.resumen, captura.emitidaEn));
+    // Mismo modelo que la vista; el origen solo vuelve absolutos los enlaces a evidencias PDF.
+    const origen = new URL(request.url).origin;
+    const pdf = await renderizarReportePdf(modeloReporte(captura.resumen, captura.emitidaEn, origen));
     if (pdf.byteLength > LIMITE_PDF_REPORTE) throw new ErrorOperacion("TAMANO_EXCEDIDO");
     return new Response(new Uint8Array(pdf), {
       headers: {

@@ -16,7 +16,7 @@ import type {
   Proyecto,
   Usuario,
 } from "@/lib/domain";
-import { ESTADOS_ACTIVIDAD, SALUD_SIN_EVALUAR } from "@/lib/domain";
+import { ESTADOS_ACTIVIDAD, SALUD_SIN_ELEMENTOS } from "@/lib/domain";
 import { ETAPAS, tipoMetrica } from "@/lib/catalogs";
 import { ACTIVIDADES, METRICAS, PROYECTOS, USUARIOS } from "@/lib/mock/data";
 
@@ -156,7 +156,7 @@ export function consultarResumen(proyecto: Proyecto): Resumen {
     generadoEn: "2026-10-05T21:14:00Z",
     conteos: contarEstados(actividades),
     metricas,
-    salud: SALUD_SIN_EVALUAR,
+    salud: SALUD_SIN_ELEMENTOS,
     etapas: ETAPAS.map((etapa) => {
       const deEtapa = actividades.filter((a) => a.tipo.etapaCodigo === etapa.codigo);
       return {
@@ -172,7 +172,7 @@ export function consultarResumen(proyecto: Proyecto): Resumen {
           estado: a.estado,
         })),
         metricas: metricas.filter((m) => m.tipo.etapaCodigo === etapa.codigo),
-        salud: SALUD_SIN_EVALUAR,
+        salud: SALUD_SIN_ELEMENTOS,
       };
     }),
   };

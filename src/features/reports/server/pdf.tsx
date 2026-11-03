@@ -257,7 +257,7 @@ export function ReportePdf({ modelo }: { modelo: ModeloReporte }) {
                 <Text style={s.texto}>Sin actividades SQA en esta etapa.</Text>
               ) : (
                 <View style={s.tabla}>
-                  <View style={[s.fila, s.cabecera]} wrap={false}>
+                  <View style={[s.fila, s.cabecera]} wrap={false} minPresenceAhead={30}>
                     <Celda ancho="36%">Actividad</Celda>
                     <Celda ancho="18%">Responsable</Celda>
                     <Celda ancho="13%">Estado</Celda>

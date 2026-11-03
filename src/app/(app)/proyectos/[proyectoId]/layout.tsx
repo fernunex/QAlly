@@ -17,6 +17,7 @@ import { ProyectoAcciones } from "@/features/projects/components/proyecto-accion
 import { ProyectoTabs } from "@/features/projects/components/proyecto-tabs";
 import { formatRango } from "@/lib/format";
 import { obtenerContextoProyecto } from "@/lib/project-context";
+import { consultarSaludProyectos } from "@/features/health/server/queries";
 
 async function EncabezadoProyecto({
   params,
@@ -27,6 +28,7 @@ async function EncabezadoProyecto({
   const { proyecto, esQA, cerrado } = await obtenerContextoProyecto(proyectoId);
   // Sin acceso: la página hija muestra el estado NO_DISPONIBLE; aquí no se revela nada.
   if (!proyecto) return null;
+  const salud = await consultarSaludProyectos([proyecto.id]);
 
   return (
     <div className="border-b bg-background">
@@ -53,7 +55,7 @@ async function EncabezadoProyecto({
               {proyecto.nombre}
             </h1>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-              <SaludBadge prefijo="Salud general" />
+              <SaludBadge prefijo="Salud general" salud={salud[proyecto.id] ?? null} />
               {cerrado ? (
                 <span className="inline-flex h-6 items-center gap-1.5 rounded-md border bg-muted px-2 text-xs font-medium">
                   <LockIcon className="size-3.5" aria-hidden />

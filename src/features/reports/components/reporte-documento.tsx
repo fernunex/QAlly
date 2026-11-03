@@ -1,12 +1,14 @@
+import { TriangleAlertIcon } from "lucide-react";
 import { CumplimientoBadge, EstadoActividadBadge, SaludBadge } from "@/components/status/status-badges";
 import { ConteoEstadosTiles } from "@/features/health/components/conteo-tiles";
 import type { ConteoEstados } from "@/lib/domain";
-import type { ConteoFila, ModeloReporte } from "../lib/modelo";
+import type { ActividadReporte, ConteoFila, ModeloReporte, SaludReporte } from "../lib/modelo";
 
 /*
  * Vista web del reporte de calidad (CU-06 paso 5). Recibe el mismo modelo que el PDF
  * (`modeloReporte`), construido desde la captura vigente: ambos muestran el mismo contenido
- * y la misma fecha de generación. Salud siempre según el resumen («Sin evaluar»).
+ * y la misma fecha de generación. Salud, clasificación y advertencias vienen del resumen de
+ * CU-05 (DEC-27/28).
  */
 
 const th = "h-9 px-3 text-left text-xs font-medium whitespace-nowrap text-muted-foreground";
@@ -23,6 +25,36 @@ function Meta({ k, children }: { k: string; children: React.ReactNode }) {
 
 function aConteos(filas: ConteoFila[]): ConteoEstados {
   return Object.fromEntries(filas.map((f) => [f.estado, f.cantidad])) as ConteoEstados;
+}
+
+function FilaSalud({ nombre, salud, general }: { nombre: string; salud: SaludReporte; general?: boolean }) {
+  return (
+    <tr>
+      <td className={`${td} ${general ? "font-semibold" : ""}`}>{nombre}</td>
+      <td className={td}>
+        <SaludBadge salud={salud.salud} />
+      </td>
+      <td className={`${td} whitespace-nowrap tabular-nums text-muted-foreground`}>{salud.puntos}</td>
+      <td className={`${td} text-xs text-muted-foreground`}>
+        {salud.advertencias.length === 0 ? "—" : salud.advertencias.join(" ")}
+      </td>
+    </tr>
+  );
+}
+
+function Evidencias({ a }: { a: ActividadReporte }) {
+  if (a.evidencias.length === 0) return <span className="text-muted-foreground">Sin evidencias enviadas</span>;
+  return (
+    <ul className="space-y-0.5">
+      {a.evidencias.map((e) => (
+        <li key={e.id} className="break-all">
+          <a href={e.href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            {e.texto}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
@@ -52,21 +84,65 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
         </div>
       </header>
 
+      <section aria-labelledby="reporte-salud" className="mt-8">
+        <h3 id="reporte-salud" className="mb-3 font-serif text-xl font-semibold">
+          1. Salud general y por etapa
+        </h3>
+        <div className="overflow-x-auto rounded-md border">
+          <table className="w-full min-w-[44rem] text-sm">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className={th}>Ámbito</th>
+                <th className={th}>Salud</th>
+                <th className={th}>Puntos</th>
+                <th className={th}>Advertencias</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              <FilaSalud nombre="General" salud={modelo.salud.general} general />
+              {modelo.etapas.map((e) => (
+                <FilaSalud key={e.codigo} nombre={e.nombre} salud={e.salud} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-sm text-muted-foreground">{modelo.salud.nota}</p>
+      </section>
+
+      <section aria-labelledby="reporte-advertencias" className="mt-8">
+        <h3 id="reporte-advertencias" className="mb-3 font-serif text-xl font-semibold">
+          2. Advertencias
+        </h3>
+        {modelo.advertencias.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Sin advertencias para el estado actual.</p>
+        ) : (
+          <ul aria-label="Advertencias del reporte" className="space-y-1.5">
+            {modelo.advertencias.map((t) => (
+              <li key={t} className="flex gap-2 text-sm">
+                <TriangleAlertIcon aria-hidden className="mt-0.5 size-4 shrink-0 text-review" />
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section aria-labelledby="reporte-metricas" className="mt-8">
         <h3 id="reporte-metricas" className="mb-3 font-serif text-xl font-semibold">
-          1. Métricas
+          3. Métricas
         </h3>
         {modelo.metricas.length === 0 ? (
           <p className="text-sm text-muted-foreground">El proyecto no tiene métricas configuradas.</p>
         ) : (
           <div className="overflow-x-auto rounded-md border">
-            <table className="w-full min-w-[48rem] text-sm">
+            <table className="w-full min-w-[52rem] text-sm">
               <thead className="bg-muted/50">
                 <tr>
                   <th className={th}>Métrica</th>
                   <th className={th}>Último valor</th>
                   <th className={th}>Objetivo</th>
                   <th className={th}>Cumplimiento</th>
+                  <th className={th}>Aporte a salud</th>
                   <th className={th}>Estado de medición</th>
                   <th className={th}>Medición</th>
                 </tr>
@@ -89,7 +165,11 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
                     <td className={`${td} tabular-nums`}>{m.objetivo}</td>
                     <td className={td}>
                       <CumplimientoBadge estado={m.cumplimiento} />
+                      {m.criterioCritico ? (
+                        <span className="mt-1 block text-xs text-muted-foreground">{m.criterioCritico}</span>
+                      ) : null}
                     </td>
+                    <td className={`${td} whitespace-nowrap tabular-nums`}>{m.aporte}</td>
                     <td className={`${td} text-muted-foreground`}>{m.estadoMedicion}</td>
                     <td className={`${td} whitespace-nowrap tabular-nums`}>{m.fechaMedicion}</td>
                   </tr>
@@ -102,12 +182,13 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
 
       <section aria-labelledby="reporte-actividades" className="mt-8">
         <h3 id="reporte-actividades" className="mb-3 font-serif text-xl font-semibold">
-          2. Actividades SQA
+          4. Actividades SQA
         </h3>
         <ConteoEstadosTiles conteos={aConteos(modelo.actividades.conteos)} />
         <p className="mt-3 text-sm text-muted-foreground">
           <span className="tabular-nums">{modelo.actividades.total}</span> actividades SQA en total, distribuidas en las
-          tres etapas del proyecto.
+          tres etapas del proyecto. Las evidencias son las del último intento enviado; los PDF no se incrustan y se
+          descargan desde QAlly con tu sesión.
         </p>
         <div className="mt-4 space-y-5">
           {modelo.etapas.map((etapa) => (
@@ -119,12 +200,13 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
                 <p className="text-sm text-muted-foreground">Sin actividades SQA en esta etapa.</p>
               ) : (
                 <div className="overflow-x-auto rounded-md border">
-                  <table className="w-full min-w-[36rem] text-sm">
+                  <table className="w-full min-w-[44rem] text-sm">
                     <thead className="bg-muted/50">
                       <tr>
                         <th className={th}>Actividad</th>
                         <th className={th}>Responsable</th>
                         <th className={th}>Estado</th>
+                        <th className={th}>Evidencias</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -132,10 +214,14 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
                         <tr key={a.id}>
                           <td className={td}>
                             <span className="font-mono text-xs text-muted-foreground">{a.codigo}</span> {a.nombre}
+                            <span className="block text-xs text-muted-foreground">Instancia {a.instancia}</span>
                           </td>
                           <td className={`${td} whitespace-nowrap`}>{a.responsable}</td>
                           <td className={td}>
                             <EstadoActividadBadge estado={a.estado} />
+                          </td>
+                          <td className={`${td} text-xs`}>
+                            <Evidencias a={a} />
                           </td>
                         </tr>
                       ))}
@@ -146,48 +232,6 @@ export function ReporteDocumento({ modelo }: { modelo: ModeloReporte }) {
             </div>
           ))}
         </div>
-      </section>
-
-      <section aria-labelledby="reporte-salud" className="mt-8">
-        <h3 id="reporte-salud" className="mb-3 font-serif text-xl font-semibold">
-          3. Salud general y por etapa
-        </h3>
-        <div className="overflow-x-auto rounded-md border">
-          <table className="w-full min-w-[44rem] text-sm">
-            <thead className="bg-muted/50">
-              <tr>
-                <th className={th}>Ámbito</th>
-                <th className={th}>Salud</th>
-                <th className={th}>Motivo</th>
-                {modelo.actividades.conteos.map((c) => (
-                  <th key={c.estado} className={`${th} text-right`}>
-                    {c.estado}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {[
-                { nombre: "General", salud: modelo.salud.general, conteos: modelo.actividades.conteos },
-                ...modelo.etapas,
-              ].map((f) => (
-                <tr key={f.nombre}>
-                  <td className={`${td} ${f.nombre === "General" ? "font-semibold" : ""}`}>{f.nombre}</td>
-                  <td className={td}>
-                    <SaludBadge />
-                  </td>
-                  <td className={`${td} text-muted-foreground`}>{f.salud.motivo}</td>
-                  {f.conteos.map((c) => (
-                    <td key={c.estado} className={`${td} text-right tabular-nums`}>
-                      {c.cantidad}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-sm text-muted-foreground">{modelo.salud.nota}</p>
       </section>
 
       <footer className="mt-10 flex justify-between gap-4 border-t pt-4 text-xs text-muted-foreground">

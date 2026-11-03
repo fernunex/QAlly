@@ -48,7 +48,7 @@ export const listarCorreccionesSchema = z.strictObject({
   cursor: z.number().int().min(2).max(2147483647).optional(),
 });
 
-/** Objetivos permitidos por tipo: M-01 exige objetivo crítico; el resto no lo admite. */
+/** Objetivos permitidos por tipo: M-01 conserva su objetivo crítico (criterio independiente); el resto no lo admite. */
 export function objetivosDeTipo(
   tipo: Pick<TipoMetrica, "codigo" | "unidad">,
   objetivo: string,
@@ -59,7 +59,7 @@ export function objetivosDeTipo(
   if (!principal.success) campos.objetivo = principal.error.issues[0]!.message;
   let critico: string | null = null;
   if (tipo.codigo === "M-01") {
-    const r = objetivoSchema("%").safeParse(objetivoCritico ?? "");
+    const r = objetivoSchema("%", true).safeParse(objetivoCritico ?? "");
     if (r.success) critico = r.data;
     else campos.objetivoCritico = "Revisa el objetivo de flujos críticos.";
   } else if (objetivoCritico !== null)
@@ -69,7 +69,7 @@ export function objetivosDeTipo(
   return { objetivo: principal.data!, objetivoCritico: critico };
 }
 
-/** datos_fuente exactos del catálogo v1: conteos enteros y fuente_referencia. */
+/** datos_fuente exactos del catálogo v1: conteos enteros y fuente_referencia opcional (DEC-26). */
 export function datosFuenteDeTipo(
   tipo: Pick<TipoMetrica, "codigo" | "campos">,
   conteos: Record<string, string>,
@@ -87,9 +87,10 @@ export function datosFuenteDeTipo(
   if (errorFuente) campos.fuenteReferencia = errorFuente;
   if (Object.keys(campos).length)
     throw new ErrorOperacion("DATOS_INVALIDOS", campos);
+  const fuente = fuenteReferencia.trim();
   return {
     ...Object.fromEntries(claves.map((k) => [k, Number(conteos[k]!.trim())])),
-    fuente_referencia: fuenteReferencia.trim(),
+    ...(fuente ? { fuente_referencia: fuente } : {}),
   } as Record<string, number | string>;
 }
 

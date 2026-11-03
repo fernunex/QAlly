@@ -1,5 +1,7 @@
 import type {
+  AdvertenciaSalud,
   ConteoEstados,
+  EstadoSalud,
   EstadoCumplimiento,
   EtapaCodigo,
   TipoMetrica,
@@ -9,13 +11,48 @@ import { cumplimientoEtiqueta } from "@/components/status/status-badges";
 import type { ResumenProyecto } from "./types";
 
 /*
- * Utilidades puras sobre el resumen (CU-05/CU-06). Solo cuentan y agrupan datos que ya
- * entrega la BD; no calculan salud, porcentajes, pesos ni categorías.
+ * Utilidades puras sobre el resumen (CU-05/CU-06). Solo cuentan, agrupan y redactan datos que
+ * ya entrega la BD: porcentaje, clasificación y advertencias vienen calculados (DEC-27).
  */
 
-/** Aviso común de CU-05 y CU-06 mientras el algoritmo de salud esté PENDIENTE. */
+/** Explicación común de CU-05 y CU-06 (reglas globales, «Salud aprobada»). */
 export const NOTA_SALUD =
-  "La salud aún no se calcula: el algoritmo y su clasificación están pendientes de aprobación. Se muestran solo los datos reales del proyecto.";
+  "Salud = 100 × (actividades Aprobadas + suma de aportes de métricas) / (actividades planeadas + métricas seleccionadas). Cada actividad y cada métrica vale 1 punto posible; solo Aprobada cuenta como realizada. Clasificación: Malo < 50 %, Regular < 70 %, Bueno < 90 %, Excelente ≥ 90 %, con el valor sin redondear.";
+
+/** «68.57 % · Regular» o «Sin evaluar». */
+export function saludTexto(s: EstadoSalud): string {
+  return s.estado === "Evaluada" ? `${s.porcentaje} % · ${s.clasificacion}` : "Sin evaluar";
+}
+
+/** «4.8 de 7 puntos». */
+export function puntosTexto(s: EstadoSalud): string {
+  return `${s.puntos} de ${s.posibles} ${s.posibles === 1 ? "punto" : "puntos"}`;
+}
+
+/** Texto de cada advertencia; el ámbito ya se indica en el contenedor. */
+export function textoAdvertencia(a: AdvertenciaSalud, s: EstadoSalud): string {
+  switch (a) {
+    case "SIN_ELEMENTOS":
+      return "Sin actividades SQA ni métricas: no hay elementos que evaluar.";
+    case "EVALUACION_PARCIAL": {
+      const n = s.metricas.sinDatos;
+      return `Evaluación parcial: ${n} ${n === 1 ? "métrica" : "métricas"} sin medición o no evaluable aporta 0 y sigue contando como punto posible.`;
+    }
+    case "SIN_AVANCE":
+      return "0 % evaluado: hay elementos planeados, pero ninguna actividad Aprobada ni métrica con aporte. Faltan datos.";
+    case "DEFECTOS_GRAVES":
+      return "Defectos graves abiertos: la última medición de M-04 es mayor que 0. No limita la puntuación.";
+  }
+}
+
+export function advertenciasTexto(s: EstadoSalud): string[] {
+  return s.advertencias.map((a) => textoAdvertencia(a, s));
+}
+
+/** «0.80 de 1»; null si la métrica no aporta por falta de datos. */
+export function aporteTexto(aporte: string | null): string {
+  return aporte === null ? "0 (sin datos)" : `${Number(aporte).toFixed(2)} de 1`;
+}
 
 export const ESTADOS_CUMPLIMIENTO: readonly EstadoCumplimiento[] = [
   "Cumple",

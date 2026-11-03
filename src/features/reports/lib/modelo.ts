@@ -2,21 +2,23 @@ import { cumplimientoEtiqueta } from "@/components/status/status-badges";
 import { nombreEtapa } from "@/lib/catalogs";
 import {
   ESTADOS_ACTIVIDAD,
+  type ClasificacionSalud,
   type EstadoActividad,
   type EstadoCumplimiento,
   type EstadoSalud,
 } from "@/lib/domain";
 import { formatDia, formatFecha, formatFechaHora, formatRango, ROTULO_ZONA, selloFechaHora } from "@/lib/format";
-import { conteoGeneral, NOTA_SALUD } from "@/features/health/lib";
-import type { ResumenProyecto } from "@/features/health/types";
+import { advertenciasTexto, aporteTexto, conteoGeneral, NOTA_SALUD, puntosTexto } from "@/features/health/lib";
+import type { EvidenciaResumen, ResumenProyecto } from "@/features/health/types";
 import { objetivoLineas, valorActualTexto } from "@/features/metrics/lib/formato";
 import type { MetricaProyecto } from "@/features/metrics/types";
 
 /*
  * Modelo de presentación del reporte de calidad (CU-06). Una única función convierte la
  * captura (resumen de CU-05 + fecha de emisión) en los textos que muestran la vista web y el
- * PDF, de modo que ambos tengan el mismo contenido. Solo da formato: no calcula salud,
- * porcentajes, pesos ni categorías; valores, cumplimiento y conteos vienen de la BD.
+ * PDF, de modo que ambos tengan el mismo contenido (DEC-28). Solo da formato: salud,
+ * clasificación, aportes, advertencias, valores, cumplimiento y conteos vienen de la BD
+ * (mismo resumen de CU-05), así dashboard, vista y PDF coinciden para la misma captura.
  */
 
 export const NOTA_SALUD_REPORTE = `${NOTA_SALUD} Cumplir una métrica no es lo mismo que tener buena salud.`;
@@ -34,22 +36,43 @@ export type MetricaReporte = {
   objetivo: string;
   cumplimiento: EstadoCumplimiento;
   cumplimientoTexto: string;
+  /** Solo M-01: criterio independiente de pruebas críticas (DEC-26). */
+  criterioCritico: string | null;
+  /** «0.80 de 1» o «0 (sin datos)». */
+  aporte: string;
   estadoMedicion: string;
   fechaMedicion: string;
 };
+
+/** Referencia a evidencia: el PDF no se incrusta; el enlace pasa por la ruta autorizada. */
+export type EvidenciaReporte = { id: string; texto: string; href: string };
 
 export type ActividadReporte = {
   id: string;
   codigo: string;
   nombre: string;
+  /** Número de instancia del tipo en el proyecto (1, 2…). */
+  instancia: number;
   responsable: string;
   estado: EstadoActividad;
+  evidencias: EvidenciaReporte[];
+};
+
+/** Salud de un ámbito ya redactada para vista y PDF. */
+export type SaludReporte = {
+  salud: EstadoSalud;
+  /** «68.57 %» o «Sin evaluar». */
+  porcentaje: string;
+  clasificacion: ClasificacionSalud | null;
+  /** «4.8 de 7 puntos» o «Sin elementos». */
+  puntos: string;
+  advertencias: string[];
 };
 
 export type EtapaReporte = {
   codigo: string;
   nombre: string;
-  salud: EstadoSalud;
+  salud: SaludReporte;
   conteos: ConteoFila[];
   total: number;
   actividades: ActividadReporte[];
@@ -69,9 +92,27 @@ export type ModeloReporte = {
   fechaGeneracion: string;
   metricas: MetricaReporte[];
   actividades: { total: number; conteos: ConteoFila[] };
-  salud: { general: EstadoSalud; nota: string };
+  salud: { general: SaludReporte; nota: string };
   etapas: EtapaReporte[];
+  /** Advertencias de todos los ámbitos, con su ámbito como prefijo («Desarrollo: …»). */
+  advertencias: string[];
 };
+
+function saludReporte(s: EstadoSalud): SaludReporte {
+  return {
+    salud: s,
+    porcentaje: s.estado === "Evaluada" ? `${s.porcentaje} %` : "Sin evaluar",
+    clasificacion: s.clasificacion,
+    puntos: s.estado === "Evaluada" ? puntosTexto(s) : "Sin elementos",
+    advertencias: advertenciasTexto(s),
+  };
+}
+
+function evidenciaReporte(e: EvidenciaResumen, origen: string): EvidenciaReporte {
+  return e.tipo === "PDF"
+    ? { id: e.id, texto: `${e.nombre} (PDF privado en QAlly)`, href: `${origen}/api/evidencias/${e.id}/archivo` }
+    : { id: e.id, texto: e.url, href: e.url };
+}
 
 function filas(conteos: Record<EstadoActividad, number>): ConteoFila[] {
   return ESTADOS_ACTIVIDAD.map((estado) => ({ estado, cantidad: conteos[estado] }));
@@ -88,9 +129,30 @@ function estadoMedicion(m: MetricaProyecto): string {
   return causas ? `${m.condicionPrincipal} · ${causas}` : m.condicionPrincipal;
 }
 
-export function modeloReporte(resumen: ResumenProyecto, emitidaEn: string): ModeloReporte {
+/**
+ * `origen` (p. ej. «https://qally.example») solo se usa en el PDF para que los enlaces a
+ * evidencias PDF sean absolutos; la vista web usa rutas relativas. Ambas rutas exigen sesión.
+ */
+export function modeloReporte(resumen: ResumenProyecto, emitidaEn: string, origen = ""): ModeloReporte {
   const { proyecto } = resumen;
   const general = conteoGeneral(resumen);
+  const saludGeneral = saludReporte(resumen.salud);
+  const etapas: EtapaReporte[] = resumen.etapas.map((e) => ({
+    codigo: e.codigo,
+    nombre: e.nombre,
+    salud: saludReporte(e.salud),
+    conteos: filas(e.conteos),
+    total: total(e.conteos),
+    actividades: e.actividades.map((a) => ({
+      id: a.id,
+      codigo: a.tipoCodigo,
+      nombre: a.tipoNombre,
+      instancia: a.instancia,
+      responsable: a.responsableNombre ?? "Sin responsable",
+      estado: a.estado,
+      evidencias: a.evidencias.map((ev) => evidenciaReporte(ev, origen)),
+    })),
+  }));
   return {
     proyecto: {
       nombre: proyecto.nombre,
@@ -113,25 +175,21 @@ export function modeloReporte(resumen: ResumenProyecto, emitidaEn: string): Mode
         .join(" · "),
       cumplimiento: m.cumplimiento,
       cumplimientoTexto: cumplimientoEtiqueta(m.cumplimiento),
+      criterioCritico:
+        m.cumplimientoCritico && m.cumplimientoCritico !== "Sin medición"
+          ? `Críticas (criterio independiente): ${cumplimientoEtiqueta(m.cumplimientoCritico)}`
+          : null,
+      aporte: aporteTexto(m.aporte),
       estadoMedicion: estadoMedicion(m),
       fechaMedicion: m.medidaEn ? formatDia(m.medidaEn) : "Sin fecha de medición",
     })),
     actividades: { total: total(general), conteos: filas(general) },
-    salud: { general: resumen.salud, nota: NOTA_SALUD_REPORTE },
-    etapas: resumen.etapas.map((e) => ({
-      codigo: e.codigo,
-      nombre: e.nombre,
-      salud: e.salud,
-      conteos: filas(e.conteos),
-      total: total(e.conteos),
-      actividades: e.actividades.map((a) => ({
-        id: a.id,
-        codigo: a.tipoCodigo,
-        nombre: a.tipoNombre,
-        responsable: a.responsableNombre ?? "Sin responsable",
-        estado: a.estado,
-      })),
-    })),
+    salud: { general: saludGeneral, nota: NOTA_SALUD_REPORTE },
+    etapas,
+    advertencias: [
+      ...saludGeneral.advertencias.map((t) => `General: ${t}`),
+      ...etapas.flatMap((e) => e.salud.advertencias.map((t) => `${e.nombre}: ${t}`)),
+    ],
   };
 }
 

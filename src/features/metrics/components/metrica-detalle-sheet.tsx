@@ -2,7 +2,8 @@
 
 import { useId, useState } from "react";
 import { ChevronDownIcon, HistoryIcon, PencilIcon, PlusIcon } from "lucide-react";
-import { CumplimientoBadge } from "@/components/status/status-badges";
+import { CumplimientoBadge, cumplimientoEtiqueta } from "@/components/status/status-badges";
+import { aporteTexto } from "@/features/health/lib";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -293,7 +294,7 @@ function Historial({
               <p className="mt-0.5 text-xs text-muted-foreground">
                 <span className="whitespace-nowrap tabular-nums">{datosLegibles(metrica.tipo.codigo, rev.datosFuente)}</span>
                 {" · "}
-                {esUrl(rev.fuenteReferencia) ? (
+                {rev.fuenteReferencia !== null && esUrl(rev.fuenteReferencia) ? (
                   <a
                     href={rev.fuenteReferencia}
                     target="_blank"
@@ -428,6 +429,12 @@ export function MetricaDetalleSheet({
                         No evaluable: {[metrica.causa, metrica.causaCritica].filter(Boolean).join(" · ")}
                       </p>
                     ) : null}
+                    {metrica.cumplimientoCritico && metrica.cumplimientoCritico !== "Sin medición" ? (
+                      <p className="text-xs text-muted-foreground">
+                        Criterio de pruebas críticas (independiente): {cumplimientoEtiqueta(metrica.cumplimientoCritico)}
+                      </p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground">Aporte a la salud: {aporteTexto(metrica.aporte)}</p>
                   </div>
                   <div className="space-y-1.5">
                     <p className="text-xs text-muted-foreground">Objetivo</p>

@@ -13,7 +13,7 @@ export function validarObjetivos(tipo: TipoMetrica, v: ObjetivosTexto): ErroresO
   const o = validarObjetivo(tipo.unidad, v.objetivo);
   if (o) e.objetivo = o;
   if (tipo.objetivoCriticoInicial !== null) {
-    const c = validarObjetivo(tipo.unidad, v.critico);
+    const c = validarObjetivo(tipo.unidad, v.critico, true);
     if (c) e.critico = c;
   }
   return e;

@@ -1,5 +1,5 @@
 import "server-only";
-import { Document, Font, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { Document, Font, Link, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import type { ConteoFila, ModeloReporte } from "../lib/modelo";
 
 /*
@@ -15,9 +15,9 @@ Font.registerHyphenationCallback((palabra) => [palabra]);
 /** 3 MiB (contratos v1 §6). Si se supera, error explícito sin recortar contenido. */
 export const LIMITE_PDF_REPORTE = 3 * 1024 * 1024;
 
-/** La fuente estándar usa WinAnsi: ≥ y ≤ no existen y se escriben como >= y <=. */
+/** La fuente estándar usa WinAnsi: ≥, ≤, × y Σ no existen y se escriben en ASCII. */
 export function textoPdf(texto: string): string {
-  return texto.replaceAll("≥", ">=").replaceAll("≤", "<=");
+  return texto.replaceAll("≥", ">=").replaceAll("≤", "<=").replaceAll("×", "x");
 }
 
 /** Estilo de una celda; derivado de StyleSheet para no depender de paquetes transitivos. */
@@ -66,6 +66,7 @@ const s = StyleSheet.create({
   celda: { paddingVertical: 4, paddingHorizontal: 5 },
   derecha: { textAlign: "right" },
   mono: { fontFamily: "Courier", color: gris },
+  enlace: { color: "#1d4ed8", textDecoration: "underline" },
   nota: { marginTop: 8, padding: 6, backgroundColor: fondo, color: gris },
   pie: {
     position: "absolute",
@@ -158,36 +159,83 @@ export function ReportePdf({ modelo }: { modelo: ModeloReporte }) {
           </View>
         </View>
 
+        <View style={s.seccion} wrap={false}>
+          <Text style={s.h2}>1. Salud general y por etapa</Text>
+          <View style={s.tabla}>
+            <View style={[s.fila, s.cabecera]}>
+              <Celda ancho="26%">Ámbito</Celda>
+              <Celda ancho="14%">Salud</Celda>
+              <Celda ancho="14%">Clasificación</Celda>
+              <Celda ancho="16%">Puntos</Celda>
+              <Celda ancho="30%">Advertencias</Celda>
+            </View>
+            {[{ nombre: "General", salud: modelo.salud.general }, ...modelo.etapas].map((f) => (
+              <View key={f.nombre} style={s.fila}>
+                <Celda ancho="26%" estilo={f.nombre === "General" ? { fontFamily: "Helvetica-Bold" } : undefined}>
+                  {f.nombre}
+                </Celda>
+                <Celda ancho="14%" estilo={{ fontFamily: "Helvetica-Bold" }}>
+                  {f.salud.porcentaje}
+                </Celda>
+                <Celda ancho="14%">{f.salud.clasificacion ?? "-"}</Celda>
+                <Celda ancho="16%">{f.salud.puntos}</Celda>
+                <Celda ancho="30%" estilo={s.texto}>
+                  {f.salud.advertencias.length === 0 ? "-" : f.salud.advertencias.join(" ")}
+                </Celda>
+              </View>
+            ))}
+          </View>
+          <Text style={s.nota}>{textoPdf(modelo.salud.nota)}</Text>
+        </View>
+
         <View style={s.seccion}>
-          <Text style={s.h2}>1. Métricas</Text>
+          <Text style={s.h2}>2. Advertencias</Text>
+          {modelo.advertencias.length === 0 ? (
+            <Text style={s.texto}>Sin advertencias para el estado actual.</Text>
+          ) : (
+            modelo.advertencias.map((t) => (
+              <Text key={t} style={{ marginBottom: 2 }}>
+                {`- ${t}`}
+              </Text>
+            ))
+          )}
+        </View>
+
+        <View style={s.seccion}>
+          <Text style={s.h2}>3. Métricas</Text>
           {modelo.metricas.length === 0 ? (
             <Text style={s.texto}>El proyecto no tiene métricas configuradas.</Text>
           ) : (
             <View style={s.tabla}>
               <View style={[s.fila, s.cabecera]} wrap={false}>
-                <Celda ancho="24%">Métrica</Celda>
-                <Celda ancho="15%">Último valor</Celda>
-                <Celda ancho="19%">Objetivo</Celda>
-                <Celda ancho="13%">Cumplimiento</Celda>
-                <Celda ancho="18%">Estado de medición</Celda>
-                <Celda ancho="11%">Medición</Celda>
+                <Celda ancho="22%">Métrica</Celda>
+                <Celda ancho="13%">Último valor</Celda>
+                <Celda ancho="16%">Objetivo</Celda>
+                <Celda ancho="15%">Cumplimiento</Celda>
+                <Celda ancho="10%">Aporte</Celda>
+                <Celda ancho="14%">Estado de medición</Celda>
+                <Celda ancho="10%">Medición</Celda>
               </View>
               {modelo.metricas.map((m) => (
                 <View key={m.id} style={s.fila} wrap={false}>
-                  <View style={[s.celda, { width: "24%" }]}>
+                  <View style={[s.celda, { width: "22%" }]}>
                     <Text>
                       <Text style={s.mono}>{m.codigo}</Text> {m.nombre}
                     </Text>
                     <Text style={s.texto}>{m.etapa}</Text>
                   </View>
-                  <View style={[s.celda, { width: "15%" }]}>
+                  <View style={[s.celda, { width: "13%" }]}>
                     <Text>{m.ultimoValor}</Text>
                     {m.valorCritico ? <Text style={s.texto}>{m.valorCritico}</Text> : null}
                   </View>
-                  <Celda ancho="19%">{textoPdf(m.objetivo)}</Celda>
-                  <Celda ancho="13%">{m.cumplimientoTexto}</Celda>
-                  <Celda ancho="18%">{m.estadoMedicion}</Celda>
-                  <Celda ancho="11%">{m.fechaMedicion}</Celda>
+                  <Celda ancho="16%">{textoPdf(m.objetivo)}</Celda>
+                  <View style={[s.celda, { width: "15%" }]}>
+                    <Text>{m.cumplimientoTexto}</Text>
+                    {m.criterioCritico ? <Text style={s.texto}>{m.criterioCritico}</Text> : null}
+                  </View>
+                  <Celda ancho="10%">{m.aporte}</Celda>
+                  <Celda ancho="14%">{m.estadoMedicion}</Celda>
+                  <Celda ancho="10%">{m.fechaMedicion}</Celda>
                 </View>
               ))}
             </View>
@@ -195,10 +243,10 @@ export function ReportePdf({ modelo }: { modelo: ModeloReporte }) {
         </View>
 
         <View style={s.seccion}>
-          <Text style={s.h2}>2. Actividades SQA</Text>
+          <Text style={s.h2}>4. Actividades SQA</Text>
           <Conteos conteos={modelo.actividades.conteos} total={modelo.actividades.total} />
           <Text style={[s.texto, { marginTop: 4 }]}>
-            {`${modelo.actividades.total} actividades SQA en total, distribuidas en las tres etapas del proyecto.`}
+            {`${modelo.actividades.total} actividades SQA en total, distribuidas en las tres etapas del proyecto. Las evidencias son las del último intento enviado; los PDF no se incrustan y requieren sesión en QAlly.`}
           </Text>
           {modelo.etapas.map((etapa) => (
             <View key={etapa.codigo}>
@@ -210,57 +258,38 @@ export function ReportePdf({ modelo }: { modelo: ModeloReporte }) {
               ) : (
                 <View style={s.tabla}>
                   <View style={[s.fila, s.cabecera]} wrap={false}>
-                    <Celda ancho="50%">Actividad</Celda>
-                    <Celda ancho="30%">Responsable</Celda>
-                    <Celda ancho="20%">Estado</Celda>
+                    <Celda ancho="36%">Actividad</Celda>
+                    <Celda ancho="18%">Responsable</Celda>
+                    <Celda ancho="13%">Estado</Celda>
+                    <Celda ancho="33%">Evidencias</Celda>
                   </View>
                   {etapa.actividades.map((a) => (
                     <View key={a.id} style={s.fila} wrap={false}>
-                      <Text style={[s.celda, { width: "50%" }]}>
-                        <Text style={s.mono}>{a.codigo}</Text> {a.nombre}
-                      </Text>
-                      <Celda ancho="30%">{a.responsable}</Celda>
-                      <Celda ancho="20%">{a.estado}</Celda>
+                      <View style={[s.celda, { width: "36%" }]}>
+                        <Text>
+                          <Text style={s.mono}>{a.codigo}</Text> {a.nombre}
+                        </Text>
+                        <Text style={s.texto}>{`Instancia ${a.instancia}`}</Text>
+                      </View>
+                      <Celda ancho="18%">{a.responsable}</Celda>
+                      <Celda ancho="13%">{a.estado}</Celda>
+                      <View style={[s.celda, { width: "33%" }]}>
+                        {a.evidencias.length === 0 ? (
+                          <Text style={s.texto}>Sin evidencias enviadas</Text>
+                        ) : (
+                          a.evidencias.map((e) => (
+                            <Link key={e.id} src={e.href} style={s.enlace}>
+                              {e.texto}
+                            </Link>
+                          ))
+                        )}
+                      </View>
                     </View>
                   ))}
                 </View>
               )}
             </View>
           ))}
-        </View>
-
-        <View style={s.seccion} wrap={false}>
-          <Text style={s.h2}>3. Salud general y por etapa</Text>
-          <View style={s.tabla}>
-            <View style={[s.fila, s.cabecera]}>
-              <Celda ancho="28%">Ámbito</Celda>
-              <Celda ancho="14%">Salud</Celda>
-              <Celda ancho="18%">Motivo</Celda>
-              {modelo.actividades.conteos.map((c) => (
-                <Celda key={c.estado} ancho="10%" estilo={s.derecha}>
-                  {c.estado}
-                </Celda>
-              ))}
-            </View>
-            {[
-              { nombre: "General", salud: modelo.salud.general, conteos: modelo.actividades.conteos },
-              ...modelo.etapas,
-            ].map((f) => (
-              <View key={f.nombre} style={s.fila}>
-                <Celda ancho="28%" estilo={f.nombre === "General" ? { fontFamily: "Helvetica-Bold" } : undefined}>
-                  {f.nombre}
-                </Celda>
-                <Celda ancho="14%">{f.salud.estado}</Celda>
-                <Celda ancho="18%">{f.salud.motivo}</Celda>
-                {f.conteos.map((c) => (
-                  <Celda key={c.estado} ancho="10%" estilo={s.derecha}>
-                    {String(c.cantidad)}
-                  </Celda>
-                ))}
-              </View>
-            ))}
-          </View>
-          <Text style={s.nota}>{modelo.salud.nota}</Text>
         </View>
 
         <View style={s.pie} fixed>

@@ -11,14 +11,15 @@ export function nombreEtapa(codigo: EtapaCodigo): string {
   return ETAPAS.find((e) => e.codigo === codigo)?.nombre ?? codigo;
 }
 
-/** Catálogo de actividades SQA v1 (APROBADO, ADR-002). */
+/** Catálogo de actividades SQA v1 ratificado por DEC-25: diez preseleccionadas y desmarcables. */
 export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
   {
     id: "ta-01",
     codigo: "A-01",
-    nombre: "Revisión de la documentación de requisitos",
+    nombre: "Revisión de documentación de requisitos",
     etapaCodigo: "requisitos",
     inicial: true,
+    objetivo: "Detectar errores, omisiones y ambigüedades.",
     evidencia:
       "Alcance/versión revisada, hallazgos y conclusión; PDF o enlace al informe/checklist y documentos revisados.",
     criterio:
@@ -27,18 +28,20 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
   {
     id: "ta-02",
     codigo: "A-02",
-    nombre: "Realizar trazabilidad de requerimientos",
+    nombre: "Trazabilidad de requerimientos",
     etapaCodigo: "requisitos",
-    inicial: false,
+    inicial: true,
+    objetivo: "Relacionar requisitos con artefactos y detectar huecos.",
     evidencia: "Relaciones documentadas entre requisitos y sus fuentes; PDF o enlace a la matriz.",
     criterio: "Requisitos del alcance identificados y relaciones/huecos visibles.",
   },
   {
     id: "ta-03",
     codigo: "A-03",
-    nombre: "Revisión de la documentación de diseño",
+    nombre: "Revisión de documentación de diseño",
     etapaCodigo: "diseno",
     inicial: true,
+    objetivo: "Comprobar coherencia, completitud y correspondencia con requisitos.",
     evidencia:
       "Versión de diseño, revisión de coherencia con requisitos y hallazgos; PDF o enlace al informe y diseño.",
     criterio: "Se identifican decisiones revisadas y observaciones; la evidencia permite verificar la conclusión.",
@@ -46,18 +49,20 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
   {
     id: "ta-04",
     codigo: "A-04",
-    nombre: "Realizar trazabilidad de diseño",
+    nombre: "Trazabilidad de diseño",
     etapaCodigo: "diseno",
-    inicial: false,
+    inicial: true,
+    objetivo: "Relacionar requisitos con elementos de diseño.",
     evidencia: "Relación entre requisitos y elementos de diseño; PDF o enlace a matriz/documento.",
     criterio: "Elementos y requisitos del alcance están referenciados; ausencias se declaran.",
   },
   {
     id: "ta-05",
     codigo: "A-05",
-    nombre: "Análisis de código estático automático",
+    nombre: "Análisis estático automático de código",
     etapaCodigo: "desarrollo",
     inicial: true,
+    objetivo: "Detectar problemas mediante herramientas automáticas.",
     evidencia:
       "Herramienta, versión/commit, alcance, resultados y tratamiento; PDF o enlace a ejecución/informe.",
     criterio: "La ejecución y su alcance son verificables y el tratamiento de hallazgos está explicado.",
@@ -68,15 +73,17 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
     nombre: "Revisión por pares (Code Review)",
     etapaCodigo: "desarrollo",
     inicial: true,
+    objetivo: "Revisar cambios antes de integrarlos.",
     evidencia: "Cambios revisados, revisor y conclusión; PDF o enlace a PR/registro de revisión.",
     criterio: "La revisión por otra persona es identificable y las observaciones tienen respuesta verificable.",
   },
   {
     id: "ta-07",
     codigo: "A-07",
-    nombre: "Administración de cambios de repositorio (GitHub)",
+    nombre: "Administración de cambios de repositorio",
     etapaCodigo: "desarrollo",
-    inicial: false,
+    inicial: true,
+    objetivo: "Controlar y dar trazabilidad a modificaciones.",
     evidencia: "Cambios o periodo examinado y seguimiento de versiones; PDF o enlace a commits/PR/registro.",
     criterio: "Se pueden identificar los cambios y su integración.",
   },
@@ -85,7 +92,8 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
     codigo: "A-08",
     nombre: "Revisión personal de código",
     etapaCodigo: "desarrollo",
-    inicial: false,
+    inicial: true,
+    objetivo: "Revisar el código propio antes de solicitar integración.",
     evidencia: "Código/commit revisado, checklist y hallazgos; PDF o enlace al registro.",
     criterio: "Alcance y conclusión identificables; no se presenta como revisión por pares.",
   },
@@ -95,6 +103,7 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
     nombre: "Realizar pruebas (Testing)",
     etapaCodigo: "desarrollo",
     inicial: true,
+    objetivo: "Ejecutar pruebas y registrar resultados.",
     evidencia: "Casos/alcance, entorno, versión, resultados y fallos; PDF o enlace a reporte.",
     criterio:
       "La ejecución es verificable y los resultados corresponden a los casos declarados; las observaciones de QA están respondidas.",
@@ -102,15 +111,16 @@ export const TIPOS_ACTIVIDAD: readonly TipoActividad[] = [
   {
     id: "ta-10",
     codigo: "A-10",
-    nombre: "Realizar trazabilidad de pruebas",
+    nombre: "Trazabilidad de pruebas",
     etapaCodigo: "desarrollo",
-    inicial: false,
+    inicial: true,
+    objetivo: "Relacionar requisitos, pruebas y resultados.",
     evidencia: "Relación requisitos–casos–resultados; PDF o enlace a matriz.",
     criterio: "Se distingue prueba diseñada de ejecutada y sus resultados; los huecos se identifican.",
   },
 ];
 
-/** Catálogo de métricas v1 (APROBADO, ADR-002). Todas de Desarrollo, captura manual. */
+/** Catálogo de métricas v1 (DEC-26). Todas de Desarrollo, captura manual y fuente opcional. */
 export const TIPOS_METRICA: readonly TipoMetrica[] = [
   {
     id: "tm-01",

@@ -25,12 +25,45 @@ export const ESTADOS_ACTIVIDAD: readonly EstadoActividad[] = [
 /** Estado de cumplimiento mostrado en UI. «Sin medición» ≠ 0 y no es cumplimiento. */
 export type EstadoCumplimiento = "Cumple" | "Incumple" | "No evaluable" | "Sin medición";
 
-/** Salud: algoritmo y clasificación PENDIENTES. Solo existe «Sin evaluar». */
-export type EstadoSalud = { estado: "Sin evaluar"; motivo: "Algoritmo pendiente" };
+/** Clasificación aprobada (DEC-27) según el valor real de S, sin redondear para pantalla. */
+export type ClasificacionSalud = "Malo" | "Regular" | "Bueno" | "Excelente";
 
-export const SALUD_SIN_EVALUAR: EstadoSalud = {
+export const CLASIFICACIONES_SALUD: readonly ClasificacionSalud[] = ["Malo", "Regular", "Bueno", "Excelente"];
+
+/**
+ * Advertencias de salud (DEC-27, calculadas por la BD):
+ * - SIN_ELEMENTOS: N_A + N_M = 0, el ámbito queda «Sin evaluar».
+ * - EVALUACION_PARCIAL: hay métricas Sin medición o No evaluables (aportan 0 y siguen en N_M).
+ * - SIN_AVANCE: hay elementos, pero ninguna actividad Aprobada ni métrica con aporte (0 % evaluado).
+ * - DEFECTOS_GRAVES: la medición vigente de M-04 es mayor que 0; no limita puntuación.
+ */
+export type AdvertenciaSalud = "SIN_ELEMENTOS" | "EVALUACION_PARCIAL" | "SIN_AVANCE" | "DEFECTOS_GRAVES";
+
+/** Salud de un ámbito (general o etapa): S = 100 × (A + Σ C_i) / (N_A + N_M). */
+export type EstadoSalud = {
+  estado: "Evaluada" | "Sin evaluar";
+  /** S redondeado a 2 decimales por la BD («68.57»); null si Sin evaluar. */
+  porcentaje: string | null;
+  clasificacion: ClasificacionSalud | null;
+  /** A + Σ C_i («4.8»). */
+  puntos: string;
+  /** N_A + N_M. */
+  posibles: number;
+  actividades: { total: number; aprobadas: number };
+  metricas: { total: number; sinDatos: number };
+  advertencias: AdvertenciaSalud[];
+};
+
+/** Ámbito sin actividades ni métricas: «Sin evaluar», sin dividir entre cero. */
+export const SALUD_SIN_ELEMENTOS: EstadoSalud = {
   estado: "Sin evaluar",
-  motivo: "Algoritmo pendiente",
+  porcentaje: null,
+  clasificacion: null,
+  puntos: "0",
+  posibles: 0,
+  actividades: { total: 0, aprobadas: 0 },
+  metricas: { total: 0, sinDatos: 0 },
+  advertencias: ["SIN_ELEMENTOS"],
 };
 
 export type Usuario = {
@@ -65,6 +98,8 @@ export type TipoActividad = {
   nombre: string;
   etapaCodigo: EtapaCodigo;
   inicial: boolean;
+  /** Objetivo ratificado del tipo (DEC-25). */
+  objetivo?: string;
   evidencia: string;
   criterio: string;
 };

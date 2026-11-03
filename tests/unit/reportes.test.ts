@@ -19,12 +19,13 @@ import {
 } from "@/features/reports/server/captura";
 import { LIMITE_PDF_REPORTE, renderizarReportePdf, textoPdf } from "@/features/reports/server/pdf";
 import { modeloReporte, nombreArchivoReporte } from "@/features/reports/lib/modelo";
+import { saludJson } from "./helpers/salud";
 
 const pid = "00000000-0000-4000-a000-000000000001";
 const otroProyecto = "00000000-0000-4000-a000-000000000002";
 const qa = "00000000-0000-4000-a000-0000000000a1";
 const otroQa = "00000000-0000-4000-a000-0000000000a2";
-const sinEvaluar = { estado: "Sin evaluar", motivo: "Algoritmo pendiente" };
+const sinEvaluar = saludJson();
 const cero = { Pendiente: 0, "En progreso": 0, "En revisión": 0, Aprobada: 0 };
 const ahora = new Date("2026-10-20T10:00:00.000Z");
 
@@ -50,6 +51,8 @@ function metrica(codigo: string, extra: Record<string, unknown> = {}) {
     causaCritica: null,
     medidaEn: null,
     configuradaEn: "2026-10-19T20:39:33.117978+00:00",
+    cumplimientoCritico: codigo === "M-01" ? "Sin medición" : null,
+    aporte: null,
     ...extra,
   };
 }
@@ -58,9 +61,17 @@ function actividades(n: number, estado = "Pendiente") {
   return Array.from({ length: n }, (_, i) => ({
     id: `00000000-0000-4000-a000-${String(i).padStart(12, "0")}`,
     tipoCodigo: "A-05",
-    tipoNombre: "Análisis de código estático automático",
+    tipoNombre: "Análisis estático automático de código",
+    instancia: i + 1,
     responsableNombre: i % 2 ? `Persona de prueba ${i}` : null,
     estado,
+    evidencias:
+      estado === "Aprobada"
+        ? [
+            { id: "00000000-0000-4000-a000-000000000501", tipo: "PDF", nombre: "informe.pdf", url: null },
+            { id: "00000000-0000-4000-a000-000000000502", tipo: "Enlace", nombre: null, url: "https://example.test/pr/1" },
+          ]
+        : [],
   }));
 }
 
@@ -77,12 +88,22 @@ function resumen(extra: { descripcion?: string; desarrollo?: number } = {}): Res
       cerradoEn: null,
     },
     generadoEn: "2026-10-20T09:59:59.900000+00:00",
-    salud: sinEvaluar,
+    // 1 Aprobada + M-02 con aporte 1, sobre (1 + n) actividades y 3 métricas.
+    salud: saludJson({
+      na: 1 + n,
+      aa: 1,
+      nm: 3,
+      sinDatos: 2,
+      porcentaje: (200 / (4 + n)).toFixed(2),
+      clasificacion: 200 / (4 + n) >= 50 ? "Regular" : "Malo",
+      puntos: "2",
+      advertencias: ["EVALUACION_PARCIAL"],
+    }),
     etapas: [
       {
         codigo: "requerimientos",
         nombre: "Especificación de requerimientos",
-        salud: sinEvaluar,
+        salud: saludJson({ na: 1, aa: 1, porcentaje: "100.00", clasificacion: "Excelente", puntos: "1" }),
         conteos: { ...cero, Aprobada: 1 },
         actividades: actividades(1, "Aprobada"),
       },
@@ -90,7 +111,14 @@ function resumen(extra: { descripcion?: string; desarrollo?: number } = {}): Res
       {
         codigo: "desarrollo",
         nombre: "Desarrollo",
-        salud: sinEvaluar,
+        salud: saludJson({
+          na: n,
+          nm: 3,
+          sinDatos: 2,
+          porcentaje: (100 / (3 + n)).toFixed(2),
+          puntos: "1",
+          advertencias: ["EVALUACION_PARCIAL", "DEFECTOS_GRAVES"],
+        }),
         conteos: { ...cero, Pendiente: n },
         actividades: actividades(n),
       },
@@ -101,6 +129,7 @@ function resumen(extra: { descripcion?: string; desarrollo?: number } = {}): Res
         valorActual: "95.00000000",
         condicionPrincipal: "Evaluable",
         cumplimiento: "Cumple",
+        aporte: "1.00000000",
         medidaEn: "2026-10-10T00:00:00+00:00",
       }),
       metrica("M-04"),
@@ -237,7 +266,7 @@ describe("CU-06: captura cifrada del reporte", () => {
 });
 
 describe("CU-06: contenido del reporte y PDF", () => {
-  test("el modelo muestra Sin medición, Sin evaluar y las tres etapas sin calcular salud", () => {
+  test("el modelo muestra la salud de CU-05, aportes, advertencias y evidencias sin recalcular", () => {
     const m = modeloReporte(resumen(), "2026-10-20T10:00:00.000Z");
     expect(m.fechaGeneracion).toBe("20 oct 2026, 04:00 (hora de CDMX)");
     expect(m.proyecto).toMatchObject({ periodoAcademico: "2026-2", estado: "Abierto", fechas: "01 oct 2026 – sin fin previsto" });
@@ -247,11 +276,31 @@ describe("CU-06: contenido del reporte y PDF", () => {
     expect(m2).toMatchObject({ ultimoValor: "95.00 %", cumplimientoTexto: "Cumple", fechaMedicion: "10 oct 2026" });
     expect(m4).toMatchObject({ ultimoValor: "Sin medición", cumplimiento: "Sin medición" });
     expect(m.etapas.map((e) => e.nombre)).toEqual(["Especificación de requerimientos", "Diseño del software", "Desarrollo"]);
-    expect(m.etapas.map((e) => e.salud.estado)).toEqual(["Sin evaluar", "Sin evaluar", "Sin evaluar"]);
-    expect(m.salud.general).toEqual(sinEvaluar);
+    // Mismos resultados que el resumen de CU-05 (porcentaje redondeado por la BD).
+    expect(m.salud.general).toMatchObject({ porcentaje: "40.00 %", clasificacion: "Malo", puntos: "2 de 5 puntos" });
+    expect(m.etapas.map((e) => e.salud.porcentaje)).toEqual(["100.00 %", "Sin evaluar", "25.00 %"]);
+    expect(m.etapas[1]!.salud).toMatchObject({ clasificacion: null, puntos: "Sin elementos" });
+    expect(m.advertencias).toEqual([
+      expect.stringMatching(/^General: Evaluación parcial/),
+      expect.stringMatching(/^Diseño del software: Sin actividades SQA ni métricas/),
+      expect.stringMatching(/^Desarrollo: Evaluación parcial/),
+      expect.stringMatching(/^Desarrollo: Defectos graves abiertos/),
+    ]);
+    expect(m2!.aporte).toBe("1.00 de 1");
+    expect(m4!.aporte).toBe("0 (sin datos)");
+    expect(m1!.criterioCritico).toBeNull();
     expect(m.actividades.total).toBe(2);
-    expect(m.etapas[0]!.actividades[0]!.responsable).toBe("Sin responsable");
-    expect(JSON.stringify(m)).not.toMatch(/Malo|Regular|Bueno|Excelente/);
+    const a = m.etapas[0]!.actividades[0]!;
+    expect(a).toMatchObject({ responsable: "Sin responsable", instancia: 1 });
+    // Referencias, no incrustación: el PDF va por la ruta autorizada de evidencias.
+    expect(a.evidencias).toEqual([
+      { id: "00000000-0000-4000-a000-000000000501", texto: "informe.pdf (PDF privado en QAlly)", href: "/api/evidencias/00000000-0000-4000-a000-000000000501/archivo" },
+      { id: "00000000-0000-4000-a000-000000000502", texto: "https://example.test/pr/1", href: "https://example.test/pr/1" },
+    ]);
+    const conOrigen = modeloReporte(resumen(), "2026-10-20T10:00:00.000Z", "https://qally.example");
+    expect(conOrigen.etapas[0]!.actividades[0]!.evidencias[0]!.href).toBe(
+      "https://qally.example/api/evidencias/00000000-0000-4000-a000-000000000501/archivo",
+    );
   });
 
   test("nombre de archivo saneado y textos compatibles con la fuente estándar", () => {

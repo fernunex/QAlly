@@ -64,7 +64,7 @@ export function idCampoMetrica(tipoId: string, campo: "objetivo" | "critico") {
   return `metrica-${tipoId}-${campo}`;
 }
 
-function validarObjetivo(tipo: TipoMetrica, valor: string): string | null {
+function validarObjetivo(tipo: TipoMetrica, valor: string, permitirCero = false): string | null {
   const v = valor.trim();
   if (!v) return "Indica el objetivo.";
   if (tipo.unidad === "defectos") {
@@ -75,6 +75,7 @@ function validarObjetivo(tipo: TipoMetrica, valor: string): string | null {
   if (!/^\d+(\.\d+)?$/.test(v))
     return "Escribe un número, por ejemplo 90 o 87.5.";
   if (Number(v) > 100) return "El objetivo debe estar entre 0 y 100 %.";
+  if (!permitirCero && Number(v) === 0) return "El objetivo debe ser mayor que 0 %.";
   if (!/^\d+(\.\d{1,4})?$/.test(v)) return "Usa hasta 4 decimales.";
   return null;
 }
@@ -91,7 +92,7 @@ export function validarMetricas(
     const e = validarObjetivo(tipo, cfg.objetivo);
     if (e) errores[idCampoMetrica(tipo.id, "objetivo")] = e;
     if (tipo.objetivoCriticoInicial !== null) {
-      const ec = validarObjetivo(tipo, cfg.critico);
+      const ec = validarObjetivo(tipo, cfg.critico, true);
       if (ec)
         errores[idCampoMetrica(tipo.id, "critico")] = ec.replace(
           "el objetivo",

@@ -117,10 +117,13 @@ describe("CU-01: entradas y errores públicos", () => {
     );
   });
   test("objetivos validan cotas exactas sin lanzar excepciones por texto inválido", () => {
-    for (const v of ["0", "100", "99.9999"])
+    for (const v of ["0.0001", "100", "99.9999"])
       expect(objetivoSchema("%").safeParse(v).success).toBe(true);
-    for (const v of ["NaN", "Infinity", "1e2", "100.0001", "-1", "1.00001"])
+    // DEC-29 (RQ-01): meta porcentual 0 no admitida; sí para el criterio crítico de M-01.
+    for (const v of ["0", "0.0000", "000", "NaN", "Infinity", "1e2", "100.0001", "-1", "1.00001"])
       expect(objetivoSchema("%").safeParse(v).success).toBe(false);
+    expect(objetivoSchema("%", true).safeParse("0").success).toBe(true);
+    expect(objetivoSchema("defectos").safeParse("0").success).toBe(true);
     for (const v of ["1.5", "-1", "2000000001", "NaN"])
       expect(objetivoSchema("defectos").safeParse(v).success).toBe(false);
     expect(objetivoSchema("defectos").safeParse("2000000000").success).toBe(

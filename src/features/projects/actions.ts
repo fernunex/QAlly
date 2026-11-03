@@ -66,12 +66,12 @@ export async function crearProyectoAction(
         campos[`metricas.${i}.tipoId`] = "Selecciona una métrica vigente.";
         continue;
       }
-      const porcentaje = objetivoSchema("%");
+      const porcentaje = objetivoSchema("%", true);
       const objetivo = objetivoSchema(tipo.unidad);
       if (!objetivo.safeParse(m.objetivo).success)
         campos[`metricas.${i}.objetivo`] =
           tipo.unidad === "%"
-            ? "Usa un porcentaje de 0 a 100 con hasta cuatro decimales."
+            ? "Usa un porcentaje mayor que 0 y hasta 100, con hasta cuatro decimales."
             : "Usa un entero entre 0 y 2000000000.";
       if (
         tipo.codigo === "M-01"

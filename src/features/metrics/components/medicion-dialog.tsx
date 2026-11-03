@@ -222,7 +222,7 @@ export function MedicionDialog({
 
           <Field data-invalid={!!errorFuente && (intentado || fuente !== "")}>
             <FieldLabel htmlFor={`${id}-fuente`}>
-              Fuente <span className="font-normal text-muted-foreground">(texto o URL, 1–{MAX_FUENTE} caracteres)</span>
+              Fuente <span className="font-normal text-muted-foreground">(opcional · texto o URL, hasta {MAX_FUENTE} caracteres)</span>
             </FieldLabel>
             <Input
               id={`${id}-fuente`}
@@ -235,7 +235,7 @@ export function MedicionDialog({
             {errorFuente && (intentado || fuente !== "") ? (
               <FieldError>{errorFuente}</FieldError>
             ) : (
-              <FieldDescription>Referencia de dónde salen los conteos; no es un archivo.</FieldDescription>
+              <FieldDescription>Referencia opcional de dónde salen los conteos; no es un archivo.</FieldDescription>
             )}
           </Field>
         </FieldGroup>

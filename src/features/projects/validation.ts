@@ -57,7 +57,11 @@ const decimal = z
     /^\d+(\.\d{1,4})?$/,
     "Escribe un decimal sin exponente, con hasta cuatro decimales.",
   );
-export function objetivoSchema(unidad: "%" | "defectos") {
+/**
+ * Objetivo de métrica como texto exacto. DEC-29 (RQ-01): los porcentajes principales van en
+ * (0,100]; `permitirCero` solo para el objetivo crítico de M-01, que no participa en la salud.
+ */
+export function objetivoSchema(unidad: "%" | "defectos", permitirCero = false) {
   return z
     .string()
     .trim()
@@ -72,12 +76,13 @@ export function objetivoSchema(unidad: "%" | "defectos") {
           );
         if (!/^\d{1,3}(\.\d{1,4})?$/.test(normal)) return false;
         const [entero, fraccion = ""] = normal.split(".");
-        return (
-          BigInt(entero) * 10000n + BigInt(fraccion.padEnd(4, "0")) <= 1000000n
-        );
+        const diezmilesimas = BigInt(entero) * 10000n + BigInt(fraccion.padEnd(4, "0"));
+        return diezmilesimas <= 1000000n && (permitirCero || diezmilesimas > 0n);
       },
       unidad === "%"
-        ? "Usa un porcentaje de 0 a 100 con hasta cuatro decimales."
+        ? permitirCero
+          ? "Usa un porcentaje de 0 a 100 con hasta cuatro decimales."
+          : "Usa un porcentaje mayor que 0 y hasta 100, con hasta cuatro decimales."
         : "Usa un entero entre 0 y 2000000000.",
     );
 }

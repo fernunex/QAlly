@@ -12,13 +12,20 @@ npm run db:start
 npm run db:seed
 npm run db:types
 npm run db:lint
-npm run db:test
 npm run typecheck
 ```
 
 `db:start` prepara una red Docker con puertos publicados solo en 127.0.0.1, inicia PostgreSQL/Auth/Storage/Studio y genera `.env.local` sin mostrar claves. El registro público queda deshabilitado en `[auth].enable_signup`; `[auth.email].enable_signup` mantiene activo el proveedor para permitir iniciar sesión a las cuentas existentes. No inicia Next.js: la UI se inicia aparte con `npm run dev -- --hostname 127.0.0.1` y ya conecta CU-01 a CU-04 con estas cuentas y datos locales. Las herramientas son locales y no requieren login ni cuenta Supabase Cloud.
 
 Abrir **http://127.0.0.1:54323** para Studio. Allí se pueden inspeccionar tablas, usuarios de Auth y objetos Storage. API local: http://127.0.0.1:54321. No editar allí el esquema como fuente de verdad: los cambios se hacen en migraciones versionadas.
+
+### Un clon nuevo en la misma computadora reutiliza la base
+
+La configuración versionada fija `project_id = "qally"`. Supabase conserva los datos en el volumen Docker `supabase_db_qally` y los archivos en `supabase_storage_qally`, fuera de la carpeta del repositorio. Clonar QAlly en otra carpeta de la misma computadora y usar el mismo Docker reutiliza esa instancia y sus datos; no equivale a una base vacía. Parar Supabase o eliminar una carpeta del código tampoco elimina esos volúmenes.
+
+`db:start` inicia esa instancia y aplica migraciones; no ejecuta pruebas. `db:seed` crea únicamente los tres ejemplos de forma repetible; `db:seed:team` agrega la captura de QAlly si falta. Ninguno elimina los proyectos que ya existían. Si aparecen proyectos de integración o de salud en un clon nuevo, comprobar si ya estaban en el volumen o si se ejecutó `db:test`/E2E. El bloque de primera ejecución ya no incluye `db:test`: las pruebas son un paso separado que agrega datos.
+
+No usar reset para aislar un clon: afectaría también a los otros clones que utilizan esta instancia. Una instancia por clon requeriría configurar identificador, puertos y scripts administrativos compatibles; no basta con renombrar la carpeta.
 
 ## Credenciales locales
 
@@ -101,7 +108,7 @@ Este procedimiento administrativo procesa lotes de hasta 100 archivos sin refere
 
 ## Pruebas y dataset grande
 
-`db:test` usa la API local y sesiones reales. Verifica Auth, RLS, escritura directa prohibida, accesos entre proyectos, altas atómicas/idempotentes, estados, revisiones/correcciones concurrentes, bloqueo de cierre, validación y privacidad de PDF y limpieza segura. Las pruebas añaden proyectos de integración locales; reconstruir si se desea descartarlos.
+`npm run db:test` es una verificación opcional, separada del arranque y los seeds. Usa la API local y sesiones reales. Verifica Auth, RLS, escritura directa prohibida, accesos entre proyectos, altas atómicas/idempotentes, estados, revisiones/correcciones concurrentes, bloqueo de cierre, validación y privacidad de PDF y limpieza segura. Las pruebas añaden proyectos de integración, salud y restauración que permanecen en la base y se acumulan al repetirlas. También serán visibles desde otros clones conectados a la misma instancia. No ejecutar reset para quitarlos si hay datos de trabajo que se quieren conservar.
 
 Para el dataset de aceptación grande:
 

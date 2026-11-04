@@ -64,7 +64,7 @@ Entrar con `qa1@qally.example.test` o `miembro1@qally.example.test`. La contrase
 
 Para recorrer ambos roles, abrir sesiones separadas: QA administra desde **Proyectos → Métricas / Actividades**; el Miembro entrega desde **Mis actividades**. Las cuentas y asignaciones iniciales se describen en la [guía de Supabase](docs/datos/guia-supabase.md#qué-contiene-el-seed).
 
-En los arranques siguientes basta con `npm run db:start` y `npm run dev -- --hostname 127.0.0.1`. No se necesita reconstruir la BD para iniciar o probar la aplicación.
+En los arranques siguientes basta con `npm run db:start` y `npm run dev -- --hostname 127.0.0.1`. `db:start` también aplica las migraciones pendientes a la base local, incluso si Supabase ya está iniciado. Ejecutarlo después de actualizar `dev` mantiene la BD compatible con el código; no se necesita reconstruirla.
 
 ## Operación de la base local
 

@@ -73,6 +73,10 @@ npm run db:status
 npm run db:stop
 ```
 
+`db:start` inicia los servicios y aplica las migraciones versionadas pendientes con `supabase migration up --local` antes de generar el entorno. Ejecutarlo también después de actualizar `dev`, aunque Supabase ya esté iniciado. Si una migración falla, el comando termina con error y no anuncia que el entorno está listo.
+
+Si Métricas muestra un error Zod por ausencia de `cumplimientoCritico` o `aporte`, la BD todavía devuelve el contrato anterior a la migración `20261102000100_dec25_28_salud_reportes.sql`. Salud y la generación de reportes también necesitan esa migración. Ejecutar `npm run db:start` y recargar la aplicación; no resolverlo haciendo opcionales esos campos ni reiniciando los datos.
+
 Parar conserva los datos. Para reconstruir **solo la base local de QAlly**, perdiendo sus datos de desarrollo:
 
 ```sh

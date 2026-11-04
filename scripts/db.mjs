@@ -34,7 +34,10 @@ try {
    if(result.status!==0) throw new Error('No se pudo preparar la red local de Docker.');
   }
   console.log('Iniciando Supabase local (primera ejecución descarga imágenes)…');
-  run(['start','--network-id','qally-local']); localEnv();
+  run(['start','--network-id','qally-local']);
+  console.log('Aplicando migraciones pendientes a la base local…');
+  run(['migration','up','--local']);
+  localEnv();
   console.log('Supabase listo. Studio: http://127.0.0.1:54323'); break;
  }
  case 'stop': run(['stop']); console.log('Supabase detenido; datos conservados.'); break;

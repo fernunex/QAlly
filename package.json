@@ -18,6 +18,7 @@
     "db:reset": "node scripts/db.mjs reset",
     "db:types": "node scripts/db.mjs types",
     "db:seed": "node scripts/seed-dev.mjs",
+    "db:seed:team": "node scripts/seed-team.mjs",
     "db:seed:large": "node scripts/seed-dev.mjs --large",
     "db:cleanup": "node scripts/cleanup-files.mjs",
     "db:test": "vitest run tests/database",

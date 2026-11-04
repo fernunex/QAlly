@@ -1,0 +1,500 @@
+{
+  "formato": 1,
+  "capturadoEn": "2026-11-04T18:59:32.411Z",
+  "rows": {
+    "proyecto": [
+      {
+        "id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "nombre": "QAlly",
+        "descripcion": "Proyecto integrador de la materia Calidad de Software",
+        "periodo_academico": "Ago-Dic 2026",
+        "fecha_inicio": "2026-10-01",
+        "fecha_fin_prevista": "2026-11-20",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.597582+00:00",
+        "actualizado_en": "2026-11-03T18:35:35.597582+00:00",
+        "cerrado_por": null,
+        "cerrado_en": null,
+        "version": 1,
+        "solicitud_creacion_id": "584c5cf5-5b82-4ce2-b6d4-4a4fd0366d12",
+        "solicitud_creacion_hash": "ffb095bd6b91977dd231b08ffab4f9853782ff1fba1bf98a62b7bcf7d3d2a825"
+      }
+    ],
+    "participacion_proyecto": [
+      {
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "usuario_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "asociada_en": "2026-11-03T18:35:35.599039+00:00"
+      },
+      {
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "usuario_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "asociada_en": "2026-11-03T18:35:35.600339+00:00"
+      },
+      {
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "usuario_id": "13ac6965-5d5a-4e22-a0b6-6dd0f6465b30",
+        "asociada_en": "2026-11-03T18:35:35.600385+00:00"
+      }
+    ],
+    "actividad_sqa": [
+      {
+        "id": "8f008fa4-3619-4104-b282-e1bd4d412973",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "d173aacb-1b4b-57f9-94df-e920475fd566",
+        "descripcion": "Cambios o periodo examinado y seguimiento de versiones; PDF o enlace a commits/PR/registro.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.612877+00:00",
+        "version": 8
+      },
+      {
+        "id": "ec132e36-66d6-4601-ba8f-2f626868ac7e",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "d8a5ec1a-8046-5229-bacc-7693844ba628",
+        "descripcion": "Herramienta, versión/commit, alcance, resultados y tratamiento; PDF o enlace a ejecución/informe.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.607615+00:00",
+        "version": 8
+      },
+      {
+        "id": "73600517-482d-4356-8fc1-577439513d25",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "b98c951a-2802-5116-97a2-0af0f525e02e",
+        "descripcion": "Relación entre requisitos y elementos de diseño; PDF o enlace a matriz/documento.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "En progreso",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.611542+00:00",
+        "version": 4
+      },
+      {
+        "id": "0a5cc075-4c1a-42f8-bdbb-2a352120cdb2",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "e3a90ca9-52b6-5144-9b6a-185d43b20e5e",
+        "descripcion": "Cambios revisados, revisor y conclusión; PDF o enlace a PR/registro de revisión.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "En progreso",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.608624+00:00",
+        "version": 4
+      },
+      {
+        "id": "c12b87ee-766a-4f45-9144-9d1934625363",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "ea7d7769-7225-5375-a2ed-a3044ffd8fcf",
+        "descripcion": "Relación requisitos–casos–resultados; PDF o enlace a matriz.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "En progreso",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.612461+00:00",
+        "version": 4
+      },
+      {
+        "id": "b8d56afb-60b7-4c60-a4dc-6caba87b163f",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "7c700beb-dfb5-51b0-80ba-078ecff63df9",
+        "descripcion": "Alcance/versión revisada, hallazgos y conclusión; PDF o enlace al informe/checklist y documentos revisados.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.602908+00:00",
+        "version": 8
+      },
+      {
+        "id": "5c8dbec4-23d6-4a48-a9c9-6748d772d682",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "d148fca0-3767-529e-9c29-433db155837a",
+        "descripcion": "Código/commit revisado, checklist y hallazgos; PDF o enlace al registro.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.612008+00:00",
+        "version": 8
+      },
+      {
+        "id": "bd127404-9c84-48c7-a90d-4b29eaf7d774",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "4bbcb2e1-97c3-597d-aa04-dbbc6e75b0e1",
+        "descripcion": "Relaciones documentadas entre requisitos y sus fuentes; PDF o enlace a la matriz.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.610607+00:00",
+        "version": 8
+      },
+      {
+        "id": "68676dc5-da9a-4930-aa88-438d9e474bd8",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "c9019a6a-a659-51fc-bece-6ea07e19ddd2",
+        "descripcion": "Casos/alcance, entorno, versión, resultados y fallos; PDF o enlace a reporte.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.609608+00:00",
+        "version": 8
+      },
+      {
+        "id": "b067128b-0ccc-4831-a9e9-5f999a557d7a",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_actividad_id": "38599dc7-f092-5a01-be7b-18fd87e459fd",
+        "descripcion": "Versión de diseño, revisión de coherencia con requisitos y hallazgos; PDF o enlace al informe y diseño.",
+        "responsable_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "estado": "Aprobada",
+        "creado_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creado_en": "2026-11-03T18:35:35.606493+00:00",
+        "version": 8
+      }
+    ],
+    "metrica_proyecto": [
+      {
+        "id": "2a2ec8a4-2975-4ca2-8325-dccea4b8c7ab",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_metrica_id": "192e07bd-43f3-595f-b615-bdb8fe6f3399",
+        "operador": ">=",
+        "objetivo": 90,
+        "objetivo_critico": 100,
+        "configurada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "configurada_en": "2026-11-03T18:35:35.624663+00:00"
+      },
+      {
+        "id": "5d8f0d98-a252-40d2-b71f-e621e859d227",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_metrica_id": "fc98d477-adc5-5923-9122-4324b889372e",
+        "operador": ">=",
+        "objetivo": 100,
+        "objetivo_critico": null,
+        "configurada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "configurada_en": "2026-11-03T18:35:35.639537+00:00"
+      },
+      {
+        "id": "fa684e6e-0efc-4d4f-8760-2669f562e9c2",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_metrica_id": "fbb31d90-520c-517d-974d-7be0e642aaae",
+        "operador": ">=",
+        "objetivo": 100,
+        "objetivo_critico": null,
+        "configurada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "configurada_en": "2026-11-03T18:35:35.643908+00:00"
+      },
+      {
+        "id": "71069aac-33fb-4461-b58a-24d393a637f8",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "tipo_metrica_id": "4317248b-f600-5bc8-8072-7d5d09368844",
+        "operador": "<=",
+        "objetivo": 0,
+        "objetivo_critico": null,
+        "configurada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "configurada_en": "2026-11-03T18:35:35.648451+00:00"
+      }
+    ],
+    "entrega": [
+      {
+        "id": "f23d97eb-c3c9-4e49-822d-995db107b00c",
+        "actividad_id": "73600517-482d-4356-8fc1-577439513d25",
+        "numero_intento": 1,
+        "resultado": null,
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:12:43.289821+00:00",
+        "enviada_en": null
+      },
+      {
+        "id": "35087a1d-ddef-4582-949f-570bafbb22ce",
+        "actividad_id": "c12b87ee-766a-4f45-9144-9d1934625363",
+        "numero_intento": 1,
+        "resultado": null,
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:12:51.358294+00:00",
+        "enviada_en": null
+      },
+      {
+        "id": "239f3f96-16b8-4543-b04e-68b97fb638c1",
+        "actividad_id": "5c8dbec4-23d6-4a48-a9c9-6748d772d682",
+        "numero_intento": 1,
+        "resultado": "Realizado por Emi",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:13:20.718201+00:00",
+        "enviada_en": "2026-11-03T19:15:57.390338+00:00"
+      },
+      {
+        "id": "f00f98e6-88b1-4880-856d-360549fe9b44",
+        "actividad_id": "b8d56afb-60b7-4c60-a4dc-6caba87b163f",
+        "numero_intento": 1,
+        "resultado": "Realizado por Daniela",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:11:39.6406+00:00",
+        "enviada_en": "2026-11-03T19:17:47.842407+00:00"
+      },
+      {
+        "id": "9af6e230-deb1-4f82-8f71-ac57a0fce115",
+        "actividad_id": "bd127404-9c84-48c7-a90d-4b29eaf7d774",
+        "numero_intento": 1,
+        "resultado": "David realizo",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:13:11.192559+00:00",
+        "enviada_en": "2026-11-03T19:24:40.252822+00:00"
+      },
+      {
+        "id": "5fdba393-c8de-4ebe-996d-648d579e7058",
+        "actividad_id": "68676dc5-da9a-4930-aa88-438d9e474bd8",
+        "numero_intento": 1,
+        "resultado": "Emiliano",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:12:35.385158+00:00",
+        "enviada_en": "2026-11-03T19:25:45.146456+00:00"
+      },
+      {
+        "id": "8b3fe921-c203-4d18-b215-5e695ebba9cd",
+        "actividad_id": "b067128b-0ccc-4831-a9e9-5f999a557d7a",
+        "numero_intento": 1,
+        "resultado": "David y Josuu",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:12:15.491604+00:00",
+        "enviada_en": "2026-11-03T19:27:49.309051+00:00"
+      },
+      {
+        "id": "8df89b66-14ed-475d-8846-3043a1be90c9",
+        "actividad_id": "0a5cc075-4c1a-42f8-bdbb-2a352120cdb2",
+        "numero_intento": 1,
+        "resultado": null,
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:37:35.177604+00:00",
+        "enviada_en": null
+      },
+      {
+        "id": "6854d3ce-fe65-4830-a6b0-b305a35e3101",
+        "actividad_id": "8f008fa4-3619-4104-b282-e1bd4d412973",
+        "numero_intento": 1,
+        "resultado": "Uso de github para versionamiento",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:37:59.256681+00:00",
+        "enviada_en": "2026-11-03T19:40:10.273908+00:00"
+      },
+      {
+        "id": "2bd22125-6b23-4377-bd0e-fc5e302f9205",
+        "actividad_id": "ec132e36-66d6-4601-ba8f-2f626868ac7e",
+        "numero_intento": 1,
+        "resultado": "EsLint paso correctamente",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:46:22.672658+00:00",
+        "enviada_en": "2026-11-03T19:46:49.398308+00:00"
+      }
+    ],
+    "evidencia": [
+      {
+        "id": "d609e5c4-8800-46f0-bc31-e0d065b1dc18",
+        "entrega_id": "239f3f96-16b8-4543-b04e-68b97fb638c1",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://docs.google.com/spreadsheets/d/1K32_rIlTuYhW7z4gw-cytbuo-VFI9knX/edit?usp=drive_link&ouid=104894647532803647413&rtpof=true&sd=true",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:15:47.587217+00:00"
+      },
+      {
+        "id": "ad69d6f0-e5e1-424c-b6bb-ffc3585cbb73",
+        "entrega_id": "f00f98e6-88b1-4880-856d-360549fe9b44",
+        "tipo": "PDF",
+        "archivo_id": "d533df33-760b-4cbe-bd2f-de543ddafce3",
+        "url": null,
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:17:41.733958+00:00"
+      },
+      {
+        "id": "9db5348c-776c-4d4d-ab53-dc8121cd2f0e",
+        "entrega_id": "9af6e230-deb1-4f82-8f71-ac57a0fce115",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://docs.google.com/spreadsheets/d/1cgyyqGN60D4OTNmSh4oCETW4Xg5EzxKb/edit?gid=1594515091#gid=1594515091",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:24:22.23024+00:00"
+      },
+      {
+        "id": "57928a5e-8e7b-47d0-8a89-cc2f6abba871",
+        "entrega_id": "5fdba393-c8de-4ebe-996d-648d579e7058",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://docs.google.com/document/d/1eVL5Z2HcqWRH9pA8qoc-1fREibeL25EJ/edit?usp=drive_link&ouid=104894647532803647413&rtpof=true&sd=true",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:25:41.207259+00:00"
+      },
+      {
+        "id": "232cb4ff-75ee-4b26-9851-cfd420f88f10",
+        "entrega_id": "8b3fe921-c203-4d18-b215-5e695ebba9cd",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://docs.google.com/document/d/1-Wbxe1rqoT_-tzLTwj1mfrXtiHhEFXJF7E7xiv01d0Y/edit?usp=drive_link",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:27:42.013405+00:00"
+      },
+      {
+        "id": "36e2cb03-48a2-4916-b60c-9b30b2ea8821",
+        "entrega_id": "6854d3ce-fe65-4830-a6b0-b305a35e3101",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://github.com/fernunex/QAlly/pulls",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:39:46.454882+00:00"
+      },
+      {
+        "id": "77aab98b-8d5f-45fa-aa7e-83a058539736",
+        "entrega_id": "2bd22125-6b23-4377-bd0e-fc5e302f9205",
+        "tipo": "Enlace",
+        "archivo_id": null,
+        "url": "https://drive.google.com/file/d/1K0Ho8FIpEMMRQ4u-FJOymUjYTV3tNEg8/view?usp=drive_link",
+        "autor_id": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "creada_en": "2026-11-03T19:46:28.096445+00:00"
+      }
+    ],
+    "revision_entrega": [
+      {
+        "id": "75bce27c-6045-4ab9-800d-9361daf5abff",
+        "entrega_id": "f00f98e6-88b1-4880-856d-360549fe9b44",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:18:28.594435+00:00"
+      },
+      {
+        "id": "4a10112a-50ec-44a4-98a5-b9fc3c0d47d9",
+        "entrega_id": "239f3f96-16b8-4543-b04e-68b97fb638c1",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:18:41.340361+00:00"
+      },
+      {
+        "id": "675616ea-5294-4864-8d02-8191870e594f",
+        "entrega_id": "9af6e230-deb1-4f82-8f71-ac57a0fce115",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:28:36.141711+00:00"
+      },
+      {
+        "id": "48c234f9-b12f-4f30-bb29-462a42fec8c8",
+        "entrega_id": "5fdba393-c8de-4ebe-996d-648d579e7058",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:28:46.873358+00:00"
+      },
+      {
+        "id": "dd8b5aae-75f3-45c7-82a7-b842398a0af4",
+        "entrega_id": "8b3fe921-c203-4d18-b215-5e695ebba9cd",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:29:12.197786+00:00"
+      },
+      {
+        "id": "cdc34eb9-b9a9-4c65-9d47-c829e8ffd15c",
+        "entrega_id": "6854d3ce-fe65-4830-a6b0-b305a35e3101",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:40:33.687898+00:00"
+      },
+      {
+        "id": "257df9b8-0a30-4f7c-ab82-66f1900d5a37",
+        "entrega_id": "2bd22125-6b23-4377-bd0e-fc5e302f9205",
+        "decision": "Aprobar",
+        "observaciones": null,
+        "qa_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "revisada_en": "2026-11-03T19:47:14.072379+00:00"
+      }
+    ],
+    "archivo_evidencia": [
+      {
+        "id": "d533df33-760b-4cbe-bd2f-de543ddafce3",
+        "proyecto_id": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5",
+        "entrega_origen_id": "f00f98e6-88b1-4880-856d-360549fe9b44",
+        "creado_por": "a8f0152d-ada7-45ab-a15d-17792fb5562c",
+        "ruta_objeto": "f43a5131-85d1-49e6-98d0-ae31bbee4ba5/d533df33-760b-4cbe-bd2f-de543ddafce3.pdf",
+        "nombre_archivo": "Checklist de revisión del SRS2.pdf",
+        "mime_type": "application/pdf",
+        "tamano_bytes": 163383,
+        "sha256": "2501cb021ded88b272f79b72be1c9b365c66467608ceaeac61ed7cf22e929bfa",
+        "estado": "Disponible",
+        "creado_en": "2026-11-03T19:17:41.667557+00:00",
+        "actualizado_en": "2026-11-03T19:17:41.734906+00:00",
+        "reserva_hasta": "2026-11-03T19:47:41.667557+00:00",
+        "sin_referencias_desde": null
+      }
+    ],
+    "medicion": [
+      {
+        "id": "c5296ce3-1be0-40fd-8390-2a32ad0039dc",
+        "metrica_proyecto_id": "2a2ec8a4-2975-4ca2-8325-dccea4b8c7ab",
+        "medida_en": "2026-11-03T00:00:00+00:00",
+        "orden_registro": 10,
+        "creada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creada_en": "2026-11-03T19:33:03.031865+00:00"
+      },
+      {
+        "id": "b58bbe13-1931-4b2c-b0c2-f38b7f5d1781",
+        "metrica_proyecto_id": "5d8f0d98-a252-40d2-b71f-e621e859d227",
+        "medida_en": "2026-11-03T00:00:00+00:00",
+        "orden_registro": 11,
+        "creada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creada_en": "2026-11-03T19:34:51.818207+00:00"
+      },
+      {
+        "id": "3db665e2-70aa-434a-8550-9f760f8d77cc",
+        "metrica_proyecto_id": "71069aac-33fb-4461-b58a-24d393a637f8",
+        "medida_en": "2026-11-03T00:00:00+00:00",
+        "orden_registro": 12,
+        "creada_por": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "creada_en": "2026-11-03T19:36:01.530075+00:00"
+      }
+    ],
+    "revision_medicion": [
+      {
+        "medicion_id": "c5296ce3-1be0-40fd-8390-2a32ad0039dc",
+        "numero_revision": 1,
+        "datos_fuente": {
+          "aprobadas": 18,
+          "ejecutadas": 18,
+          "fuente_referencia": "https://docs.google.com/document/d/1eVL5Z2HcqWRH9pA8qoc-1fREibeL25EJ/edit?usp=drive_link&ouid=104894647532803647413&rtpof=true&sd=true",
+          "criticas_aprobadas": 15,
+          "criticas_ejecutadas": 15
+        },
+        "valor": 100,
+        "condicion": "Evaluable",
+        "causa_no_evaluable": null,
+        "autor_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "registrada_en": "2026-11-03T19:33:03.033292+00:00"
+      },
+      {
+        "medicion_id": "b58bbe13-1931-4b2c-b0c2-f38b7f5d1781",
+        "numero_revision": 1,
+        "datos_fuente": {
+          "integrados": 8,
+          "fuente_referencia": "https://github.com/fernunex/QAlly/pulls?q=is%3Apr+state%3Aclosed",
+          "integrados_revisados": 1
+        },
+        "valor": 12.5,
+        "condicion": "Evaluable",
+        "causa_no_evaluable": null,
+        "autor_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "registrada_en": "2026-11-03T19:34:51.818666+00:00"
+      },
+      {
+        "medicion_id": "3db665e2-70aa-434a-8550-9f760f8d77cc",
+        "numero_revision": 1,
+        "datos_fuente": {
+          "altos_abiertos": 1,
+          "criticos_abiertos": 0,
+          "fuente_referencia": "https://github.com/fernunex/QAlly/issues"
+        },
+        "valor": 1,
+        "condicion": "Evaluable",
+        "causa_no_evaluable": null,
+        "autor_id": "7a306f80-475a-43a6-ad92-52ebe3726737",
+        "registrada_en": "2026-11-03T19:36:01.530411+00:00"
+      }
+    ]
+  }
+}

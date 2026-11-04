@@ -45,6 +45,28 @@ Los **catálogos obligatorios** están en la migración `20261018000300_catalogo
 
 ## Trabajo cotidiano y reconstrucción
 
+### Copiar el proyecto QAlly del equipo
+
+El comando adicional restaura una captura del proyecto **QAlly** registrado localmente, tomada el 2026-11-04. En cada equipo, después de obtener esta rama e instalar las dependencias con `npm ci`:
+
+```sh
+npm run db:start
+npm run db:seed:team
+npm run dev -- --hostname 127.0.0.1
+```
+
+No requiere ejecutar el seed de ejemplos. Provisiona las seis cuentas locales habituales y restaura el proyecto con sus dos miembros, diez actividades SQA (siete Aprobadas y tres En progreso), diez entregas, siete evidencias (seis enlaces y un PDF), cuatro métricas y tres mediciones con sus revisiones. No genera mediciones para M-03. Acceso con `qa1@qally.example.test`, `miembro1@qally.example.test` o `miembro2@qally.example.test` y la contraseña `QALLY_DEV_PASSWORD` de **cada equipo**. `qa2` y los otros miembros no participan en este proyecto.
+
+La captura está en `scripts/fixtures/proyecto-equipo/`: datos del proyecto y PDF, sin cuentas de Auth, contraseñas, sesiones ni claves. El PDF se carga al bucket privado `evidencias`; los enlaces conservan los permisos que tengan en su proveedor externo. Es una copia de desarrollo independiente: los cambios posteriores de un integrante no se sincronizan con los demás.
+
+El seed conserva identificadores y fechas de negocio. Si el proyecto ya existe por su ID, termina sin modificarlo ni reponer sus archivos; no sobrescribe avances locales. Otros proyectos con el mismo nombre no se consideran la misma copia. Las mediciones conservan su orden relativo y reciben el número de secuencia propio de la base de destino. La carga SQL se hace en una transacción, con constraints y triggers activos, mediante `psql` del contenedor local `supabase_db_qally`; no cambia esquema, contratos, RLS ni migraciones. Necesita Docker accesible desde la terminal.
+
+Los PDF se validan por tamaño y SHA-256 antes de cargar. Si falla la transacción, no quedan filas parciales del proyecto; puede quedar el binario previamente cargado. Al repetir, se comprueba su hash y se reutiliza sin sobrescribirlo. No ejecutar limpieza administrativa entre un fallo de importación y su reintento. El comando rechaza destinos ajenos al Supabase local de QAlly.
+
+`npm run db:seed` sigue creando solo los tres proyectos ficticios; puede coexistir con este comando. Tras una reconstrucción voluntaria de la base, ejecutar otra vez `npm run db:seed:team` recupera esta captura. No hace falta resetear para incorporarla a una base existente.
+
+Las pruebas `tests/database/seed-team.test.mjs` importan una copia con identificadores aislados y comprueban restauración de datos/historial/PDF, privacidad y acceso por proyecto, repetición sin sobrescritura y rollback ante una restricción inválida. Añaden un proyecto identificado como prueba, igual que el resto de pruebas de integración; no modifican el proyecto original.
+
 ```sh
 npm run db:start
 npm run db:status

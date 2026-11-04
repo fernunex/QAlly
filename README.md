@@ -74,11 +74,14 @@ En los arranques siguientes basta con `npm run db:start` y `npm run dev -- --hos
 | `npm run db:stop` | Detener Supabase conservando datos. |
 | `npm run db:types` | Regenerar tipos TypeScript desde la BD local. |
 | `npm run db:seed:large` | Ampliar el dataset de desarrollo para pruebas con volumen. |
+| `npm run db:seed:team` | Copiar el proyecto QAlly del equipo, con actividades SQA, mediciones, entregas y PDF, sin sobrescribir una copia existente. |
 | `npm run db:cleanup` | Limpiar archivos elegibles sin referencias conforme al protocolo aprobado. |
 
 `npm run db:reset -- --confirm-local-reset` **borra la base local** y aplica de nuevo las migraciones; después requiere `npm run db:seed`. Usarlo solo cuando se quiera reconstruir expresamente el entorno. Los cambios de esquema se realizan con nuevas migraciones versionadas, no editando manualmente Studio como fuente de verdad.
 
 [Guía de datos, seguridad, seeds y futura conexión a Cloud](docs/datos/guia-supabase.md).
+
+Para trabajar con el proyecto **QAlly** que registró el equipo, ejecutar `npm run db:start` y `npm run db:seed:team`. Cada integrante obtiene una copia independiente con acceso para `qa1`, `miembro1` y `miembro2` (`@qally.example.test`); la contraseña es la de su propio `.env.local`. [Contenido de la captura y funcionamiento](docs/datos/guia-supabase.md#copiar-el-proyecto-qally-del-equipo).
 
 ## Verificaciones
 

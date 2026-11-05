@@ -83,7 +83,7 @@ Estado: **Diseñado** (escrito, sin ejecutar), **OK** / **Falla** (con la fecha 
 | IA-06 | DEC-30 | DTO rechaza salud incoherente (Evaluada sin porcentaje, N_A/A/N_M distintos a lo mostrado) | `tests/unit/salud.test.ts` | Emi | OK |
 | IA-07 | DEC-28 | Modelo del reporte: misma salud, advertencias por ámbito, enlaces a evidencia sin incrustar | `tests/unit/reportes.test.ts` | Emi | OK |
 | IA-08 | Regresión | Resto de unitarias (71) y BD (44) | `npm run unit:test`, `npm run db:test` | Cada autor | OK |
-| IA-09 | Estático | ESLint, `tsc`, `supabase db lint` | — | Cada autor | OK |
+| IA-09 | Estático | ESLint, `tsc`, `supabase db lint` | [Reporte 2026-11-03](reporte-analisis-estatico-2026-11-03.md) | Cada autor | OK |
 
 ## Ejecución
 
